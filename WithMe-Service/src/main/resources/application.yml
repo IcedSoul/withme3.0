@@ -1,0 +1,16 @@
+server:
+  #设置启动端口以及项目路径
+  port: 8080
+  servlet:
+    context-path: /WithMeAlpha
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://119.23.212.211:3306/withmealpha?characterEncoding=utf8&useSSL=false
+    username: root
+    password: 19961002withme
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
