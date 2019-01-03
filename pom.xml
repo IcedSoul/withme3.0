@@ -10,6 +10,8 @@
 
     <name>WithMe3.0</name>
 
+    <packaging>pom</packaging>
+
     <modules>
         <module>WithMe-Service</module>
     </modules>

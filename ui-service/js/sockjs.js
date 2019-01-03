@@ -8,7 +8,7 @@
 
         var transportList = require('./transport-list');
 
-        module.exports = require('./main')(transportList);
+        module.exports = require('./page/main')(transportList);
 
 // TODO can't get rid of this until all servers do
         if ('_sockjs_onload' in global) {

@@ -9,9 +9,9 @@ import org.springframework.context.annotation.Import;
 @SpringBootApplication
 @ServletComponentScan
 @Import(value={SpringUtils.class})
-public class WithMeServiceApplication {
+public class UserServiceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(WithMeServiceApplication.class, args);
+        SpringApplication.run(UserServiceApplication.class, args);
     }
 }
