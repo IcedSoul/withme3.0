@@ -1,6 +1,6 @@
 package cn.icedsoul.userservice.domain;
 
-import cn.icedsoul.userservice.utils.Common;
+import cn.icedsoul.commonservice.util.Common;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 

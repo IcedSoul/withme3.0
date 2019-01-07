@@ -39,8 +39,8 @@ public class UserServiceImplement implements UserService {
     @Autowired
     UserDetailRepository userDetailRepository;
 
-    @Autowired
-    RestTemplate restTemplate;
+//    @Autowired
+//    RestTemplate restTemplate;
 
 
     @Override

@@ -49,12 +49,6 @@ public class UserController {
     }
 
 
-    /**
-     * 修改
-     * @param jsonObj
-     * @return
-     */
-
     @ApiOperation(value = "获取用户好友", notes = "获取用户所有好友", response = Response.class)
     @GetMapping(value = "/users/friends")
     public Response getRelations(@RequestParam("userId") Integer userId) {
@@ -62,9 +56,9 @@ public class UserController {
     }
 
     @ApiOperation(value = "获取用户群组", notes = "获取用户所有群组", response = Response.class)
-    @PostMapping(value = "/getUserGroups")
-    public Response getUserGroups(@RequestParam("jsonObj") String jsonObj) {
-        return userService.getUserGroups(jsonObj);
+    @PostMapping(value = "/users/friends")
+    public Response getUserGroups(@RequestParam("userId") Integer userId) {
+        return userService.getUserGroups(userId);
     }
 
     @ApiOperation(value = "获取当前用户ID", notes = "获取当前用户ID", response = Response.class)

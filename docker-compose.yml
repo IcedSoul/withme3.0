@@ -1,0 +1,33 @@
+version: '3'
+services:
+  websocket-server-service:
+    build: websocket-server-service
+    image: withme3.0/websocket-server-service
+    restart: always
+    ports:
+    - 21002:8282
+    networks:
+    - withme-network
+
+  user-service:
+    build: user-service
+    image: withme3.0/user-service
+#    depends_on:
+#    - dubbo-server
+    restart: always
+    ports:
+    - 21003:8080
+    networks:
+    - withme-network
+
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: always
+    command: /bin/bash -c "redis-server /etc/redis/redis.conf"
+
+networks:
+  withme-network:
+    driver: bridge

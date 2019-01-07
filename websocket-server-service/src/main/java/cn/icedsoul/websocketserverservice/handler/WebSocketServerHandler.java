@@ -1,7 +1,9 @@
 package cn.icedsoul.websocketserverservice.handler;
 
-import cn.icedsoul.websocketserverservice.config.NettyConfig;
+import cn.icedsoul.commonservice.util.Common;
+import cn.icedsoul.messageservice.domain.Message;
 import cn.icedsoul.websocketserverservice.domain.AuthUser;
+import cn.icedsoul.websocketserverservice.jedis.JedisPoolUtil;
 import cn.icedsoul.websocketserverservice.util.CONSTANT;
 import cn.icedsoul.websocketserverservice.util.JwtUtils;
 import com.alibaba.fastjson.JSON;
@@ -16,6 +18,10 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.websocketx.*;
 import io.netty.util.CharsetUtil;
 import lombok.extern.java.Log;
+import redis.clients.jedis.Jedis;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
@@ -28,9 +34,15 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
 
     private WebSocketServerHandshaker handShaker;
-    private static Integer onLineCount = 0;
 
     private AuthUser user = new AuthUser();
+
+    /**
+     * 不确定是每个用户都分配一个jedis连接比较好还是全部使用一个比较好，暂时采用每个用户新获取一个jedis对象，
+     * 以后如果这里出现瓶颈那么再做优化
+     */
+    //Jedis连接
+    private Jedis jedis;
 
     /**
      * 处理接收到的消息
@@ -89,7 +101,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         } else {
             handShaker.handshake(ctx.channel(), req);
         }
-        onOpen(ctx, user);
+        onOpen(ctx);
     }
 
     /**
@@ -149,32 +161,56 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         }
     }
 
-    private void onOpen(ChannelHandlerContext ctx, AuthUser user) {
-        User users = userRepository.findByUserId(user.getUserId());
-        users.setUserIsOnline(1);
-        userRepository.save(users);
-        onLineCount++;
-        NettyConfig.onLineList.put(user.getUserId(), ctx.channel());
-        checkOffLineMessage(ctx, user);
+    private void onOpen(ChannelHandlerContext ctx) {
+        //获取Jedis连接
+        this.jedis = JedisPoolUtil.getJedis();
+        log.info("[Jedis:] : 获取Jedis连接");
+        //如果有办法在redis初始化时设置key和value，那么这里的判断可以省略*
+        //增加在线人数
+        if(jedis.exists(CONSTANT.ON_LINE_COUNT)){
+            jedis.incr(CONSTANT.ON_LINE_COUNT);
+        }
+        else {
+            jedis.set(CONSTANT.ON_LINE_COUNT, "1");
+        }
+        //改变用户在线状态(存储channel对象（也不知道能不能存）)
+        //更为优雅地存储在线用户（哈希表）
+        if(jedis.exists(CONSTANT.ON_LINE_LIST)){
+            jedis.hset(CONSTANT.ON_LINE_LIST,String.valueOf(user.getUserId()), JSONObject.toJSONString(ctx.channel()));
+        }
+        else {
+            Map<String, String> onLineList = new HashMap<>();
+            onLineList.put(String.valueOf(user.getUserId()), JSONObject.toJSONString(ctx.channel()));
+            jedis.hmset(CONSTANT.ON_LINE_LIST, onLineList);
+        }
+        log.info("[存储用户channel对象：] " + JSONObject.toJSONString(ctx.channel()));
+//        NettyConfig.onLineList.put(user.getUserId(), ctx.channel());
+        //检查离线消息应该需要再添加一张离线消息表来做（离线消息表配合缓存？），目前先取消这个功能。
+//        checkOffLineMessage(ctx, user);
     }
 
-    private void checkOffLineMessage(ChannelHandlerContext ctx, AuthUser user) {
-        List<Message> messages = messageRepository.findAllByToIdAndIsTransport(user.getUserId(), 0);
-        for (Message message : messages) {
-            sendMessage(ctx.channel(), getMessage(message));
-            message.setIsTransport(1);
-            messageRepository.save(message);
-        }
-    }
+//    private void checkOffLineMessage(ChannelHandlerContext ctx, AuthUser user) {
+//        List<Message> messages = messageRepository.findAllByToIdAndIsTransport(user.getUserId(), 0);
+//        for (Message message : messages) {
+//            sendMessage(ctx.channel(), getMessage(message));
+//            message.setIsTransport(1);
+//            messageRepository.save(message);
+//        }
+//    }
 
     private void onClose() {
-        onLineCount--;
-        User users = userRepository.findByUserId(user.getUserId());
-        users.setUserIsOnline(0);
-        userRepository.save(users);
-        NettyConfig.onLineList.remove(user.getUserId());
+        jedis.decr(CONSTANT.ON_LINE_COUNT);
+        jedis.hdel(CONSTANT.ON_LINE_LIST, String.valueOf(user.getUserId()));
+        this.jedis.close();
+        log.info("[Jedis:] : 返回Jedis连接");
+
+//        NettyConfig.onLineList.remove(user.getUserId());
     }
 
+    /**
+     * 解析并且处理消息
+     * @param jsonMessage
+     */
     private void onMessage(String jsonMessage) {
         Message message = new Message();
         JSONObject jsonObjectMessage = JSON.parseObject(jsonMessage);
@@ -183,29 +219,37 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         message.setType(jsonObjectMessage.getInteger("type"));
         message.setTime(Common.getCurrentTime());
         JSONArray users = jsonObjectMessage.getJSONArray("to");
+        //type为0证明自己也需要，那么给自己也发一份（逻辑应该优化）
         if (jsonObjectMessage.getInteger("type") == 0) {
-            sendMessage(NettyConfig.onLineList.get(message.getFromId()), jsonMessage);
+            Channel self = getChannel(message.getFromId());
+            sendMessage(self, jsonMessage);
         }
         if (jsonObjectMessage.getIntValue("type") == 1) {
             message.setToId(users.getInteger(0));
             message.setType(2);
             message.setIsTransport(1);
-            messageRepository.save(message);
+            //为了测试，消息暂时存到redis中吧
+//            messageRepository.save(message);
+            jedis.lpush(CONSTANT.MESSAGE, JSON.toJSONString(message));
             message.setType(1);
         }
         for (int i = 0; i < users.size(); i++) {
             if (!(jsonObjectMessage.getIntValue("type") == 1 && i == 0)) {
                 Integer toUser = users.getInteger(i);
                 message.setToId(toUser);
-                Channel channel = NettyConfig.onLineList.get(toUser);
+                Channel channel = getChannel(toUser);
                 if (!Common.isNull(channel)) {
                     sendMessage(channel, jsonMessage);
                     message.setIsTransport(1);
-                    messageRepository.save(message);
+                    //messageRepository.save(message);
+                    jedis.lpush(CONSTANT.MESSAGE, JSON.toJSONString(message));
                 } else {
                     message.setIsTransport(0);
-                    if (message.getType() != 3 && message.getType() != 4)
-                        messageRepository.save(message);
+                    if (message.getType() != 3 && message.getType() != 4) {
+                        jedis.lpush(CONSTANT.MESSAGE, JSON.toJSONString(message));
+//                        messageRepository.save(message);
+                    }
+
                 }
             }
         }
@@ -225,5 +269,9 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         jsonObjectMessage.put("type", String.valueOf(message.getType()));
         jsonObjectMessage.put("time", message.getTime().toString());
         return jsonObjectMessage.toString();
+    }
+
+    private Channel getChannel(Integer userId){
+        return (Channel) JSON.parse(jedis.hget(CONSTANT.ON_LINE_LIST, String.valueOf(userId)));
     }
 }
