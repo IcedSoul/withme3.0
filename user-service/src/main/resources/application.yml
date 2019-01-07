@@ -1,5 +1,4 @@
 server:
-  #设置启动端口以及项目路径
   port: 8080
   servlet:
     context-path: /WithMeAlpha
