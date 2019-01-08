@@ -1,9 +1,25 @@
 version: '3'
 services:
+  redis:
+    image: redis
+    ports:
+    - 6379:6379
+    restart: always
+    command: /bin/bash -c "redis-server /etc/redis/redis.conf"
+    volumes:
+    - ./redis/redis.cnf:/etc/redis/redis.conf
+    - ./redis/data:/etc/redis/data
+    networks:
+      - withme-network
+
   websocket-server-service:
     build: websocket-server-service
     image: withme3.0/websocket-server-service
     restart: always
+    links:
+      - redis
+    depends_on:
+    - redis
     ports:
     - 21002:8282
     networks:
@@ -12,21 +28,12 @@ services:
   user-service:
     build: user-service
     image: withme3.0/user-service
-#    depends_on:
-#    - dubbo-server
     restart: always
     ports:
-    - 21003:8080
+    - 21003:8081
     networks:
     - withme-network
 
-  redis:
-    image: redis
-    container_name: redis
-    ports:
-      - "6379:6379"
-    restart: always
-    command: /bin/bash -c "redis-server /etc/redis/redis.conf"
 
 networks:
   withme-network:

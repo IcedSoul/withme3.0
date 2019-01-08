@@ -1,6 +1,5 @@
-package cn.icedsoul.userservice.domain;
+package cn.icedsoul.commonservice.dto;
 
-import cn.icedsoul.commonservice.util.Common;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 
@@ -24,10 +23,10 @@ public class AuthUser {
         this.expireTime = expireTime;
     }
 
-    public AuthUser(User user) {
-        this.userId = user.getUserId();
-        this.userName = user.getUserName();
-        this.userNickName = user.getUserNickName();
-        this.expireTime = Common.getCurrentTime();
-    }
+//    public AuthUser(User user){
+//        this.userId = user.getUserId();
+//        this.userName = user.getUserName();
+//        this.userNickName = user.getUserNickName();
+//        this.expireTime = Common.getCurrentTime();
+//    }
 }

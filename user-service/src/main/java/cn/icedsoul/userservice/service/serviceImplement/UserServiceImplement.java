@@ -1,13 +1,14 @@
 package cn.icedsoul.userservice.service.serviceImplement;
 
+import cn.icedsoul.commonservice.dto.AuthUser;
 import cn.icedsoul.commonservice.util.Common;
+import cn.icedsoul.commonservice.util.JwtUtils;
 import cn.icedsoul.commonservice.util.Response;
 import cn.icedsoul.userservice.service.serviceApi.UserService;
 import cn.icedsoul.userservice.utils.URL;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import cn.icedsoul.userservice.domain.AuthUser;
 
 import cn.icedsoul.userservice.domain.User;
 import cn.icedsoul.userservice.domain.UserDetail;
@@ -16,7 +17,6 @@ import cn.icedsoul.userservice.repository.UserDetailRepository;
 import cn.icedsoul.userservice.repository.UserRepository;
 import cn.icedsoul.userservice.utils.CONSTANT;
 
-import cn.icedsoul.userservice.utils.JwtUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -163,7 +163,12 @@ public class UserServiceImplement implements UserService {
     public Response findUserByName(String jsonObj) {
         try {
             JSONObject jsonObject = JSONObject.parseObject(jsonObj);
-            AuthUser authUser = new AuthUser(userRepository.findByUserName(jsonObject.getString("userName")));
+            User user = userRepository.findByUserName(jsonObject.getString("userName"));
+            AuthUser authUser = new AuthUser();
+            authUser.setUserId(user.getUserId());
+            authUser.setUserName(user.getUserName());
+            authUser.setUserNickName(user.getUserNickName());
+            authUser.setExpireTime(Common.getCurrentTime());
             return new Response(1, "获取用户信息成功", JSON.toJSONString(authUser));
         } catch (Exception e) {
             e.printStackTrace();
@@ -175,7 +180,12 @@ public class UserServiceImplement implements UserService {
     public Response findUserById(String jsonObj) {
         try {
             JSONObject jsonObject = JSONObject.parseObject(jsonObj);
-            AuthUser authUser = new AuthUser(userRepository.findByUserId(jsonObject.getInteger("userId")));
+            User user = userRepository.findByUserId(jsonObject.getInteger("userId"));
+            AuthUser authUser = new AuthUser();
+            authUser.setUserId(user.getUserId());
+            authUser.setUserName(user.getUserName());
+            authUser.setUserNickName(user.getUserNickName());
+            authUser.setExpireTime(Common.getCurrentTime());
             return new Response(1, "获取用户信息成功", JSON.toJSONString(authUser));
         } catch (Exception e) {
             e.printStackTrace();

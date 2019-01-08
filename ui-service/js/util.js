@@ -1,4 +1,4 @@
-var address = "http://localhost:8080/WithMeAlpha/";
+var address = "http://10.141.211.176:21003/";
 
 function setCookie(name, value, time) {
     var exp = new Date();

@@ -20,7 +20,7 @@ function checkLogin() {
     $.ajax({
         async: false, //设置同步
         type: 'POST',
-        url: address + 'user/login',
+        url: address + 'v1/login',
         data: jsonObj,
         dataType: 'json',
         success: function (result) {

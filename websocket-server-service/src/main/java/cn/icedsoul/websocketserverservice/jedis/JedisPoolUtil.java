@@ -35,7 +35,7 @@ public class JedisPoolUtil {
     }
 
     /**
-     * 获取Jedis
+     * 获取Jedis连接
      * @return
      */
     public static Jedis getJedis(){

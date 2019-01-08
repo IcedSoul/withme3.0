@@ -1,8 +1,7 @@
-package cn.icedsoul.userservice.utils;
+package cn.icedsoul.commonservice.util;
 
-import cn.icedsoul.commonservice.util.Common;
+import cn.icedsoul.commonservice.dto.AuthUser;
 import com.alibaba.fastjson.JSONObject;
-import cn.icedsoul.userservice.domain.AuthUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;

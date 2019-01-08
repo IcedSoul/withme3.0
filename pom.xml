@@ -17,8 +17,8 @@
         <module>user-service</module>
         <module>websocket-server-service</module>
         <module>common-service</module>
-        <module>user-relation-service</module>
-        <module>group-service</module>
+        <!--<module>user-relation-service</module>-->
+        <!--<module>group-service</module>-->
     </modules>
 
 </project>

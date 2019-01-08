@@ -1,7 +1,7 @@
 //获取服务端地址
 var ws = null;
-ws = "ws://localhost:8282/" + parseURL("token");
-//ws = "ws://182.254.214.252:20818/${currentUser.userId}";
+// ws = "ws://localhost:8282/" + parseURL("token");
+ws = "ws://10.141.211.176:21002/" + parseURL("token");
 var websocket = null;
 
 //判断当前浏览器是否支持WebSocket

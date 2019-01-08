@@ -1,11 +1,11 @@
 package cn.icedsoul.websocketserverservice.handler;
 
+import cn.icedsoul.commonservice.dto.AuthUser;
 import cn.icedsoul.commonservice.util.Common;
+import cn.icedsoul.commonservice.util.JwtUtils;
 import cn.icedsoul.messageservice.domain.Message;
-import cn.icedsoul.websocketserverservice.domain.AuthUser;
 import cn.icedsoul.websocketserverservice.jedis.JedisPoolUtil;
 import cn.icedsoul.websocketserverservice.util.CONSTANT;
-import cn.icedsoul.websocketserverservice.util.JwtUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -91,8 +91,8 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         }
         //校验token
         String token = req.getUri();
-        token = token.replace("/", "");
-        user = JwtUtils.parseJWT(token);
+        String tokens = token.replace("/", "");
+        user = JwtUtils.parseJWT(tokens);
         WebSocketServerHandshakerFactory wsFactory = new WebSocketServerHandshakerFactory(
                 getWebSocketLocation(req), null, false);
         handShaker = wsFactory.newHandshaker(req);
