@@ -44,12 +44,11 @@ public class UserServiceImplement implements UserService {
 
 
     @Override
-    public Response login(String jsonObj) {
+    public Response login(String userName, String userPassword) {
         try {
-            JSONObject jsonObject = JSONObject.parseObject(jsonObj);
-            UserDetail userDetail = userDetailRepository.findByUserDetailName(jsonObject.getString("userName"));
+            UserDetail userDetail = userDetailRepository.findByUserDetailName(userName);
             if (userDetail != null) {
-                if (Common.isEquals(userDetail.getUserDetailPassword(), jsonObject.getString("userPassword"))) {
+                if (Common.isEquals(userDetail.getUserDetailPassword(), userPassword)) {
                     Timestamp expireTime = new Timestamp(System.currentTimeMillis() + CONSTANT.EXPIRE_TIME * 1000 * 60);
                     AuthUser authUser = new AuthUser(userDetail.getUserDetailId(),
                             userDetail.getUserDetailName(),
@@ -70,23 +69,22 @@ public class UserServiceImplement implements UserService {
     }
 
     @Override
-    public Response logout(String jsonObj) {
+    public Response logout(String token) {
         return null;
     }
 
     @Override
     @Transactional
-    public Response register(String jsonObj) {
+    public Response register(String userName, String userNickName, String userPassword) {
         try {
-            JSONObject jsonObject = JSONObject.parseObject(jsonObj);
-            if (userRepository.findByUserName(jsonObject.getString("userName")) == null) {
+            if (userRepository.findByUserName(userName) == null) {
                 UserDetail userDetail = new UserDetail();
-                userDetail.setUserDetailName(jsonObject.getString("userName"));
-                userDetail.setUserDetailNickName(jsonObject.getString("userNickName"));
-                userDetail.setUserDetailPassword(jsonObject.getString("userPassword"));
+                userDetail.setUserDetailName(userName);
+                userDetail.setUserDetailNickName(userNickName);
+                userDetail.setUserDetailPassword(userPassword);
                 userDetail.setUserRegisterTime(Common.getCurrentTime());
                 userDetailRepository.save(userDetail);
-                UserDetail userDetail1 = userDetailRepository.findByUserDetailName(jsonObject.getString("userName"));
+                UserDetail userDetail1 = userDetailRepository.findByUserDetailName(userName);
                 User user = new User();
                 user.setUserId(userDetail1.getUserDetailId());
                 user.setUserName(userDetail1.getUserDetailName());
@@ -148,10 +146,9 @@ public class UserServiceImplement implements UserService {
     }
 
     @Override
-    public Response getCurrentUser(String jsonObj) {
+    public Response getCurrentUser(String token) {
         try {
-            JSONObject jsonObject = JSONObject.parseObject(jsonObj);
-            AuthUser authUser = JwtUtils.parseJWT(jsonObject.getString("token"));
+            AuthUser authUser = JwtUtils.parseJWT(token);
             return new Response(1, "获取当前用户成功", JSON.toJSONString(authUser));
         } catch (Exception e) {
             e.printStackTrace();
@@ -160,10 +157,9 @@ public class UserServiceImplement implements UserService {
     }
 
     @Override
-    public Response findUserByName(String jsonObj) {
+    public Response findUserByName(String name) {
         try {
-            JSONObject jsonObject = JSONObject.parseObject(jsonObj);
-            User user = userRepository.findByUserName(jsonObject.getString("userName"));
+            User user = userRepository.findByUserName(name);
             AuthUser authUser = new AuthUser();
             authUser.setUserId(user.getUserId());
             authUser.setUserName(user.getUserName());
@@ -177,10 +173,9 @@ public class UserServiceImplement implements UserService {
     }
 
     @Override
-    public Response findUserById(String jsonObj) {
+    public Response findUserById(String id) {
         try {
-            JSONObject jsonObject = JSONObject.parseObject(jsonObj);
-            User user = userRepository.findByUserId(jsonObject.getInteger("userId"));
+            User user = userRepository.findByUserId(Integer.valueOf(id));
             AuthUser authUser = new AuthUser();
             authUser.setUserId(user.getUserId());
             authUser.setUserName(user.getUserName());

@@ -7,19 +7,19 @@ import cn.icedsoul.commonservice.util.Response;
  * Created by IcedSoul on 2018/2/20.
  */
 public interface UserService {
-    Response login(String jsonObj);
+    Response login(String userName, String userPassword);
 
-    Response logout(String jsonObj);
+    Response logout(String token);
 
-    Response register(String jsonObj);
+    Response register(String userName, String userNickName, String userPassword);
 
     Response getRelations(Integer userId);
 
     Response getUserGroups(Integer userId);
 
-    Response getCurrentUser(String jsonObj);
+    Response getCurrentUser(String token);
 
-    Response findUserByName(String jsonObj);
+    Response findUserByName(String name);
 
-    Response findUserById(String jsonObj);
+    Response findUserById(String id);
 }
