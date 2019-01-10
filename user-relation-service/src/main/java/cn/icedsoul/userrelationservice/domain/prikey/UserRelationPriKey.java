@@ -1,4 +1,4 @@
-package cn.icedsoul.groupservice.domain.PriKey;
+package cn.icedsoul.userrelationservice.domain.prikey;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,24 +9,22 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserGroupRelationPriKey implements Serializable {
-
+public class UserRelationPriKey implements Serializable {
     /**
-     * UserGroupRelation的联合主键
+     * UserRelation的联合主键
      */
     private static final long serialVersionUID = 1L;
-    private int userId;
-    private int groupId;
+    private int userIdA;
+    private int userIdB;
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + groupId;
-        result = prime * result + userId;
+        result = prime * result + userIdA;
+        result = prime * result + userIdB;
         return result;
     }
-
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -35,13 +33,11 @@ public class UserGroupRelationPriKey implements Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        UserGroupRelationPriKey other = (UserGroupRelationPriKey) obj;
-        if (groupId != other.groupId)
+        UserRelationPriKey other = (UserRelationPriKey) obj;
+        if (userIdA != other.userIdA)
             return false;
-        if (userId != other.userId)
+        if (userIdB != other.userIdB)
             return false;
         return true;
     }
-
-
 }

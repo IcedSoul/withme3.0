@@ -1,22 +1,21 @@
 package cn.icedsoul.userrelationservice.service.serviceImpl;
 
-import cn.icedsoul.commonservice.util.Common;
 import cn.icedsoul.commonservice.util.Response;
-import cn.icedsoul.userservice.domain.AuthUser;
-import cn.icedsoul.userservice.domain.User;
-import cn.icedsoul.userservice.domain.UserRelation;
-import cn.icedsoul.userservice.repository.UserRelationRepository;
-import cn.icedsoul.userservice.repository.UserRepository;
-import cn.icedsoul.userservice.service.serviceApi.UserRelationService;
-import com.alibaba.fastjson.JSONObject;
+import cn.icedsoul.userrelationservice.constant.CONSTANT;
+import cn.icedsoul.userrelationservice.domain.UserRelation;
+import cn.icedsoul.userrelationservice.domain.prikey.UserRelationPriKey;
+import cn.icedsoul.userrelationservice.repository.UserRelationRepository;
+import cn.icedsoul.userrelationservice.service.serviceApi.UserRelationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class UserRelationServiceImplement implements UserRelationService {
@@ -25,35 +24,39 @@ public class UserRelationServiceImplement implements UserRelationService {
     UserRelationRepository userRelationRepository;
 
     @Autowired
-    UserRepository userRepository;
+    RestTemplate restTemplate;
 
+    /**
+     * 根据两个用户的ID来添加好友关系，同时更新两者的好友缓存。
+     * @param userIdA
+     * @param userIdB
+     * @return
+     */
     @Override
     @Transactional
-    public Response buildRelation(String jsonObj) {
+    public Response buildRelation(Integer userIdA, Integer userIdB) {
         try {
-            JSONObject jsonObject = JSONObject.parseObject(jsonObj);
             UserRelation userRelation = new UserRelation();
-            userRelation.setUserIdA(jsonObject.getInteger("userIdA"));
-            userRelation.setUserIdB(jsonObject.getInteger("userIdB"));
+            userRelation.setUserIdA(userIdA);
+            userRelation.setUserIdB(userIdB);
             userRelation.setRelationStatus(1);
             Date date = new Date();
             Timestamp timestamp = new Timestamp(date.getTime());
             userRelation.setRelationStart(timestamp);
             userRelationRepository.save(userRelation);
-            User userA = userRepository.findByUserId(jsonObject.getInteger("userIdA"));
-            User userB = userRepository.findByUserId(jsonObject.getInteger("userIdB"));
-            if (Common.isEmpty(userA.getUserRelations()))
-                userA.setUserRelations(String.valueOf(userB.getUserId()));
-            else
-                userA.setUserRelations(userA.getUserRelations() + "," + String.valueOf(userB.getUserId()));
-            userRepository.save(userA);
-            if (Common.isEmpty(userB.getUserRelations()))
-                userB.setUserRelations(String.valueOf(userA.getUserId()));
-            else
-                userB.setUserRelations(userB.getUserRelations() + "," + String.valueOf(userA.getUserId()));
-            userRepository.save(userB);
-
-            return new Response(1, "添加好友成功", null);
+            // 此处使用远程网络调用，暂且采用同步的方式，如果性能出现瓶颈可以考虑用异步
+            MultiValueMap<String, Integer> requestEntity = new LinkedMultiValueMap<>();
+            requestEntity.add("userIdA", userIdA);
+            requestEntity.add("userIdB", userIdB);
+            ResponseEntity<Response> responseEntity =
+                    restTemplate.postForEntity(CONSTANT.USER_SERVICE, requestEntity, Response.class);
+            Response response = responseEntity.getBody();
+            if(response.getStatus() == 1)
+                return new Response(1, "添加好友成功", null);
+            else {
+                userRelationRepository.deleteById(new UserRelationPriKey(userIdA, userIdB));
+                return new Response(-1, "添加好友失败", null);
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return new Response(-1, "添加好友失败", null);
@@ -66,19 +69,5 @@ public class UserRelationServiceImplement implements UserRelationService {
         return null;
     }
 
-    @Override
-    public Response getRelations(String jsonObj) {
-        try {
-            JSONObject jsonObject = JSONObject.parseObject(jsonObj);
-            String users[] = userRepository.findByUserId(jsonObject.getInteger("userId")).getUserRelations().split(",");
-            List<AuthUser> userList = new ArrayList<>();
-            for (int i = 0; i < users.length; i++) {
-                userList.add(new AuthUser(userRepository.findByUserId(Integer.valueOf(users[i]))));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new Response(-1, "查找好友失败", null);
-        }
-        return null;
-    }
+
 }

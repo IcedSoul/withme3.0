@@ -18,15 +18,15 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("cn.icedsoul.messageservice"))
+                .apis(RequestHandlerSelectors.basePackage("cn.icedsoul.userrelationservice"))
                 .paths(PathSelectors.any())
                 .build();
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("WithMe Message Service")
-                .description("provide apis of message")
+                .title("WithMe User Relation Service")
+                .description("provide api of user relation")
                 .termsOfServiceUrl("")
                 .version("1.0")
                 .build();

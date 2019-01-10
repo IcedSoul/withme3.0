@@ -1,7 +1,7 @@
 package cn.icedsoul.userrelationservice.repository;
 
-import cn.icedsoul.userservice.domain.PriKey.UserRelationPriKey;
-import cn.icedsoul.userservice.domain.UserRelation;
+import cn.icedsoul.userrelationservice.domain.UserRelation;
+import cn.icedsoul.userrelationservice.domain.prikey.UserRelationPriKey;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

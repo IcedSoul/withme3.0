@@ -1,7 +1,7 @@
 package cn.icedsoul.groupservice.repository;
 
 
-import cn.icedsoul.groupservice.domain.PriKey.UserGroupRelationPriKey;
+import cn.icedsoul.groupservice.domain.prikey.UserGroupRelationPriKey;
 import cn.icedsoul.groupservice.domain.UserGroupRelation;
 import org.springframework.data.jpa.repository.JpaRepository;
 

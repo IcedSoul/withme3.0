@@ -49,15 +49,15 @@ public class UserController {
         return userService.register(userName, userNickName, userPassword);
     }
 
-    @ApiOperation(value = "获取 用户好友", notes = "获取用户所有好友", response = Response.class)
-    @GetMapping(value = "/users/friends")
-    public Response getRelations(@RequestParam("userId") Integer userId) {
+    @ApiOperation(value = "获取用户好友", notes = "获取用户所有好友", response = Response.class)
+    @GetMapping(value = "/users/friends/{userId}")
+    public Response getRelations(@PathVariable("userId") Integer userId) {
         return userService.getRelations(userId);
     }
 
     @ApiOperation(value = "获取用户群组", notes = "获取用户所有群组", response = Response.class)
-    @PostMapping(value = "/users/friends")
-    public Response getUserGroups(@RequestParam("userId") Integer userId) {
+    @GetMapping(value = "/users/friends/{userId}")
+    public Response getUserGroups(@PathVariable("userId") Integer userId) {
         return userService.getUserGroups(userId);
     }
 
@@ -77,6 +77,12 @@ public class UserController {
     @GetMapping(value = "/user/{id}")
     public Response findUserById(@PathVariable("id") String id) {
         return userService.findUserById(id);
+    }
+
+    @ApiOperation(value = "更新好友关系缓存字段", notes = "更新好友关系", response = Response.class)
+    @PatchMapping(value = "/user")
+    public Response updateUserRelation(@RequestParam("userIdA") Integer userIdA, @RequestParam("userIdB") Integer userIdB) {
+        return userService.updateUserRelation(userIdA, userIdB);
     }
 
 }

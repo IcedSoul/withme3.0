@@ -1,6 +1,6 @@
 package cn.icedsoul.groupservice.domain;
 
-import cn.icedsoul.groupservice.domain.PriKey.UserGroupRelationPriKey;
+import cn.icedsoul.groupservice.domain.prikey.UserGroupRelationPriKey;
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;
 

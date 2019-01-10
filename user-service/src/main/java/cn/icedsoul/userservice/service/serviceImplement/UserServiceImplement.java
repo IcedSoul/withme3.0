@@ -187,4 +187,27 @@ public class UserServiceImplement implements UserService {
             return new Response(-1, "获取用户信息异常", null);
         }
     }
+
+    @Override
+    @Transactional
+    public Response updateUserRelation(Integer userIdA, Integer userIdB) {
+        try {
+            User userA = userRepository.findByUserId(userIdA);
+            User userB = userRepository.findByUserId(userIdB);
+            if (Common.isEmpty(userA.getUserRelations()))
+                userA.setUserRelations(String.valueOf(userB.getUserId()));
+            else
+                userA.setUserRelations(userA.getUserRelations() + "," + String.valueOf(userB.getUserId()));
+            userRepository.save(userA);
+            if (Common.isEmpty(userB.getUserRelations()))
+                userB.setUserRelations(String.valueOf(userA.getUserId()));
+            else
+                userB.setUserRelations(userB.getUserRelations() + "," + String.valueOf(userA.getUserId()));
+            userRepository.save(userB);
+            return new Response(1, "添加好友关系成功", null);
+        } catch (Exception e){
+            return new Response(-1, "更新好友关系败", null);
+        }
+
+    }
 }

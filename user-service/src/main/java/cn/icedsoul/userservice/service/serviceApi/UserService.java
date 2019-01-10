@@ -22,4 +22,6 @@ public interface UserService {
     Response findUserByName(String name);
 
     Response findUserById(String id);
+
+    Response updateUserRelation(Integer userIdA, Integer userIdB);
 }

@@ -1,5 +1,6 @@
 version: '3'
 services:
+  #redis
   redis:
     image: redis
     ports:
@@ -11,6 +12,41 @@ services:
     - ./redis/data:/etc/redis/data
     networks:
       - withme-network
+
+  #mysql
+  user-mysql:
+    image: mysql:5.6
+    ports:
+    - 3307:3306
+    command: [
+      --character-set-server=utf8mb4,
+      --collation-server=utf8mb4_unicode_ci
+    ]
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: user
+    volumes:
+    - ./user-mysql/mysql.cnf:/etc/my.cnf
+    - ./user-mysql/data:/var/lib/mysql
+    networks:
+    - withme-network
+
+  user-relation-mysql:
+    image: mysql:5.6
+    ports:
+    - 3308:3306
+    command: [
+      --character-set-server=utf8mb4,
+      --collation-server=utf8mb4_unicode_ci
+    ]
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: user-relation
+    volumes:
+    - ./user-relation-mysql/mysql.cnf:/etc/my.cnf
+    - ./user-relation-mysql/data:/var/lib/mysql
+    networks:
+    - withme-network
 
   websocket-server-service:
     build: websocket-server-service
@@ -29,8 +65,21 @@ services:
     build: user-service
     image: withme3.0/user-service
     restart: always
+    depends_on:
+      - user-mysql
     ports:
     - 21003:8081
+    networks:
+    - withme-network
+
+  user-relation-service:
+    build: user-relation-service
+    image: withme3.0/user-relation-service
+    depends_on:
+      - user-relation-mysql
+    restart: always
+    ports:
+    - 21004:8081
     networks:
     - withme-network
 
