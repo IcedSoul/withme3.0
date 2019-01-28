@@ -4,11 +4,11 @@ package cn.icedsoul.groupservice.service.serviceApi;
 import cn.icedsoul.commonservice.util.Response;
 
 public interface GroupService {
-    Response getGroupUsers(String jsonObj);
+    Response getGroupUsers(Integer id);
 
-    Response createGroup(String jsonObj);
+    Response createGroup(String groupName, String groupIntroduction, Integer groupCreatorId);
 
-    Response findGroupById(String jsonObj);
+    Response findGroupById(Integer id);
     // Response findGroupByGroupId(String jsonObj);
 
 }

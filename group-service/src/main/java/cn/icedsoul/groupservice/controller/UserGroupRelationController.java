@@ -1,7 +1,7 @@
 package cn.icedsoul.groupservice.controller;
 
-import cn.icedsoul.userservice.service.serviceApi.UserGroupRelationService;
-import cn.icedsoul.userservice.utils.Response;
+import cn.icedsoul.commonservice.util.Response;
+import cn.icedsoul.groupservice.service.serviceApi.UserGroupRelationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

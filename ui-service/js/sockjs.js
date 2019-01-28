@@ -234,7 +234,7 @@
             'use strict';
 
             var JSON3 = require('json3')
-                , iframeUtils = require('./utils/iframe')
+                , iframeUtils = require('./constant/iframe')
             ;
 
             function FacadeJS(transport) {
@@ -264,12 +264,12 @@
             (function (process) {
                 'use strict';
 
-                var urlUtils = require('./utils/url')
-                    , eventUtils = require('./utils/event')
+                var urlUtils = require('./constant/url')
+                    , eventUtils = require('./constant/event')
                     , JSON3 = require('json3')
                     , FacadeJS = require('./facade')
                     , InfoIframeReceiver = require('./info-iframe-receiver')
-                    , iframeUtils = require('./utils/iframe')
+                    , iframeUtils = require('./constant/iframe')
                     , loc = require('./location')
                 ;
 
@@ -385,7 +385,7 @@
                 var EventEmitter = require('events').EventEmitter
                     , inherits = require('inherits')
                     , JSON3 = require('json3')
-                    , objectUtils = require('./utils/object')
+                    , objectUtils = require('./constant/object')
                 ;
 
                 var debug = function () {
@@ -477,7 +477,7 @@
                 var EventEmitter = require('events').EventEmitter
                     , inherits = require('inherits')
                     , JSON3 = require('json3')
-                    , utils = require('./utils/event')
+                    , utils = require('./constant/event')
                     , IframeTransport = require('./transport/iframe')
                     , InfoReceiverIframe = require('./info-iframe-receiver')
                 ;
@@ -560,7 +560,7 @@
 
                 var EventEmitter = require('events').EventEmitter
                     , inherits = require('inherits')
-                    , urlUtils = require('./utils/url')
+                    , urlUtils = require('./constant/url')
                     , XDR = require('./transport/sender/xdr')
                     , XHRCors = require('./transport/sender/xhr-cors')
                     , XHRLocal = require('./transport/sender/xhr-local')
@@ -686,14 +686,14 @@
                 var URL = require('url-parse')
                     , inherits = require('inherits')
                     , JSON3 = require('json3')
-                    , random = require('./utils/random')
-                    , escape = require('./utils/escape')
-                    , urlUtils = require('./utils/url')
-                    , eventUtils = require('./utils/event')
-                    , transport = require('./utils/transport')
-                    , objectUtils = require('./utils/object')
-                    , browser = require('./utils/browser')
-                    , log = require('./utils/log')
+                    , random = require('./constant/random')
+                    , escape = require('./constant/escape')
+                    , urlUtils = require('./constant/url')
+                    , eventUtils = require('./constant/event')
+                    , transport = require('./constant/transport')
+                    , objectUtils = require('./constant/object')
+                    , browser = require('./constant/browser')
+                    , log = require('./constant/log')
                     , Event = require('./event/event')
                     , EventTarget = require('./event/eventtarget')
                     , loc = require('./location')
@@ -1609,8 +1609,8 @@
 
                 var EventEmitter = require('events').EventEmitter
                     , inherits = require('inherits')
-                    , utils = require('../../utils/event')
-                    , urlUtils = require('../../utils/url')
+                    , utils = require('../../constant/event')
+                    , urlUtils = require('../../constant/url')
                     , XHR = global.XMLHttpRequest
                 ;
 
@@ -1894,10 +1894,10 @@
                     , JSON3 = require('json3')
                     , EventEmitter = require('events').EventEmitter
                     , version = require('../version')
-                    , urlUtils = require('../utils/url')
-                    , iframeUtils = require('../utils/iframe')
-                    , eventUtils = require('../utils/event')
-                    , random = require('../utils/random')
+                    , urlUtils = require('../constant/url')
+                    , iframeUtils = require('../constant/iframe')
+                    , eventUtils = require('../constant/event')
+                    , random = require('../constant/random')
                 ;
 
                 var debug = function () {
@@ -2080,7 +2080,7 @@
                 'use strict';
 
                 var inherits = require('inherits')
-                    , urlUtils = require('../../utils/url')
+                    , urlUtils = require('../../constant/url')
                     , SenderReceiver = require('./sender-receiver')
                 ;
 
@@ -2231,7 +2231,7 @@
 
                 var inherits = require('inherits')
                     , IframeTransport = require('../iframe')
-                    , objectUtils = require('../../utils/object')
+                    , objectUtils = require('../../constant/object')
                 ;
 
                 module.exports = function (transport) {
@@ -2333,7 +2333,7 @@
                 'use strict';
 
                 var inherits = require('inherits')
-                    , urlUtils = require('../../utils/url')
+                    , urlUtils = require('../../constant/url')
                     , BufferedSender = require('./buffered-sender')
                     , Polling = require('./polling')
                 ;
@@ -2455,10 +2455,10 @@
                 'use strict';
 
                 var inherits = require('inherits')
-                    , iframeUtils = require('../../utils/iframe')
-                    , urlUtils = require('../../utils/url')
+                    , iframeUtils = require('../../constant/iframe')
+                    , urlUtils = require('../../constant/url')
                     , EventEmitter = require('events').EventEmitter
-                    , random = require('../../utils/random')
+                    , random = require('../../constant/random')
                 ;
 
                 var debug = function () {
@@ -2554,10 +2554,10 @@
             (function (process, global) {
                 'use strict';
 
-                var utils = require('../../utils/iframe')
-                    , random = require('../../utils/random')
-                    , browser = require('../../utils/browser')
-                    , urlUtils = require('../../utils/url')
+                var utils = require('../../constant/iframe')
+                    , random = require('../../constant/random')
+                    , browser = require('../../constant/browser')
+                    , urlUtils = require('../../constant/url')
                     , inherits = require('inherits')
                     , EventEmitter = require('events').EventEmitter
                 ;
@@ -2827,8 +2827,8 @@
             (function (process, global) {
                 'use strict';
 
-                var random = require('../../utils/random')
-                    , urlUtils = require('../../utils/url')
+                var random = require('../../constant/random')
+                    , urlUtils = require('../../constant/url')
                 ;
 
                 var debug = function () {
@@ -2935,9 +2935,9 @@
 
                 var EventEmitter = require('events').EventEmitter
                     , inherits = require('inherits')
-                    , eventUtils = require('../../utils/event')
-                    , browser = require('../../utils/browser')
-                    , urlUtils = require('../../utils/url')
+                    , eventUtils = require('../../constant/event')
+                    , browser = require('../../constant/browser')
+                    , urlUtils = require('../../constant/url')
                 ;
 
                 var debug = function () {
@@ -3114,8 +3114,8 @@
             (function (process) {
                 'use strict';
 
-                var utils = require('../utils/event')
-                    , urlUtils = require('../utils/url')
+                var utils = require('../constant/event')
+                    , urlUtils = require('../constant/url')
                     , inherits = require('inherits')
                     , EventEmitter = require('events').EventEmitter
                     , WebsocketDriver = require('./driver/websocket')
@@ -3334,7 +3334,7 @@
                     , XhrReceiver = require('./receiver/xhr')
                     , XHRCorsObject = require('./sender/xhr-cors')
                     , XHRLocalObject = require('./sender/xhr-local')
-                    , browser = require('../utils/browser')
+                    , browser = require('../constant/browser')
                 ;
 
                 function XhrStreamingTransport(transUrl) {
@@ -3578,7 +3578,7 @@
                 var debug = function () {
                 };
                 if (process.env.NODE_ENV !== 'production') {
-                    debug = require('debug')('sockjs-client:utils:iframe');
+                    debug = require('debug')('sockjs-client:constant:iframe');
                 }
 
                 module.exports = {
@@ -3841,7 +3841,7 @@
                 var debug = function () {
                 };
                 if (process.env.NODE_ENV !== 'production') {
-                    debug = require('debug')('sockjs-client:utils:transport');
+                    debug = require('debug')('sockjs-client:constant:transport');
                 }
 
                 module.exports = function (availableTransports) {
@@ -3900,7 +3900,7 @@
                 var debug = function () {
                 };
                 if (process.env.NODE_ENV !== 'production') {
-                    debug = require('debug')('sockjs-client:utils:url');
+                    debug = require('debug')('sockjs-client:constant:url');
                 }
 
                 module.exports = {

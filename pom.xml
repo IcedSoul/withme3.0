@@ -18,6 +18,7 @@
         <module>websocket-server-service</module>
         <module>common-service</module>
         <module>user-relation-service</module>
+        <module>message-service</module>
         <!--<module>group-service</module>-->
     </modules>
 

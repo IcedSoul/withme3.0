@@ -5,22 +5,19 @@ import cn.icedsoul.commonservice.util.Common;
 import cn.icedsoul.commonservice.util.JwtUtils;
 import cn.icedsoul.commonservice.util.Response;
 import cn.icedsoul.userservice.service.serviceApi.UserService;
-import cn.icedsoul.userservice.utils.URL;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 
 import cn.icedsoul.userservice.domain.User;
 import cn.icedsoul.userservice.domain.UserDetail;
 
 import cn.icedsoul.userservice.repository.UserDetailRepository;
 import cn.icedsoul.userservice.repository.UserRepository;
-import cn.icedsoul.userservice.utils.CONSTANT;
+import cn.icedsoul.userservice.constant.CONSTANT;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
@@ -209,5 +206,26 @@ public class UserServiceImplement implements UserService {
             return new Response(-1, "更新好友关系败", null);
         }
 
+    }
+
+    @Override
+    public Response getUsersByUserIds(String userIds) {
+        try {
+            String users[] = userIds.split(",");
+            List<AuthUser> userList = new ArrayList<>();
+            for (String userId : users) {
+                User user = userRepository.findByUserId(Integer.valueOf(userId));
+                AuthUser authUser = new AuthUser();
+                authUser.setUserId(user.getUserId());
+                authUser.setUserName(user.getUserName());
+                authUser.setUserNickName(user.getUserNickName());
+                authUser.setExpireTime(Common.getCurrentTime());
+                userList.add(authUser);
+            }
+            return new Response(1, "获取用户成功", JSONArray.toJSONString(userList));
+        } catch (Exception e){
+            e.printStackTrace();
+            return new Response(-1, "获取用户失败", null);
+        }
     }
 }

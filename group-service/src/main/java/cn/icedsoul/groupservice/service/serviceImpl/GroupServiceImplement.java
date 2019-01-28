@@ -1,6 +1,11 @@
 package cn.icedsoul.groupservice.service.serviceImpl;
 
+import cn.icedsoul.commonservice.dto.AuthUser;
+import cn.icedsoul.commonservice.util.Common;
 import cn.icedsoul.commonservice.util.Response;
+import cn.icedsoul.groupservice.constant.CONSTANT;
+import cn.icedsoul.groupservice.domain.Groups;
+import cn.icedsoul.groupservice.domain.UserGroupRelation;
 import cn.icedsoul.groupservice.repository.GroupRepository;
 import cn.icedsoul.groupservice.repository.UserGroupRelationRepository;
 import cn.icedsoul.groupservice.service.serviceApi.GroupService;
@@ -12,10 +17,12 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.SimpleDateFormatSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Service
 public class GroupServiceImplement implements GroupService {
@@ -24,31 +31,30 @@ public class GroupServiceImplement implements GroupService {
     GroupRepository groupRepository;
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
     UserGroupRelationRepository userGroupRelationRepository;
 
+    @Autowired
+    RestTemplate restTemplate;
+
     @Override
-    public Response getGroupUsers(String jsonObj) {
+    public Response getGroupUsers(Integer id) {
         try {
-            JSONObject jsonObject = JSONObject.parseObject(jsonObj);
-            List<AuthUser> userList = new ArrayList<>();
-            Groups groups = groupRepository.getOne(jsonObject.getInteger("id"));
-            AuthUser authUser = null;
-            if (!Common.isNull(groups)) {
-                if (!Common.isEmpty(groups.getGroupMembers())) {
-                    String users[] = groups.getGroupMembers().split(",");
-                    for (int i = 1; i < users.length; i++) {
-                        authUser = new AuthUser(userRepository.findByUserId(Integer.valueOf(users[i])));
-                        userList.add(authUser);
-                    }
+            Groups groups = groupRepository.getOne(id);
+            JSONObject jsonObject1 = new JSONObject();
+            if (!Common.isNull(groups) && !Common.isEmpty(groups.getGroupMembers())) {
+                Response response = restTemplate.getForEntity(CONSTANT.USER_SERVICE_GET_USERS_BY_USERIDS, Response.class, groups.getGroupMembers()).getBody();
+                if(response.getStatus() == 1){
+                    jsonObject1.put("users", response.getContent());
+                }
+                else{
+                    jsonObject1.put("users", "[]");
                 }
             }
-            List<UserGroupRelation> userGroupRelations = userGroupRelationRepository.findByGroupId(jsonObject.getInteger("id"));
-            JSONObject jsonObject1 = new JSONObject();
+            else
+                jsonObject1.put("users", "[]");
+            List<UserGroupRelation> userGroupRelations = userGroupRelationRepository.findByGroupId(id);
             jsonObject1.put("userGroups", JSONArray.toJSONString(userGroupRelations, SerializerFeature.UseSingleQuotes));
-            jsonObject1.put("users", JSONArray.toJSONString(userList));
+
             return new Response(1, "获取群组成员成功", jsonObject1.toJSONString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,18 +63,15 @@ public class GroupServiceImplement implements GroupService {
     }
 
     @Override
-    public Response createGroup(String jsonObj) {
+    public Response createGroup(String groupName, String groupIntroduction, Integer groupCreatorId) {
         try {
-            JSONObject jsonObject = JSONObject.parseObject(jsonObj);
-            String groupName = jsonObject.getString("groupName");
-            String groupIntroduction = jsonObject.getString("groupIntroduction");
-            Integer groupCreatorId = jsonObject.getInteger("groupCreatorId");
-
             Groups group = new Groups();
             String groupId = String.valueOf((int) (Math.random() * 100000));
             while (groupRepository.findByGroupId(groupId) != null) {
                 groupId = String.valueOf((int) (Math.random() * 100000));
             }
+            Response response = restTemplate.getForEntity(CONSTANT.USER_SERVICE_GET_USER_BY_USERID, Response.class, groupCreatorId).getBody();
+            JSONObject user = JSONObject.parseObject((String)response.getContent());
             group.setGroupId(groupId);
             group.setGroupCreatorId(groupCreatorId);
             group.setGroupIntroduction(groupIntroduction);
@@ -83,7 +86,7 @@ public class GroupServiceImplement implements GroupService {
             userGroupRelation.setGroupId(groups.getId());
             userGroupRelation.setUserId(groupCreatorId);
             userGroupRelation.setEnterGroupTime(Common.getCurrentTime());
-            userGroupRelation.setGroupUserNickName(userRepository.findByUserId(groupCreatorId).getUserNickName());
+            userGroupRelation.setGroupUserNickName();
             userGroupRelation.setGroupLevel(10);
             userGroupRelationRepository.save(userGroupRelation);
             groups.setGroupMembers(groups.getId() + "," + String.valueOf(groupCreatorId));
@@ -105,10 +108,9 @@ public class GroupServiceImplement implements GroupService {
     }
 
     @Override
-    public Response findGroupById(String jsonObj) {
+    public Response findGroupById(Integer id) {
         try {
-            JSONObject jsonObject = JSONObject.parseObject(jsonObj);
-            Groups groups = groupRepository.getOne(jsonObject.getInteger("id"));
+            Groups groups = groupRepository.getOne(id);
             return new Response(1, "获取用户群组成功", JSON.toJSONString(groups));
         } catch (Exception e) {
             e.printStackTrace();

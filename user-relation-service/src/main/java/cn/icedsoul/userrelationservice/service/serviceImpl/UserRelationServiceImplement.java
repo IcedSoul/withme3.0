@@ -49,7 +49,7 @@ public class UserRelationServiceImplement implements UserRelationService {
             requestEntity.add("userIdA", userIdA);
             requestEntity.add("userIdB", userIdB);
             ResponseEntity<Response> responseEntity =
-                    restTemplate.postForEntity(CONSTANT.USER_SERVICE, requestEntity, Response.class);
+                    restTemplate.postForEntity(CONSTANT.USER_SERVICE_GET_USER, requestEntity, Response.class);
             Response response = responseEntity.getBody();
             if(response.getStatus() == 1)
                 return new Response(1, "添加好友成功", null);

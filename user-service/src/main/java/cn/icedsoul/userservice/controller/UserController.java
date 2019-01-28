@@ -56,7 +56,7 @@ public class UserController {
     }
 
     @ApiOperation(value = "获取用户群组", notes = "获取用户所有群组", response = Response.class)
-    @GetMapping(value = "/users/friends/{userId}")
+    @GetMapping(value = "/users/groups/{userId}")
     public Response getUserGroups(@PathVariable("userId") Integer userId) {
         return userService.getUserGroups(userId);
     }
@@ -73,7 +73,7 @@ public class UserController {
         return userService.findUserByName(userName);
     }
 
-    @ApiOperation(value = "根据用户名获取当前用户", notes = "根据用户名获取当前用户ID", response = Response.class)
+    @ApiOperation(value = "根据用户id获取当前用户", notes = "根据用户id获取当前用户", response = Response.class)
     @GetMapping(value = "/user/{id}")
     public Response findUserById(@PathVariable("id") String id) {
         return userService.findUserById(id);
@@ -83,6 +83,12 @@ public class UserController {
     @PatchMapping(value = "/user")
     public Response updateUserRelation(@RequestParam("userIdA") Integer userIdA, @RequestParam("userIdB") Integer userIdB) {
         return userService.updateUserRelation(userIdA, userIdB);
+    }
+
+    @ApiOperation(value = "根据id String获取用户List", notes = "获取用户List", response = Response.class)
+    @PatchMapping(value = "/users/{userIds}")
+    public Response getUsersByUserIds(@PathVariable("userIds") String userIds) {
+        return userService.getUsersByUserIds(userIds);
     }
 
 }
