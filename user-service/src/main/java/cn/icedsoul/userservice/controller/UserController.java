@@ -31,19 +31,19 @@ public class UserController {
      * @return
      */
     @ApiOperation(value = "用户登录接口", notes = "处理用户登录", response = Response.class)
-    @GetMapping(value = "/login")
+    @GetMapping(value = "/user/login")
     public Response login(@RequestParam("userName") String userName, @RequestParam("userPassword") String userPassword) {
         return userService.login(userName, userPassword);
     }
 
     @ApiOperation(value = "用户退出登录接口", notes = "退出用户登录", response = Response.class)
-    @GetMapping(value = "/logout")
+    @GetMapping(value = "/user/logout")
     public Response logout(@RequestParam("token") String token) {
         return userService.logout(token);
     }
 
     @ApiOperation(value = "用户注册接口", notes = "处理用户注册", response = Response.class)
-    @PostMapping(value = "/register")
+    @PostMapping(value = "/user/register")
     public Response register(@RequestParam("userName") String userName, @RequestParam("userNickName") String userNickName,
                              @RequestParam("userPassword") String userPassword) {
         return userService.register(userName, userNickName, userPassword);
