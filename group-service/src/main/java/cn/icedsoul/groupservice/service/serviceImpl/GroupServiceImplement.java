@@ -1,6 +1,5 @@
 package cn.icedsoul.groupservice.service.serviceImpl;
 
-import cn.icedsoul.commonservice.dto.AuthUser;
 import cn.icedsoul.commonservice.util.Common;
 import cn.icedsoul.commonservice.util.Response;
 import cn.icedsoul.groupservice.constant.CONSTANT;
@@ -16,11 +15,13 @@ import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.SimpleDateFormatSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -70,8 +71,8 @@ public class GroupServiceImplement implements GroupService {
             while (groupRepository.findByGroupId(groupId) != null) {
                 groupId = String.valueOf((int) (Math.random() * 100000));
             }
-            Response response = restTemplate.getForEntity(CONSTANT.USER_SERVICE_GET_USER_BY_USERID, Response.class, groupCreatorId).getBody();
-            JSONObject user = JSONObject.parseObject((String)response.getContent());
+//            Response response = restTemplate.getForEntity(CONSTANT.USER_SERVICE_GET_USER_BY_USERID, Response.class, groupCreatorId).getBody();
+//            JSONObject user = JSONObject.parseObject((String)response.getContent());
             group.setGroupId(groupId);
             group.setGroupCreatorId(groupCreatorId);
             group.setGroupIntroduction(groupIntroduction);
@@ -86,7 +87,7 @@ public class GroupServiceImplement implements GroupService {
             userGroupRelation.setGroupId(groups.getId());
             userGroupRelation.setUserId(groupCreatorId);
             userGroupRelation.setEnterGroupTime(Common.getCurrentTime());
-            userGroupRelation.setGroupUserNickName();
+            userGroupRelation.setGroupUserNickName("");
             userGroupRelation.setGroupLevel(10);
             userGroupRelationRepository.save(userGroupRelation);
             groups.setGroupMembers(groups.getId() + "," + String.valueOf(groupCreatorId));
@@ -94,16 +95,20 @@ public class GroupServiceImplement implements GroupService {
             groupRepository.save(groups);
             JSONObject jsonObject1 = new JSONObject();
             jsonObject1.put("groupId", groupId);
-            User user = userRepository.findByUserId(groupCreatorId);
-            if (Common.isEmpty(user.getUserGroups())) {
-                user.setUserGroups(String.valueOf(group.getId()));
-            } else
-                user.setUserGroups(user.getUserGroups() + "," + String.valueOf(group.getId()));
-            userRepository.save(user);
-            return new Response(1, "获取用户群组成功", jsonObject1.toJSONString());
+
+            MultiValueMap<String, Integer> requestEntity = new LinkedMultiValueMap<>();
+            requestEntity.add("userId", groupCreatorId);
+            requestEntity.add("groupId", groups.getId());
+            ResponseEntity<Response> responseEntity =
+                    restTemplate.postForEntity(CONSTANT.USER_SERVICE, requestEntity, Response.class);
+            if(responseEntity.getBody().getStatus() != 1){
+                return new Response(-1, "远程服务异常", null);
+            }
+
+            return new Response(1, "创建群组成功", jsonObject1.toJSONString());
         } catch (Exception e) {
             e.printStackTrace();
-            return new Response(-1, "获取用户群组异常", null);
+            return new Response(-1, "创建群组异常", null);
         }
     }
 

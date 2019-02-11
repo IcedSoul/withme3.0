@@ -19,7 +19,7 @@
         <module>common-service</module>
         <module>user-relation-service</module>
         <module>message-service</module>
-        <!--<module>group-service</module>-->
+        <module>group-service</module>
     </modules>
 
 </project>

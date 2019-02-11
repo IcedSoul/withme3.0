@@ -26,4 +26,6 @@ public interface UserService {
     Response updateUserRelation(Integer userIdA, Integer userIdB);
 
     Response getUsersByUserIds(String userIds);
+
+    Response updateUserGroup(Integer userId, Integer groupId);
 }

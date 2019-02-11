@@ -228,4 +228,20 @@ public class UserServiceImplement implements UserService {
             return new Response(-1, "获取用户失败", null);
         }
     }
+
+    @Override
+    public Response updateUserGroup(Integer userId, Integer groupId) {
+        try {
+            User user = userRepository.findByUserId(userId);
+            if (Common.isEmpty(user.getUserGroups()))
+                user.setUserGroups(String.valueOf(userId));
+            else
+                user.setUserGroups(user.getUserGroups() + "," + String.valueOf(groupId));
+            userRepository.save(user);
+            return new Response(1, "获取用户成功", JSONArray.toJSONString(user));
+        } catch (Exception e){
+            e.printStackTrace();
+            return new Response(-1, "更新好友群组失败", null);
+        }
+    }
 }

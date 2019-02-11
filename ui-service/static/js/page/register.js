@@ -3,7 +3,7 @@ function checkRegister() {
     user.userName = document.getElementById("userName").value;
     user.userNickName = document.getElementById("userNickName").value;
     user.userPassword = document.getElementById("userPassword").value;
-    if (user.userName == '') {
+    if (user.userName === '') {
         layer.msg('用户名不能为空', {icon: 2});
         return;
     }
@@ -11,7 +11,7 @@ function checkRegister() {
         layer.msg('用户名长度不能超过12个字符', {icon: 2});
         return;
     }
-    if (user.userNickName == '') {
+    if (user.userNickName === '') {
         layer.msg('昵称不能为空', {icon: 2});
         return;
     }
@@ -19,7 +19,7 @@ function checkRegister() {
         layer.msg('用户名长度不能超过15个字符', {icon: 2});
         return;
     }
-    else if (user.userPassword == '') {
+    else if (user.userPassword === '') {
         layer.msg('密码不能为空', {icon: 2});
         return;
     }
@@ -27,14 +27,12 @@ function checkRegister() {
         layer.msg('密码长度不能超过20个字符', {icon: 2});
         return;
     }
-    var jsonObj = {};
-    jsonObj.jsonObj = JSON.stringify(user);
     var registerResult = null;
     $.ajax({
         async: false,
         type: 'POST',
         url: address + 'v1/user/register',
-        data: jsonObj,
+        data: user,
         dataType: 'json',
         success: function (result) {
             registerResult = result;
@@ -43,7 +41,7 @@ function checkRegister() {
             layer.alert('网络错误');
         }
     });
-    if (registerResult.status == 1) {
+    if (registerResult.status === 1) {
         layer.msg('注册成功', {icon: 1});
         window.location.href = "login.html";
     }
