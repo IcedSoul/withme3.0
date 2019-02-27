@@ -125,23 +125,18 @@ function showReceiveMessage(content, from, to, type, time, message) {
     } else {
         var messageReceiver = '#' + from + 'output';
         var target = document.getElementById(from + 'output');
-        if (type == 1) {
+        if (type === 1) {
             messageReceiver = '#' + to[0] + 'outputGroup';
             target = document.getElementById(to[0] + 'outputGroup');
             var fromUser = null;
-            var findUser = {};
-            findUser.userId = from;
-            var jsonObj = {};
-            jsonObj.jsonObj = JSON.stringify(findUser);
 
             $.ajax({
                 async: false, //设置同步
-                type: 'POST',
-                url: address + 'user/findUserById',
-                data: jsonObj,
+                type: 'GET',
+                url: address + 'v1/user/' + from,
                 dataType: 'json',
                 success: function (result) {
-                    if (result.status == 1) {
+                    if (result.status === 1) {
                         fromUser = JSON.parse(result.content);
                     }
                     else {
@@ -184,18 +179,13 @@ var statusChangeMark = 0;
 //消息通知
 function doMessageNotice(content, from, to, type, time, message) {
     var fromUser = null;
-    var findUser = {};
-    findUser.userId = from;
-    var jsonObj = {};
-    jsonObj.jsonObj = JSON.stringify(findUser);
     $.ajax({
         async: false, //设置同步
-        type: 'POST',
-        url: address + 'v1/user/findUserById',
-        data: jsonObj,
+        type: 'GET',
+        url: address + 'v1/user/' + from,
         dataType: 'json',
         success: function (result) {
-            if (result.status == 1) {
+            if (result.status === 1) {
                 fromUser = JSON.parse(result.content);
             }
             else {
@@ -304,16 +294,11 @@ layer.ready(function () {
 
 //使用ajax获取当前用户的所有好友，现在大概知道json转来转去的过程了，上面两处使用ajax不太规范，但是改着太麻烦就不改了，能用就成
 function getAllRelations() {
-    var currentUser = {};
-    currentUser.userId = getCurrentUser().userId;
-    var jsonObj = {};
-    jsonObj.jsonObj = JSON.stringify(currentUser);
     var response = null;
     $.ajax({
         async: false, //设置同步
-        type: 'POST',
-        url: address + 'v1/user/getRelations',
-        data: jsonObj,
+        type: 'GET',
+        url: address + 'v1/users/friends/' + getCurrentUser().userId,
         dataType: 'json',
         success: function (result) {
             response = result;
@@ -322,7 +307,7 @@ function getAllRelations() {
             layer.alert('查询错误');
         }
     });
-    if (response.status == -1) {
+    if (response.status === -1) {
         layer.alert('查询错误');
         return null;
     }
@@ -334,11 +319,11 @@ function getAllRelations() {
 function onLineStatusNotice(type) {
     var allRelations = getAllRelations();
     var content = null;
-    if (type == 3)
+    if (type === 3)
         content = '上线通知';
-    else if (type == 4)
+    else if (type === 4)
         content = '下线通知';
-    var usersId = new Array();
+    var usersId = [];
     for (var i = 0; i < allRelations.length; i++) {
         usersId[i] = allRelations[i].userId;
     }
@@ -349,11 +334,11 @@ function changeToOnlineStatus(content, from, to, type, time, message) {
     var onLineStatus = document.getElementById(from + 'onlineStatus');
     var offLineStatus = document.getElementById(from + 'offlineStatus');
     //判断如果找不到这个id，那么和普通消息一样放入缓存区
-    if (onLineStatus && type == 3) {
+    if (onLineStatus && type === 3) {
         onLineStatus.style.opacity = 1;
         offLineStatus.style.opacity = 0;
     }
-    else if (offLineStatus && type == 4) {
+    else if (offLineStatus && type === 4) {
         onLineStatus.style.opacity = 0;
         offLineStatus.style.opacity = 1;
     }
@@ -460,7 +445,7 @@ function listRelation() {
     for (var i = 0; i < allRelations.length; i++) {
         var onLineStatus = document.getElementById(allRelations[i].userId + 'onlineStatus');
         var offLineStatus = document.getElementById(allRelations[i].userId + 'offlineStatus');
-        if (allRelations[i].userIsOnline == 0) {
+        if (allRelations[i].userIsOnline === 0) {
             onLineStatus.style.opacity = 0;
             offLineStatus.style.opacity = 1;
         }
@@ -483,18 +468,13 @@ function searchFriend() {
 }
 
 function findUser(userName) {
-    var findUser = {};
-    findUser.userName = userName;
-    var jsonObj = {};
-    jsonObj.jsonObj = JSON.stringify(findUser);
     $.ajax({
         async: false, //设置同步
-        type: 'POST',
-        url: address + 'v1/user/findUserByName',
-        data: jsonObj,
+        type: 'GET',
+        url: address + 'v1/user/' + userName,
         dataType: 'json',
         success: function (result) {
-            if (result.status == 1) {
+            if (result.status === 1) {
                 var user = JSON.parse(result.content);
                 addFriend(user.userId, user.userName, user.userNickName);
             } else {
@@ -566,16 +546,14 @@ function agreeAddThisUser(userId) {
     var addUser = {};
     addUser.userIdA = userId;
     addUser.userIdB = getCurrentUser().userId;
-    var jsonObj = {};
-    jsonObj.jsonObj = JSON.stringify(addUser);
     $.ajax({
         async: false, //设置同步
         type: 'POST',
-        url: address + 'v1/userRelation/buildRelation',
-        data: jsonObj,
+        url: address + 'v1/userRelations',
+        data: addUser,
         dataType: 'json',
         success: function (result) {
-            if (result.status == 1) {
+            if (result.status === 1) {
                 text = '我已经同意了你的好友申请，快一起来搞点事情吧！';
             } else {
                 text = '是上天不允许我们建立联系啊！';
@@ -589,13 +567,13 @@ function agreeAddThisUser(userId) {
             });
         }
     });
-    var usersId = new Array();
+    var usersId = [];
     usersId[0] = userId;
     sendMessage(text, usersId, -1);
     var addFriendRow = document.getElementById(userId + 'addFriendRow');
     addFriendRow.style.display = 'none';
     relationApplyNumber--;
-    if (relationApplyNumber == 0)
+    if (relationApplyNumber === 0)
         layer.close(relationApply);
     //刷新好友列表
     var relationList = document.getElementById('relationList');
@@ -608,30 +586,25 @@ function refuseAddThisUser(userId) {
 
     //var text = '落花有意，流水无情。相见想闻，不如不见不闻。';
     var text = '系统抛了一枚硬币，觉得你俩不合适，所以驳回了你的申请。';
-    var usersId = new Array();
+    var usersId = [];
     usersId[0] = userId;
     sendMessage(text, usersId, -1);
     var addFriendRow = document.getElementById(userId + 'addFriendRow');
     addFriendRow.style.display = 'none';
     relationApplyNumber--;
-    if (relationApplyNumber == 0)
+    if (relationApplyNumber === 0)
         layer.close(relationApply);
 }
 
 function openRelationApply(content, from, to, type, time, message) {
     var fromUser = null;
-    var findUser = {};
-    findUser.userId = from;
-    var jsonObj = {};
-    jsonObj.jsonObj = JSON.stringify(findUser);
     $.ajax({
         async: false, //设置同步
-        type: 'POST',
-        url: address + 'v1/user/findUserById',
-        data: jsonObj,
+        type: 'GET',
+        url: address + 'v1/user/' + from,
         dataType: 'json',
         success: function (result) {
-            if (result.status == 1) {
+            if (result.status === 1) {
                 fromUser = JSON.parse(result.content);
             }
             else {
@@ -727,16 +700,14 @@ function getMessageRecordBetweenUsers(userId) {
     var twoUser = {};
     twoUser.userIdA = getCurrentUser().userId;
     twoUser.userIdB = userId;
-    var jsonObj = {};
-    jsonObj.jsonObj = JSON.stringify(twoUser);
     $.ajax({
         async: false, //设置同步
-        type: 'POST',
-        url: address + 'v1/message/getMessageRecordBetweenUsers',
-        data: jsonObj,
+        type: 'GET',
+        url: address + 'v1/messages',
+        data: twoUser,
         dataType: 'json',
         success: function (result) {
-            if (result.status == 1) {
+            if (result.status === 1) {
                 allMessages = result.content;
             }
             else {
@@ -827,18 +798,13 @@ function sendMessagePre(toUserId) {
 //获取某人的所有群
 function getUserAllGroups() {
     var allGroups = null;
-    var currentUser = {};
-    currentUser.userId = getCurrentUser().userId;
-    var jsonObj = {};
-    jsonObj.jsonObj = JSON.stringify(currentUser);
     $.ajax({
         async: false, //设置同步
         type: 'POST',
-        url: address + 'user/getUserGroups',
-        data: jsonObj,
+        url: address + 'v1/users/groups/' + getCurrentUser().userId,
         dataType: 'json',
         success: function (result) {
-            if (result.status == 1) {
+            if (result.status === 1) {
                 allGroups = result.content;
             }
             else {
