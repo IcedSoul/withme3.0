@@ -1,17 +1,19 @@
 package cn.icedsoul.groupservice.service.serviceImpl;
 
-import cn.icedsoul.userservice.domain.Groups;
-import cn.icedsoul.userservice.domain.User;
-import cn.icedsoul.userservice.domain.UserGroupRelation;
-import cn.icedsoul.userservice.repository.GroupRepository;
-import cn.icedsoul.userservice.repository.UserGroupRelationRepository;
-import cn.icedsoul.userservice.repository.UserRepository;
-import cn.icedsoul.userservice.service.serviceApi.UserGroupRelationService;
-import cn.icedsoul.userservice.constant.Common;
-import cn.icedsoul.userservice.constant.Response;
-import com.alibaba.fastjson.JSONObject;
+import cn.icedsoul.commonservice.util.Common;
+import cn.icedsoul.commonservice.util.Response;
+import cn.icedsoul.groupservice.constant.CONSTANT;
+import cn.icedsoul.groupservice.domain.Groups;
+import cn.icedsoul.groupservice.domain.UserGroupRelation;
+import cn.icedsoul.groupservice.repository.GroupRepository;
+import cn.icedsoul.groupservice.repository.UserGroupRelationRepository;
+import cn.icedsoul.groupservice.service.serviceApi.UserGroupRelationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 
@@ -19,27 +21,24 @@ import javax.transaction.Transactional;
 public class UserGroupRelationServiceImplement implements UserGroupRelationService {
 
     @Autowired
-    UserRepository userRepository;
-
-    @Autowired
     UserGroupRelationRepository userGroupRelationRepository;
 
     @Autowired
     GroupRepository groupRepository;
 
+    @Autowired
+    RestTemplate restTemplate;
+
     @Override
     @Transactional
-    public Response addGroupUsers(String jsonObj) {
+    public Response addGroupUsers(Integer id, Integer userId) {
         try {
-            JSONObject jsonObject = JSONObject.parseObject(jsonObj);
-            Integer id = jsonObject.getInteger("id");
-            Integer userId = jsonObject.getInteger("userId");
             UserGroupRelation userGroupRelation = new UserGroupRelation();
             userGroupRelation.setGroupId(id);
             userGroupRelation.setGroupLevel(0);
             userGroupRelation.setUserId(userId);
             userGroupRelation.setEnterGroupTime(Common.getCurrentTime());
-            userGroupRelation.setGroupUserNickName(userRepository.findByUserId(userId).getUserNickName());
+            userGroupRelation.setGroupUserNickName("");
             userGroupRelationRepository.save(userGroupRelation);
             Groups group = groupRepository.getOne(id);
             if (Common.isEmpty(group.getGroupMembers()))
@@ -48,13 +47,17 @@ public class UserGroupRelationServiceImplement implements UserGroupRelationServi
                 group.setGroupMembers(group.getGroupMembers() + "," + String.valueOf(userGroupRelation.getUserId()));
             group.setGroupUserCount(group.getGroupUserCount() + 1);
             groupRepository.save(group);
-            User user = userRepository.findByUserId(userId);
-            if (Common.isEmpty(user.getUserGroups()))
-                user.setUserGroups(String.valueOf(id));
-            else
-                user.setUserGroups(user.getUserGroups() + "," + String.valueOf(id));
-            userRepository.save(user);
-            return new Response(1, "获取群组成员成功", null);
+
+            MultiValueMap<String, Integer> requestEntity = new LinkedMultiValueMap<>();
+            requestEntity.add("userId", userId);
+            requestEntity.add("groupId", id);
+            ResponseEntity<Response> responseEntity =
+                    restTemplate.postForEntity(CONSTANT.USER_SERVICE, requestEntity, Response.class);
+            if(responseEntity.getBody().getStatus() != 1){
+                return new Response(-1, "远程服务异常", null);
+            }
+
+            return new Response(1, "添加群组成员成功", null);
         } catch (Exception e) {
             e.printStackTrace();
             return new Response(-1, "获取群组成员异常", null);

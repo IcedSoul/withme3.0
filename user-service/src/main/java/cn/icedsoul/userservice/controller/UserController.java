@@ -85,6 +85,12 @@ public class UserController {
         return userService.updateUserRelation(userIdA, userIdB);
     }
 
+    @ApiOperation(value = "更新用户群组缓存字段", notes = "更新用户群组", response = Response.class)
+    @PatchMapping(value = "/user")
+    public Response updateUserGroup(@RequestParam("userId") Integer userId, @RequestParam("userIdB") Integer groupId) {
+        return userService.updateUserGroup(userId, groupId);
+    }
+
     @ApiOperation(value = "根据id String获取用户List", notes = "获取用户List", response = Response.class)
     @PatchMapping(value = "/users/{userIds}")
     public Response getUsersByUserIds(@PathVariable("userIds") String userIds) {
