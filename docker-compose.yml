@@ -65,6 +65,39 @@ services:
     networks:
     - withme-network
 
+  group-mysql:
+    image: mysql:5.6
+    ports:
+    - 3310:3306
+    command: [
+      --character-set-server=utf8mb4,
+      --collation-server=utf8mb4_unicode_ci
+    ]
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: group
+    volumes:
+    - ./group-mysql/mysql.cnf:/etc/my.cnf
+    - ./group-mysql/data:/var/lib/mysql
+    networks:
+    - withme-network
+
+  group-message-mysql:
+    image: mysql:5.6
+    ports:
+    - 3311:3306
+    command: [
+      --character-set-server=utf8mb4,
+      --collation-server=utf8mb4_unicode_ci
+    ]
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: group_message
+    volumes:
+    - ./group-message-mysql/mysql.cnf:/etc/my.cnf
+    - ./group-message-mysql/data:/var/lib/mysql
+    networks:
+    - withme-network
 
   # websocket service
   websocket-server-service:
@@ -113,6 +146,28 @@ services:
     - 21005:8081
     networks:
     - withme-network
+
+  group-service:
+      build: group-service
+      image: withme3.0/group-service
+      depends_on:
+      - group-mysql
+      restart: always
+      ports:
+      - 21006:8081
+      networks:
+      - withme-network
+
+  group-message-service:
+      build: group-message-service
+      image: withme3.0/group-message-service
+      depends_on:
+      - group-message-mysql
+      restart: always
+      ports:
+      - 21007:8081
+      networks:
+      - withme-network
 
   # ui-service
   ui-service:

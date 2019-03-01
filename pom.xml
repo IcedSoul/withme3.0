@@ -20,6 +20,7 @@
         <module>user-relation-service</module>
         <module>message-service</module>
         <module>group-service</module>
+        <module>group-message-service</module>
     </modules>
 
 </project>

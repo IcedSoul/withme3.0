@@ -52,7 +52,7 @@ public class UserGroupRelationServiceImplement implements UserGroupRelationServi
             requestEntity.add("userId", userId);
             requestEntity.add("groupId", id);
             ResponseEntity<Response> responseEntity =
-                    restTemplate.postForEntity(CONSTANT.USER_SERVICE, requestEntity, Response.class);
+                    restTemplate.postForEntity(CONSTANT.USER_SERVICE_UPDATE_USER_GROUPS , requestEntity, Response.class);
             if(responseEntity.getBody().getStatus() != 1){
                 return new Response(-1, "远程服务异常", null);
             }

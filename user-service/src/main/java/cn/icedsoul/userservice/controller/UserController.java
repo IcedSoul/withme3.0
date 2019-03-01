@@ -44,7 +44,8 @@ public class UserController {
 
     @ApiOperation(value = "用户注册接口", notes = "处理用户注册", response = Response.class)
     @PostMapping(value = "/user/register")
-    public Response register(@RequestParam("userName") String userName, @RequestParam("userNickName") String userNickName,
+    public Response register(@RequestParam("userName") String userName,
+                             @RequestParam("userNickName") String userNickName,
                              @RequestParam("userPassword") String userPassword) {
         return userService.register(userName, userNickName, userPassword);
     }
@@ -62,37 +63,37 @@ public class UserController {
     }
 
     @ApiOperation(value = "解析token获取当前用户", notes = "获取当前用户ID", response = Response.class)
-    @GetMapping(value = "/user/{token}")
+    @GetMapping(value = "/user/token/{token}")
     public Response getCurrentUser(@PathVariable("token") String token) {
         return userService.getCurrentUser(token);
     }
 
     @ApiOperation(value = "根据用户名获取当前用户", notes = "根据用户名获取当前用户ID", response = Response.class)
-    @GetMapping(value = "/user/{userName}")
+    @GetMapping(value = "/user/userName/{userName}")
     public Response findUserByName(@PathVariable("userName") String userName) {
         return userService.findUserByName(userName);
     }
 
     @ApiOperation(value = "根据用户id获取当前用户", notes = "根据用户id获取当前用户", response = Response.class)
-    @GetMapping(value = "/user/{id}")
+    @GetMapping(value = "/user/id/{id}")
     public Response findUserById(@PathVariable("id") String id) {
         return userService.findUserById(id);
     }
 
     @ApiOperation(value = "更新好友关系缓存字段", notes = "更新好友关系", response = Response.class)
-    @PatchMapping(value = "/user")
+    @PatchMapping(value = "/user/userRelations")
     public Response updateUserRelation(@RequestParam("userIdA") Integer userIdA, @RequestParam("userIdB") Integer userIdB) {
         return userService.updateUserRelation(userIdA, userIdB);
     }
 
     @ApiOperation(value = "更新用户群组缓存字段", notes = "更新用户群组", response = Response.class)
-    @PatchMapping(value = "/user")
-    public Response updateUserGroup(@RequestParam("userId") Integer userId, @RequestParam("userIdB") Integer groupId) {
+    @PatchMapping(value = "/user/userGroups")
+    public Response updateUserGroup(@RequestParam("userId") Integer userId, @RequestParam("groupId") Integer groupId) {
         return userService.updateUserGroup(userId, groupId);
     }
 
     @ApiOperation(value = "根据id String获取用户List", notes = "获取用户List", response = Response.class)
-    @PatchMapping(value = "/users/{userIds}")
+    @GetMapping(value = "/users/{userIds}")
     public Response getUsersByUserIds(@PathVariable("userIds") String userIds) {
         return userService.getUsersByUserIds(userIds);
     }

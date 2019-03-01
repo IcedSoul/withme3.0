@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class GroupMessageServiceApplicationTests {
+public class GroupGroupGroupMessageServiceApplicationTests {
 
     @Test
     public void contextLoads() {

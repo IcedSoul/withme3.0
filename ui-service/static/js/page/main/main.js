@@ -1,54 +1,4 @@
 
-//获取服务端地址
-var ws = null;
-// ws = "ws://localhost:8282/" + parseURL("token");
-ws = "ws://10.141.211.176:21002/" + parseURL("token");
-var websocket = null;
-
-//判断当前浏览器是否支持WebSocket
-if ('WebSocket' in window) {
-    websocket = new WebSocket(ws);
-} else {
-    layer.alert('对不起，你的浏览器不支持WebSocket', {
-        icon: 2
-    });
-}
-;
-
-//连接成功建立的回调方法
-websocket.onopen = function () {
-    //显示在线状态
-    //通知自己的所有好友自己上线啦
-    onLineStatusNotice(3);
-};
-
-//接收到消息的回调方法
-websocket.onmessage = function (event) {
-    //接收到消息，处理消息
-    handleReceiveMessage(event.data);
-};
-
-//连接发生错误的回调方法
-websocket.onerror = function () {
-    layer.alert('连接异常，请见谅');
-};
-
-//连接关闭的回调方法
-websocket.onclose = function () {
-    //连接关闭，告诉所有好友我下线啦
-    onLineStatusNotice(4);
-    layer.alert('感谢您的使用，再见');
-};
-
-//监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
-window.onbeforeunload = function () {
-    closeWebSocket();
-};
-
-//关闭WebSocket连接
-function closeWebSocket() {
-    websocket.close();
-}
 
 // "message"{
 //			"from": "xxxx",
@@ -57,6 +7,14 @@ function closeWebSocket() {
 //			"type":0,
 //			"time":"xxxx.xx.xx xx.xx.xx"
 //		}
+
+var noticeIndex = null;
+var noticeUser = new Array();
+var noticeMessage = new Array();
+var noticeCount = 0;
+var statusChangeMark = 0;
+
+var currentUser = getCurrentUser();
 
 //处理接收到的数据
 function handleReceiveMessage(message) {
@@ -72,16 +30,7 @@ function handleReceiveMessage(message) {
         showReceiveMessage(messages.content, messages.from, messages.to, messages.type, messages.time, message);
 }
 
-//发送消息
-function sendMessage(content, usersId, type) {
-    websocket.send(JSON.stringify({
-        from: getCurrentUser().userId,
-        to: usersId,
-        content: content,
-        type: type,
-        time: getDateFull()
-    }));
-}
+
 
 //将消息显示在网页上
 function showReceiveMessage(content, from, to, type, time, message) {
@@ -92,7 +41,7 @@ function showReceiveMessage(content, from, to, type, time, message) {
     if (nows[0] != times[0]) {
         showTime = time;
     }
-    if (from == getCurrentUser().userId) {
+    if (from == currentUser.userId) {
         var messageReceiver = '#' + to[0] + 'output';
         var target = document.getElementById(to[0] + 'output');
         if (type == 1) {
@@ -134,7 +83,7 @@ function showReceiveMessage(content, from, to, type, time, message) {
             $.ajax({
                 async: false, //设置同步
                 type: 'GET',
-                url: address + 'v1/user/' + from,
+                url: address + 'v1/user/id/' + from,
                 dataType: 'json',
                 success: function (result) {
                     if (result.status === 1) {
@@ -171,11 +120,6 @@ function showReceiveMessage(content, from, to, type, time, message) {
     }
 }
 
-var noticeIndex = null;
-var noticeUser = new Array();
-var noticeMessage = new Array();
-var noticeCount = 0;
-var statusChangeMark = 0;
 
 //消息通知
 function doMessageNotice(content, from, to, type, time, message) {
@@ -183,7 +127,7 @@ function doMessageNotice(content, from, to, type, time, message) {
     $.ajax({
         async: false, //设置同步
         type: 'GET',
-        url: address + 'v1/user/' + from,
+        url: address + 'v1/user/id/' + from,
         dataType: 'json',
         success: function (result) {
             if (result.status === 1) {
@@ -299,7 +243,7 @@ function getAllRelations() {
     $.ajax({
         async: false, //设置同步
         type: 'GET',
-        url: address + 'v1/users/friends/' + getCurrentUser().userId,
+        url: address + 'v1/users/friends/' + currentUser.userId,
         dataType: 'json',
         success: function (result) {
             response = result;
@@ -313,7 +257,11 @@ function getAllRelations() {
         return null;
     }
     else {
-        return eval("(" + response.content + ")");
+        if(response.content != "") {
+            return eval("(" + response.content + ")");
+        }
+        else
+            return [];
     }
 }
 
@@ -430,7 +378,7 @@ function listRelation() {
     relationListIndex = layer.open({
         type: 1,
         skin: 'layer-ext-lists',
-        title: [getCurrentUser().userNickName, 'font-family:Microsoft YaHei;font-size: 24px;height: 80px;'],
+        title: [currentUser.userNickName, 'font-family:Microsoft YaHei;font-size: 24px;height: 80px;'],
         closeBtn: 1,
         content: html,
         area: ['300px', '600px'],
@@ -472,7 +420,7 @@ function findUser(userName) {
     $.ajax({
         async: false, //设置同步
         type: 'GET',
-        url: address + 'v1/user/' + userName,
+        url: address + 'v1/user/userName/' + userName,
         dataType: 'json',
         success: function (result) {
             if (result.status === 1) {
@@ -546,7 +494,7 @@ function agreeAddThisUser(userId) {
     var text = '';
     var addUser = {};
     addUser.userIdA = userId;
-    addUser.userIdB = getCurrentUser().userId;
+    addUser.userIdB = currentUser.userId;
     $.ajax({
         async: false, //设置同步
         type: 'POST',
@@ -602,7 +550,7 @@ function openRelationApply(content, from, to, type, time, message) {
     $.ajax({
         async: false, //设置同步
         type: 'GET',
-        url: address + 'v1/user/' + from,
+        url: address + 'v1/user/id/' + from,
         dataType: 'json',
         success: function (result) {
             if (result.status === 1) {
@@ -699,7 +647,7 @@ function openRelationApply(content, from, to, type, time, message) {
 function getMessageRecordBetweenUsers(userId) {
     var allMessages = null;
     var twoUser = {};
-    twoUser.userIdA = getCurrentUser().userId;
+    twoUser.userIdA = currentUser.userId;
     twoUser.userIdB = userId;
     $.ajax({
         async: false, //设置同步
@@ -798,11 +746,11 @@ function sendMessagePre(toUserId) {
 
 //获取某人的所有群
 function getUserAllGroups() {
-    var allGroups = null;
+    var allGroups = [];
     $.ajax({
         async: false, //设置同步
-        type: 'POST',
-        url: address + 'v1/users/groups/' + getCurrentUser().userId,
+        type: 'GET',
+        url: address + 'v1/users/groups/' + currentUser.userId,
         dataType: 'json',
         success: function (result) {
             if (result.status === 1) {
@@ -817,37 +765,36 @@ function getUserAllGroups() {
         }
     });
     //划重点划重点，这里的eval方法不同于prase方法，外面加括号
-    allGroups = eval("(" + allGroups + ")");
+    if(allGroups != ""){
+        allGroups = eval("(" + allGroups + ")");
+    }
     return allGroups;
 }
 
 //获取某群的所有人
 function getGroupAllUsers(id) {
     var usersAndUserGroup = {};
-    var currentGroup = {};
-    currentGroup.id = id;
-    var jsonObj = {};
-    jsonObj.jsonObj = JSON.stringify(currentGroup);
+    var response = null;
     $.ajax({
         async: false, //设置同步
-        type: 'POST',
-        url: address + 'group/getGroupUsers',
-        data: jsonObj,
+        type: 'GET',
+        url: address + 'v1/group/users' + id,
         dataType: 'json',
         success: function (result) {
-            if (result.status == 1) {
-                var datas = JSON.parse(result.content);
-                usersAndUserGroup.userGroups = datas.userGroups;
-                usersAndUserGroup.users = datas.users;
-            }
-            else {
-                layer.alert(result.message);
-            }
+            response = result;
         },
         error: function (result) {
             layer.alert('查询错误');
         }
     });
+    if (response.status == 1) {
+        var content = JSON.parse(result.content);
+        usersAndUserGroup.userGroups = content.userGroups;
+        usersAndUserGroup.users = content.users;
+    }
+    else {
+        layer.alert(response.message);
+    }
     usersAndUserGroup.userGroups = eval("(" + usersAndUserGroup.userGroups + ")");
     usersAndUserGroup.users = eval("(" + usersAndUserGroup.users + ")");
     return usersAndUserGroup;
@@ -899,26 +846,17 @@ function ajaxCreateGroup() {
         var createGroup = {};
         createGroup.groupName = document.getElementById('createGroupName').value;
         createGroup.groupIntroduction = document.getElementById('createGroupIntroduction').value;
-        createGroup.groupCreatorId = getCurrentUser().userId;
+        createGroup.groupCreatorId = currentUser.userId;
         layer.close(createGroupIndex);
-        var jsonObj = {};
-        jsonObj.jsonObj = JSON.stringify(createGroup);
+        var response = null;
         $.ajax({
             async: false, //设置同步
             type: 'POST',
-            url: address + 'group/createGroup',
-            data: jsonObj,
+            url: address + 'v1/group',
+            data: createGroup,
             dataType: 'json',
             success: function (result) {
-                if (result.status == 1) {
-                    layer.alert('创建群组成功,你的群id为：' + JSON.parse(result.content).groupId);
-                } else {
-                    layer.msg('创建群组失败', {
-                        icon: 2,
-                        zIndex: 20000001,
-                        time: 2000
-                    });
-                }
+                response = result;
             },
             error: function (result) {
                 layer.msg('创建群组发生错误', {
@@ -928,6 +866,15 @@ function ajaxCreateGroup() {
                 });
             }
         });
+        if (response.status == 1) {
+            layer.alert('创建群组成功,你的群id为：' + JSON.parse(response.content).groupId);
+        } else {
+            layer.msg('创建群组失败', {
+                icon: 2,
+                zIndex: 20000001,
+                time: 2000
+            });
+        }
     }
     else {
         layer.msg('创建群组发出的请求参数不完整，请重新创建', {
@@ -940,33 +887,33 @@ function ajaxCreateGroup() {
 
 //ajax获取单个用户与群组的聊天记录
 function getMessageRecordBetweenUserAndGroup(id) {
-    var allMessages = null;
     var userGroup = {};
-    userGroup.userId = getCurrentUser().userId;
+    userGroup.userId = currentUser.userId;
     userGroup.id = id;
-    var jsonObj = {};
-    jsonObj.jsonObj = JSON.stringify(userGroup);
+    userGroup.limit = 50;
+    var response = null;
     $.ajax({
         async: false, //设置同步
-        type: 'POST',
-        url: address + 'message/getMessageRecordBetweenUserAndGroup',
-        data: jsonObj,
+        type: 'GET',
+        url: address + 'v1/groupMessages',
+        data: userGroup,
         dataType: 'json',
         success: function (result) {
-            if (result.status == 1) {
-                allMessages = result.content;
-            }
-            else {
-                layer.alert('查询错误');
-            }
+            response = result;
         },
         error: function (result) {
             layer.alert('查询错误');
         }
     });
-    //划重点划重点，这里的eval方法不同于prase方法，外面加括号
-    allMessages = eval("(" + allMessages + ")");
-    return allMessages;
+    if (response.status == 1) {
+        var allMessages = response.content;
+        allMessages = eval("(" + allMessages + ")");
+        return allMessages;
+    }
+    else {
+        layer.alert(response.content);
+        return null;
+    }
 }
 
 //群组聊天窗口
@@ -982,7 +929,7 @@ function chatWithGroup(id, groupId, groupName, groupCreatorId) {
         + id
         + ')">发送</button>'
         + '<button type="button" class="btn btn-default pull-right smallOffset" onclick="groupUserList(' + id + ')">查看群成员</button>';
-    if (groupCreatorId == getCurrentUser().userId)
+    if (groupCreatorId == currentUser.userId)
         chatWith += '<button type="button" class="btn btn-default pull-right smallOffset" onclick="groupInvite(' + id + ')">邀请新成员</button>';
     chatWith += '</div>'
         + '<div class="input">'
@@ -1033,27 +980,14 @@ function binfEnterGroup(obj, id) {
 
 function ajaxGetGroupById(id) {
     var group = null;
-    var groups = {};
-    groups.id = id;
-    var jsonObj = {};
-    jsonObj.jsonObj = JSON.stringify(groups);
+    var response = null;
     $.ajax({
         async: false, //设置同步
-        type: 'POST',
-        url: address + 'group/findGroupById',
-        data: jsonObj,
+        type: 'GET',
+        url: address + 'v1/group/' + id,
         dataType: 'json',
         success: function (result) {
-            if (result.status == 1) {
-                group = eval("(" + result.content + ")");
-            }
-            else {
-                layer.msg('打开群组失败', {
-                    icon: 2,
-                    zIndex: 20000001,
-                    time: 2000
-                });
-            }
+            response = result;
         },
         error: function (result) {
             layer.msg('打开群组发生错误', {
@@ -1063,6 +997,16 @@ function ajaxGetGroupById(id) {
             });
         }
     });
+    if (response.status == 1) {
+        group = eval("(" + response.content + ")");
+    }
+    else {
+        layer.msg('打开群组失败', {
+            icon: 2,
+            zIndex: 20000001,
+            time: 2000
+        });
+    }
     return group;
 }
 
@@ -1133,22 +1077,16 @@ function groupInviteUser(id, userId) {
 function agreeGroupInvite(id) {
     var addGroup = {};
     addGroup.id = id;
-    addGroup.userId = getCurrentUser().userId;
-    var jsonObj = {};
-    jsonObj.jsonObj = JSON.stringify(addGroup);
+    addGroup.userId = currentUser.userId;
+    var response = null;
     $.ajax({
         async: false, //设置同步
         type: 'POST',
-        url: address + 'userGroup/addGroupUsers',
-        data: jsonObj,
+        url: address + 'v1/group/user',
+        data: addGroup,
         dataType: 'json',
         success: function (result) {
-            if (result.status == 1) {
-                layer.close(relationListIndex);
-            }
-            else {
-                text = '是上天不允许我们建立联系啊！';
-            }
+            response = result;
         },
         error: function (result) {
             layer.msg('添加失败', {
@@ -1158,6 +1096,12 @@ function agreeGroupInvite(id) {
             });
         }
     });
+    if (response.status == 1) {
+        layer.close(relationListIndex);
+    }
+    // else {
+    //     text = '是上天不允许我们建立联系啊！';
+    // }
     var addFriendRow = document.getElementById(id + 'addFriendRow');
     addFriendRow.style.display = 'none';
     relationApplyNumber--;

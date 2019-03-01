@@ -36,16 +36,12 @@ function parseURL(name) {
 }
 
 function getCurrentUser() {
-    var token = {};
-    token.token = parseURL("token");
-    var jsonObj = {};
-    jsonObj.jsonObj = JSON.stringify(token);
+    var token = parseURL("token");
     var response = null;
     $.ajax({
         async: false, //设置同步
-        type: 'POST',
-        url: address + 'user/getCurrentUser',
-        data: jsonObj,
+        type: 'GET',
+        url: address + 'v1/user/token/' + token,
         dataType: 'json',
         success: function (result) {
             response = result;
@@ -54,7 +50,7 @@ function getCurrentUser() {
             layer.alert('网络错误');
         }
     });
-    if (response.status == -1) {
+    if (response.status != 1) {
         layer.msg("登录状态失效，请重新登录");
         window.location.href = "login.html";
     }
