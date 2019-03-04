@@ -1,6 +1,6 @@
 package cn.icedsoul.websocketserverservice.jedis;
 
-import cn.icedsoul.websocketserverservice.util.CONSTANT;
+import cn.icedsoul.websocketserverservice.constant.CONSTANT;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;

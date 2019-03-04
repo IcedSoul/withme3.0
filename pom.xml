@@ -14,13 +14,16 @@
     </properties>
 
     <modules>
-        <module>user-service</module>
-        <module>websocket-server-service</module>
         <module>common-service</module>
+
+        <module>user-service</module>
         <module>user-relation-service</module>
         <module>message-service</module>
         <module>group-service</module>
         <module>group-message-service</module>
+        <module>offline-message-service</module>
+
+        <module>websocket-server-service</module>
     </modules>
 
 </project>

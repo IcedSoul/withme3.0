@@ -7,4 +7,4 @@ document.write('<script src="js/jquery.js" type="text/javascript"></script>');
 document.write('<script src="js/jquery.min.js" type="text/javascript"></script>');
 document.write('<script src="js/bootstrap.min.js" type="text/javascript"></script>');
 document.write('<script src="js/layer.js" type="text/javascript"></script>');
-document.write('<script src="js/util.js" type="text/javascript"></script>');
+document.write('<script src="js/constant.js" type="text/javascript"></script>');

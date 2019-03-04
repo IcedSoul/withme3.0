@@ -22,7 +22,7 @@ public class GroupMessageServiceImplement implements GroupMessageService {
     GroupMessageRepository groupMessageRepository;
 
     @Override
-    public Response addGroupMessage(Integer fromId, Integer groupId, String toId, String content, Integer type, String time, Integer isTransport) {
+    public Response addGroupMessage(Integer fromId, Integer groupId, String toId, String content, Integer type, String time) {
         try {
             GroupMessage groupMessage = new GroupMessage();
             groupMessage.setFromId(fromId);
@@ -31,7 +31,6 @@ public class GroupMessageServiceImplement implements GroupMessageService {
             groupMessage.setContent(content);
             groupMessage.setType(type);
             groupMessage.setTime(Common.getTimeFromString(time));
-            groupMessage.setIsTransport(isTransport);
             groupMessageRepository.save(groupMessage);
             return new Response(1, "Insert group message success", null);
         } catch (Exception e){

@@ -5,7 +5,7 @@ import cn.icedsoul.commonservice.util.Common;
 import cn.icedsoul.commonservice.util.JwtUtils;
 import cn.icedsoul.messageservice.domain.Message;
 import cn.icedsoul.websocketserverservice.jedis.JedisPoolUtil;
-import cn.icedsoul.websocketserverservice.util.CONSTANT;
+import cn.icedsoul.websocketserverservice.constant.CONSTANT;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -227,7 +227,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
         if (jsonObjectMessage.getIntValue("type") == 1) {
             message.setToId(users.getInteger(0));
             message.setType(2);
-            message.setIsTransport(1);
+//            message.setIsTransport(1);
             //为了测试，消息暂时存到redis中吧
 //            messageRepository.save(message);
             jedis.lpush(CONSTANT.MESSAGE, JSON.toJSONString(message));
@@ -240,11 +240,11 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
                 Channel channel = getChannel(toUser);
                 if (!Common.isNull(channel)) {
                     sendMessage(channel, jsonMessage);
-                    message.setIsTransport(1);
+//                    message.setIsTransport(1);
                     //messageRepository.save(message);
                     jedis.lpush(CONSTANT.MESSAGE, JSON.toJSONString(message));
                 } else {
-                    message.setIsTransport(0);
+//                    message.setIsTransport(0);
                     if (message.getType() != 3 && message.getType() != 4) {
                         jedis.lpush(CONSTANT.MESSAGE, JSON.toJSONString(message));
 //                        messageRepository.save(message);

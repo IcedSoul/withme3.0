@@ -99,17 +99,20 @@ services:
     networks:
     - withme-network
 
-  # websocket service
-  websocket-server-service:
-    build: websocket-server-service
-    image: withme3.0/websocket-server-service
-    restart: always
-    links:
-      - redis
-    depends_on:
-    - redis
+  offline-message-mysql:
+    image: mysql:5.6
     ports:
-    - 21002:8282
+    - 3312:3306
+    command: [
+      --character-set-server=utf8mb4,
+      --collation-server=utf8mb4_unicode_ci
+    ]
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: offline_message
+    volumes:
+    - ./offline-message-mysql/mysql.cnf:/etc/my.cnf
+    - ./offline-message-mysql/data:/var/lib/mysql
     networks:
     - withme-network
 
@@ -169,6 +172,17 @@ services:
       networks:
       - withme-network
 
+  offline-message-service:
+      build: offline-message-service
+      image: withme3.0/offline-message-service
+      depends_on:
+      - offline-message-mysql
+      restart: always
+      ports:
+      - 21008:8081
+      networks:
+      - withme-network
+
   # ui-service
   ui-service:
     build: ui-service
@@ -178,6 +192,21 @@ services:
       - 80:8081
     networks:
       - withme-network
+
+  # websocket service
+  websocket-server-service:
+    build: websocket-server-service
+    image: withme3.0/websocket-server-service
+    restart: always
+    links:
+      - redis
+    depends_on:
+    - redis
+    ports:
+    - 21002:8282
+    networks:
+    - withme-network
+
 
 networks:
   withme-network:

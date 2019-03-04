@@ -1,7 +1,7 @@
 package cn.icedsoul.websocketserverservice;
 
 import cn.icedsoul.websocketserverservice.init.WebSocketServerInitializer;
-import cn.icedsoul.websocketserverservice.util.CONSTANT;
+import cn.icedsoul.websocketserverservice.constant.CONSTANT;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -9,7 +9,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.extern.java.Log;
 
-import javax.annotation.PostConstruct;
 import javax.net.ssl.SSLException;
 import java.security.cert.CertificateException;
 

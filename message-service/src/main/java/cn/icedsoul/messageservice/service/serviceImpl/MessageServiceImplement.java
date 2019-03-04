@@ -23,7 +23,7 @@ public class MessageServiceImplement implements MessageService {
     MessageRepository messageRepository;
 
     @Override
-    public Response addMessage(Integer fromId, Integer toId, String content, Integer type, String time, Integer isTransport) {
+    public Response addMessage(Integer fromId, Integer toId, String content, Integer type, String time) {
         try {
             Message message = new Message();
             message.setFromId(fromId);
@@ -31,7 +31,6 @@ public class MessageServiceImplement implements MessageService {
             message.setContent(content);
             message.setType(type);
             message.setTime(Common.getTimeFromString(time));
-            message.setIsTransport(isTransport);
             messageRepository.save(message);
             return new Response(1, "Insert message success", null);
         } catch (Exception e){
@@ -52,22 +51,16 @@ public class MessageServiceImplement implements MessageService {
         }
     }
 
-    /**
-     * 这个也暂时保留吧，不一定用的上，因为把下最好不把未转发的消息存到消息表，最好加离线消息表，方便查询
-     * @param id
-     * @param isTransport
-     * @return
-     */
     @Override
-    public Response updateMessage(Integer id, Integer isTransport) {
+    public Response addMessages(List<Message> messages) {
         try {
-            Message message = messageRepository.getOne(id);
-            message.setIsTransport(isTransport);
-            messageRepository.save(message);
-            return new Response(1, "Update message success",null);
-        } catch (Exception e){
+            for(Message message : messages){
+                messageRepository.save(message);
+            }
+            return new Response(1, "add messages success", null);
+        } catch (Exception e) {
             e.printStackTrace();
-            return new Response(1, "Update message error",null);
+            return new Response(-1, "add message fail", null);
         }
     }
 
@@ -78,30 +71,50 @@ public class MessageServiceImplement implements MessageService {
         dateFormat = "yyyy-MM-dd HH:mm:ss";
         mapping.put(Timestamp.class, new SimpleDateFormatSerializer(dateFormat));
     }
+//    /**
+//     * 这个也暂时保留吧，不一定用的上，因为把下最好不把未转发的消息存到消息表，最好加离线消息表，方便查询
+//     * @param id
+//     * @param isTransport
+//     * @return
+//     */
+//    @Override
+//    public Response updateMessage(Integer id, Integer isTransport) {
+//        try {
+//            Message message = messageRepository.getOne(id);
+//            message.setIsTransport(isTransport);
+//            messageRepository.save(message);
+//            return new Response(1, "Update message success",null);
+//        } catch (Exception e){
+//            e.printStackTrace();
+//            return new Response(1, "Update message error",null);
+//        }
+//    }
 
 
-    /**
-     * 暂时保留
-     * @param jsonObj
-     * @return
-     */
 
-    @Override
-    public Response getMessageRecordBetweenUserAndGroup(String jsonObj) {
-        try {
-            JSONObject jsonObject = JSONObject.parseObject(jsonObj);
-            Integer id = jsonObject.getInteger("id");
-            Integer userId = jsonObject.getInteger("userId");
-            List<Message> messages = messageRepository.findAllByToIdAndTypeAndIsTransport(id, 2, 1);
-            for (Message message : messages) {
-                message.setType(1);
-                message.setToId(userId);
-            }
-            return new Response(1, "获取群组聊天记录成功", JSONArray.toJSONString(messages, SerializerFeature.UseSingleQuotes));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new Response(-1, "获取群组聊天记录异常", null);
-        }
-    }
+//
+//    /**
+//     * 暂时保留
+//     * @param jsonObj
+//     * @return
+//     */
+//
+//    @Override
+//    public Response getMessageRecordBetweenUserAndGroup(String jsonObj) {
+//        try {
+//            JSONObject jsonObject = JSONObject.parseObject(jsonObj);
+//            Integer id = jsonObject.getInteger("id");
+//            Integer userId = jsonObject.getInteger("userId");
+//            List<Message> messages = messageRepository.findAllByToIdAndTypeAndIsTransport(id, 2, 1);
+//            for (Message message : messages) {
+//                message.setType(1);
+//                message.setToId(userId);
+//            }
+//            return new Response(1, "获取群组聊天记录成功", JSONArray.toJSONString(messages, SerializerFeature.UseSingleQuotes));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return new Response(-1, "获取群组聊天记录异常", null);
+//        }
+//    }
 
 }

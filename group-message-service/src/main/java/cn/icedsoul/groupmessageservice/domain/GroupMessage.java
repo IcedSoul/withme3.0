@@ -29,6 +29,4 @@ public class GroupMessage {
     @Column(nullable = false, columnDefinition = "datetime COMMENT '发送消息时间'")
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Timestamp time;
-    @Column(nullable = false, columnDefinition = "Int(11) COMMENT '是否成功转发（留待用，若采用离线消息表则不采用）'")
-    private int isTransport;
 }

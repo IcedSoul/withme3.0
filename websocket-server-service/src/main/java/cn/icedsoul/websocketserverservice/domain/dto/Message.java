@@ -15,6 +15,4 @@ public class Message {
     private int type;
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Timestamp time;
-    private int isTransport;
-
 }

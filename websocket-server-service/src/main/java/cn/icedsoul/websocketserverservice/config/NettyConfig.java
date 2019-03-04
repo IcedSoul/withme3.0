@@ -2,8 +2,8 @@
 //
 //import io.netty.channel.Channel;
 //
-//import java.util.HashMap;
-//import java.util.Map;
+//import java.constant.HashMap;
+//import java.constant.Map;
 //
 ///**
 // * 存储全局配置
