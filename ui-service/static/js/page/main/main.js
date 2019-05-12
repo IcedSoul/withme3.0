@@ -445,15 +445,6 @@ function findUser(userName) {
 }
 
 
-
-function addThisUser(userId) {
-    var text = document.getElementById('addFriendMessage').value;
-    var usersId = new Array();
-    usersId[0] = userId;
-    sendMessage(text, usersId, 5);
-    layer.close(addFriendIndex);
-}
-
 var relationApply = null;
 var relationApplyNumber = 0;
 

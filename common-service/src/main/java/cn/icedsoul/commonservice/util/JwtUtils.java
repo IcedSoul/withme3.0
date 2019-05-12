@@ -13,7 +13,6 @@ import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
 import java.sql.Timestamp;
 
-@Log
 public class JwtUtils {
     public static String createJWT(String authUser) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;

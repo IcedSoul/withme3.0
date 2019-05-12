@@ -6,6 +6,7 @@ import cn.icedsoul.userrelationservice.domain.UserRelation;
 import cn.icedsoul.userrelationservice.domain.prikey.UserRelationPriKey;
 import cn.icedsoul.userrelationservice.repository.UserRelationRepository;
 import cn.icedsoul.userrelationservice.service.serviceApi.UserRelationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import java.sql.Timestamp;
 import java.util.Date;
 
+@Slf4j
 @Service
 public class UserRelationServiceImplement implements UserRelationService {
 
@@ -36,6 +38,7 @@ public class UserRelationServiceImplement implements UserRelationService {
     @Transactional
     public Response buildRelation(Integer userIdA, Integer userIdB) {
         try {
+            log.info("I am building relation beween " + userIdA + " and " + userIdB);
             UserRelation userRelation = new UserRelation();
             userRelation.setUserIdA(userIdA);
             userRelation.setUserIdB(userIdB);
@@ -51,8 +54,9 @@ public class UserRelationServiceImplement implements UserRelationService {
             ResponseEntity<Response> responseEntity =
                     restTemplate.postForEntity(CONSTANT.USER_SERVICE_UPDATE_RELATION, requestEntity, Response.class);
             Response response = responseEntity.getBody();
-            if(response.getStatus() == 1)
+            if(response.getStatus() == 1) {
                 return new Response(1, "添加好友成功", null);
+            }
             else {
                 userRelationRepository.deleteById(new UserRelationPriKey(userIdA, userIdB));
                 return new Response(-1, "添加好友失败", null);

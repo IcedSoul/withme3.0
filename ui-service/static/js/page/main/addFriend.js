@@ -32,3 +32,11 @@ function addFriend(userId, userName, userNickName) {
         zIndex: 20000001
     });
 }
+
+function addThisUser(userId) {
+    var text = document.getElementById('addFriendMessage').value;
+    var usersId = new Array();
+    usersId[0] = userId;
+    sendMessage(text, usersId, 5);
+    layer.close(addFriendIndex);
+}

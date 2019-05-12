@@ -30,7 +30,6 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
  * Created by 14437 on 2018/2/10.
  */
 @Log
-
 public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> {
 
     private WebSocketServerHandshaker handShaker;
@@ -162,28 +161,29 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
     }
 
     private void onOpen(ChannelHandlerContext ctx) {
+        System.out.println("new");
         //获取Jedis连接
         this.jedis = JedisPoolUtil.getJedis();
         log.info("[Jedis:] : 获取Jedis连接");
         //如果有办法在redis初始化时设置key和value，那么这里的判断可以省略*
         //增加在线人数
-        if(jedis.exists(CONSTANT.ON_LINE_COUNT)){
-            jedis.incr(CONSTANT.ON_LINE_COUNT);
+        if(jedis.exists(CONSTANT.ONLINE_COUNT)){
+            jedis.incr(CONSTANT.ONLINE_COUNT);
         }
         else {
-            jedis.set(CONSTANT.ON_LINE_COUNT, "1");
+            jedis.set(CONSTANT.ONLINE_COUNT, "1");
         }
         //改变用户在线状态(存储channel对象（也不知道能不能存）)
         //更为优雅地存储在线用户（哈希表）
-        if(jedis.exists(CONSTANT.ON_LINE_LIST)){
-            jedis.hset(CONSTANT.ON_LINE_LIST,String.valueOf(user.getUserId()), JSONObject.toJSONString(ctx.channel()));
+        if(jedis.exists(CONSTANT.ONLINE_LIST)){
+            jedis.hset(CONSTANT.ONLINE_LIST,String.valueOf(user.getUserId()), JSON.toJSONString(ctx.channel()));
         }
         else {
             Map<String, String> onLineList = new HashMap<>();
-            onLineList.put(String.valueOf(user.getUserId()), JSONObject.toJSONString(ctx.channel()));
-            jedis.hmset(CONSTANT.ON_LINE_LIST, onLineList);
+            onLineList.put(String.valueOf(user.getUserId()), JSON.toJSONString(ctx.channel()));
+            jedis.hmset(CONSTANT.ONLINE_LIST, onLineList);
         }
-        log.info("[存储用户channel对象：] " + JSONObject.toJSONString(ctx.channel()));
+        log.info("[存储用户channel对象：] " + JSON.toJSONString(ctx.channel()));
 //        NettyConfig.onLineList.put(user.getUserId(), ctx.channel());
         //检查离线消息应该需要再添加一张离线消息表来做（离线消息表配合缓存？），目前先取消这个功能。
 //        checkOffLineMessage(ctx, user);
@@ -199,8 +199,8 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
 //    }
 
     private void onClose() {
-        jedis.decr(CONSTANT.ON_LINE_COUNT);
-        jedis.hdel(CONSTANT.ON_LINE_LIST, String.valueOf(user.getUserId()));
+        jedis.decr(CONSTANT.ONLINE_COUNT);
+        jedis.hdel(CONSTANT.ONLINE_LIST, String.valueOf(user.getUserId()));
         this.jedis.close();
         log.info("[Jedis:] : 返回Jedis连接");
 
@@ -272,6 +272,6 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
     }
 
     private Channel getChannel(Integer userId){
-        return (Channel) JSON.parse(jedis.hget(CONSTANT.ON_LINE_LIST, String.valueOf(userId)));
+        return JSON.parseObject(jedis.hget(CONSTANT.ONLINE_LIST, String.valueOf(userId)), Channel.class);
     }
 }

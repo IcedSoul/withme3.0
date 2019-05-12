@@ -18,8 +18,8 @@ public class CONSTANT {
     public static Integer REDIS_PORT = 6379;
 
     //Websocket相关
-    public static String ON_LINE_COUNT = "onLineCount";
-    public static String ON_LINE_LIST = "onLineList";
+    public static String ONLINE_COUNT = "onLineCount";
+    public static String ONLINE_LIST = "onLineList";
 
     public static String MESSAGE = "message";
 }
