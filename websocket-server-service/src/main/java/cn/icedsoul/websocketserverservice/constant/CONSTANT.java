@@ -1,5 +1,8 @@
 package cn.icedsoul.websocketserverservice.constant;
 
+/**
+ * @author icedsoul
+ */
 public class CONSTANT {
     //Netty相关
     public static Integer NETTY_PORT = 8282;

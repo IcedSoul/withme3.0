@@ -42,8 +42,8 @@ public class MessageServiceImplement implements MessageService {
     @Override
     public Response getMessageRecordBetweenUsers(Integer userIdA, Integer userIdB) {
         try {
-            List<Message> messages = messageRepository.findAllByFromIdAndToIdAndIsTransport(userIdA, userIdB, 1);
-            messages.addAll(messageRepository.findAllByFromIdAndToIdAndIsTransport(userIdB, userIdA, 1));
+            List<Message> messages = messageRepository.findAllByFromIdAndToId(userIdA, userIdB);
+            messages.addAll(messageRepository.findAllByFromIdAndToId(userIdB, userIdA));
             return new Response(1, "Get message record between users success", JSONArray.toJSONString(messages, SerializerFeature.UseSingleQuotes));
         } catch (Exception e) {
             e.printStackTrace();

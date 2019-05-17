@@ -15,9 +15,9 @@ public interface GroupMessageRepository extends JpaRepository<GroupMessage, Inte
     @Query(value = "select * from group_message where group_id = ?1 limit ?2",nativeQuery = true)
     List<GroupMessage> findAll(Integer groupId, Integer limit);
 
-    List<GroupMessage> findAllByFromIdAndToIdAndIsTransport(Integer fromId, Integer toId, Integer isTransport);
+    List<GroupMessage> findAllByFromIdAndToId(Integer fromId, Integer toId);
 
-    List<GroupMessage> findAllByToIdAndTypeAndIsTransport(Integer toId, Integer type, Integer isTransport);
+    List<GroupMessage> findAllByToIdAndType(Integer toId, Integer type);
 
-    List<GroupMessage> findAllByToIdAndIsTransport(Integer toId, Integer isTransport);
+    List<GroupMessage> findAllByToId(Integer toId);
 }

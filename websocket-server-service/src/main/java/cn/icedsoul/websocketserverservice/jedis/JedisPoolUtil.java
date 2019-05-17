@@ -30,8 +30,9 @@ public class JedisPoolUtil {
      * 多线程场景同步初始化
      */
     private static synchronized void poolInit(){
-        if(pool == null)
+        if(pool == null) {
             createJedisPool();
+        }
     }
 
     /**
@@ -39,8 +40,9 @@ public class JedisPoolUtil {
      * @return
      */
     public static Jedis getJedis(){
-        if(pool == null)
+        if(pool == null) {
             poolInit();
+        }
         return pool.getResource();
     }
 

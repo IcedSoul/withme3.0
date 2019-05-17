@@ -8,13 +8,13 @@
 //			"time":"xxxx.xx.xx xx.xx.xx"
 //		}
 
-var noticeIndex = null;
-var noticeUser = new Array();
-var noticeMessage = new Array();
-var noticeCount = 0;
-var statusChangeMark = 0;
+let noticeIndex = null;
+let noticeUser = new Array();
+let noticeMessage = new Array();
+let noticeCount = 0;
+let statusChangeMark = 0;
 
-var currentUser = getCurrentUser();
+let currentUser = getCurrentUser();
 
 //处理接收到的数据
 function handleReceiveMessage(message) {
@@ -34,21 +34,21 @@ function handleReceiveMessage(message) {
 
 //将消息显示在网页上
 function showReceiveMessage(content, from, to, type, time, message) {
-    var times = time.split(' ');
-    var now = getDateFull();
-    var nows = now.split(' ');
-    var showTime = times[1];
+    let times = time.split(' ');
+    let now = getDateFull();
+    let nows = now.split(' ');
+    let showTime = times[1];
     if (nows[0] != times[0]) {
         showTime = time;
     }
     if (from == currentUser.userId) {
-        var messageReceiver = '#' + to[0] + 'output';
-        var target = document.getElementById(to[0] + 'output');
+        let messageReceiver = '#' + to[0] + 'output';
+        let target = document.getElementById(to[0] + 'output');
         if (type == 1) {
             messageReceiver = '#' + to[0] + 'outputGroup';
             target = document.getElementById(to[0] + 'outputGroup');
         }
-        var rightArrow = '<div class="row singleMessage">'
+        let rightArrow = '<div class="row singleMessage">'
             + '<div class="col-md-11 col-sm-11 col-xs-11 col-lg-11 text">'
             + '<div class="col-md-12 col-sm-12 col-xs-12 col-lg-12 timePositionRight">'
             + '<div id="time" class="timeRight">'
@@ -73,12 +73,12 @@ function showReceiveMessage(content, from, to, type, time, message) {
             doMessageNotice(content, from, to, type, time, message);
         }
     } else {
-        var messageReceiver = '#' + from + 'output';
-        var target = document.getElementById(from + 'output');
+        let messageReceiver = '#' + from + 'output';
+        let target = document.getElementById(from + 'output');
         if (type === 1) {
             messageReceiver = '#' + to[0] + 'outputGroup';
             target = document.getElementById(to[0] + 'outputGroup');
-            var fromUser = null;
+            let fromUser = null;
 
             $.ajax({
                 async: false, //设置同步
@@ -123,7 +123,7 @@ function showReceiveMessage(content, from, to, type, time, message) {
 
 //消息通知
 function doMessageNotice(content, from, to, type, time, message) {
-    var fromUser = null;
+    let fromUser = null;
     $.ajax({
         async: false, //设置同步
         type: 'GET',
@@ -143,7 +143,7 @@ function doMessageNotice(content, from, to, type, time, message) {
     });
 
     if (noticeIndex == null) {
-        var html = '<div class="notice">' +
+        let html = '<div class="notice">' +
             '<div class="noticePosition" onclick="openNotice();">' +
             '<marquee id="noticeText">' +
             '</marquee>' +
@@ -166,10 +166,10 @@ function doMessageNotice(content, from, to, type, time, message) {
         noticeMessage[noticeCount] = message;
         noticeCount++;
     }
-    var noticeText = document.getElementById('noticeText');
+    let noticeText = document.getElementById('noticeText');
     //这里也遇到了一个坑，哎。因为之前这里没有传type这个参数，所以这里判断的时候不会生效，那么提示区的文本自然就空掉了
     //不多说，都是泪。下次注意这种错误。
-    var text = '';
+    let text = '';
     if (type == 0 || type == -1) {
         text += fromUser.userNickName + ':' + content;
     }
@@ -182,7 +182,7 @@ function doMessageNotice(content, from, to, type, time, message) {
         statusChangeMark = 1;
     }
     else if (type == 1) {
-        var group = ajaxGetGroupById(to[0]);
+        let group = ajaxGetGroupById(to[0]);
         text = group.groupName + '|' + fromUser.userNickName + ':' + content;
     }
     text += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -194,13 +194,13 @@ function openNotice(content, from, to, time) {
     if (statusChangeMark == 1) {
         listRelation();
     }
-    for (var i = 0; i < noticeCount; i++) {
-        var messages = JSON.parse(noticeMessage[i]);
+    for (let i = 0; i < noticeCount; i++) {
+        let messages = JSON.parse(noticeMessage[i]);
         if (messages.type == 0 || messages.type == -1) {
             chatWithSomeBody(noticeUser[i].userId, noticeUser[i].userName, noticeUser[i].userNickName);
         }
         else if (messages.type == 1) {
-            var group = ajaxGetGroupById(messages.to[0]);
+            let group = ajaxGetGroupById(messages.to[0]);
             chatWithGroup(group.id, group.groupId, group.groupName, group.groupCreatorId);
         }
     }
@@ -217,8 +217,8 @@ function appendZero(s) {
 
 //获取当前时间日期
 function getDateFull() {
-    var date = new Date();
-    var currentdate = date.getFullYear() + "-"
+    let date = new Date();
+    let currentdate = date.getFullYear() + "-"
         + appendZero(date.getMonth() + 1) + "-"
         + appendZero(date.getDate()) + " "
         + appendZero(date.getHours()) + ":"
@@ -239,7 +239,7 @@ layer.ready(function () {
 
 //使用ajax获取当前用户的所有好友，现在大概知道json转来转去的过程了，上面两处使用ajax不太规范，但是改着太麻烦就不改了，能用就成
 function getAllRelations() {
-    var response = null;
+    let response = null;
     $.ajax({
         async: false, //设置同步
         type: 'GET',
@@ -266,22 +266,22 @@ function getAllRelations() {
 }
 
 function onLineStatusNotice(type) {
-    var allRelations = getAllRelations();
-    var content = null;
+    let allRelations = getAllRelations();
+    let content = null;
     if (type === 3)
         content = '上线通知';
     else if (type === 4)
         content = '下线通知';
-    var usersId = [];
-    for (var i = 0; i < allRelations.length; i++) {
+    let usersId = [];
+    for (let i = 0; i < allRelations.length; i++) {
         usersId[i] = allRelations[i].userId;
     }
     sendMessage(content, usersId, type);
 }
 
 function changeToOnlineStatus(content, from, to, type, time, message) {
-    var onLineStatus = document.getElementById(from + 'onlineStatus');
-    var offLineStatus = document.getElementById(from + 'offlineStatus');
+    let onLineStatus = document.getElementById(from + 'onlineStatus');
+    let offLineStatus = document.getElementById(from + 'offlineStatus');
     //判断如果找不到这个id，那么和普通消息一样放入缓存区
     if (onLineStatus && type === 3) {
         onLineStatus.style.opacity = 1;
@@ -297,12 +297,12 @@ function changeToOnlineStatus(content, from, to, type, time, message) {
 }
 
 //列出好友列表
-var relationListIndex = null;
+let relationListIndex = null;
 
 function listRelation() {
-    var allRelations = getAllRelations();
-    var allGroups = getUserAllGroups();
-    var html = '<div id="relationList" class="relation">' +
+    let allRelations = getAllRelations();
+    let allGroups = getUserAllGroups();
+    let html = '<div id="relationList" class="relation">' +
         '<div class="lists">' +
         '<ul class="nav nav-tabs">' +
         '<li class="active justifile text-center">' +
@@ -318,7 +318,7 @@ function listRelation() {
         '</ul>' +
         '<div class="tab-content">' +
         '<div class="tab-pane fade in active" id="relationPeople">';
-    for (var i = 0; i < allRelations.length; i++) {
+    for (let i = 0; i < allRelations.length; i++) {
         //注意！注意！注意！onclick后面调用的function里面的参数如果是字符串只能用单引号！！！！只能用单引号！
         //血和泪的教训搞了好久才改过来这里的错误，哎。之前使用单引号对了，这里改成ajax时因为字符串拼接是单引号所以里面就用了双引号，结果一直错错错，而且还不说错哪儿了，哎
         //现在想想也是，虽然js里面字符串单引号双引号都行，但是在html里面添加参数就不一样了！对于html来讲双引号是一个标签属性开始与结束的标志，而单引号没有意义，
@@ -343,10 +343,10 @@ function listRelation() {
     }
     html += '</div>' +
         '<div class="tab-pane fade" id="groupPeople">';
-    for (var i = 0; i < allGroups.length; i++) {
+    for (let i = 0; i < allGroups.length; i++) {
         html += '<div class="relationSingle" onclick="chatWithGroup(' + allGroups[i].id + ',\'' + allGroups[i].groupId + '\',\'' + allGroups[i].groupName + '\',' + allGroups[i].groupCreatorId + ');">' +
             '<div class="photoBox">' +
-            '<img class="img-circle photo" src="img/photo.jpg">' +
+            '<img class="img-circle photo" src="img/photo.jpg"/>' +
             '</div>' +
             '<div class="list">' +
             allGroups[i].groupName +
@@ -391,9 +391,9 @@ function listRelation() {
             layer.setTop(layero);
         }
     });
-    for (var i = 0; i < allRelations.length; i++) {
-        var onLineStatus = document.getElementById(allRelations[i].userId + 'onlineStatus');
-        var offLineStatus = document.getElementById(allRelations[i].userId + 'offlineStatus');
+    for (let i = 0; i < allRelations.length; i++) {
+        let onLineStatus = document.getElementById(allRelations[i].userId + 'onlineStatus');
+        let offLineStatus = document.getElementById(allRelations[i].userId + 'offlineStatus');
         if (allRelations[i].userIsOnline === 0) {
             onLineStatus.style.opacity = 0;
             offLineStatus.style.opacity = 1;
@@ -405,106 +405,13 @@ function listRelation() {
     }
 }
 
-//搜索/添加好友
-function searchFriend() {
-    layer.prompt({
-        title: '请输入用户名：',
-        zIndex: 20000000
-    }, function (userName, index) {
-        layer.close(index);
-        findUser(userName);
-    });
-}
-
-function findUser(userName) {
-    $.ajax({
-        async: false, //设置同步
-        type: 'GET',
-        url: address + 'v1/user/userName/' + userName,
-        dataType: 'json',
-        success: function (result) {
-            if (result.status === 1) {
-                var user = JSON.parse(result.content);
-                addFriend(user.userId, user.userName, user.userNickName);
-            } else {
-                layer.msg('查找的人不存在', {
-                    icon: 6,
-                    zIndex: 20000001,
-                    time: 2000
-                });
-            }
-        },
-        error: function (result) {
-            layer.msg('查找失败', {
-                icon: 6,
-                zIndex: 20000001,
-                time: 2000
-            });
-        }
-    });
-}
 
 
-var relationApply = null;
-var relationApplyNumber = 0;
 
-function agreeAddThisUser(userId) {
-    var text = '';
-    var addUser = {};
-    addUser.userIdA = userId;
-    addUser.userIdB = currentUser.userId;
-    $.ajax({
-        async: false, //设置同步
-        type: 'POST',
-        url: address + 'v1/userRelations',
-        data: addUser,
-        dataType: 'json',
-        success: function (result) {
-            if (result.status === 1) {
-                text = '我已经同意了你的好友申请，快一起来搞点事情吧！';
-            } else {
-                text = '是上天不允许我们建立联系啊！';
-            }
-        },
-        error: function (result) {
-            layer.msg('添加失败', {
-                icon: 6,
-                zIndex: 20000001,
-                time: 2000
-            });
-        }
-    });
-    var usersId = [];
-    usersId[0] = userId;
-    sendMessage(text, usersId, -1);
-    var addFriendRow = document.getElementById(userId + 'addFriendRow');
-    addFriendRow.style.display = 'none';
-    relationApplyNumber--;
-    if (relationApplyNumber === 0)
-        layer.close(relationApply);
-    //刷新好友列表
-    var relationList = document.getElementById('relationList');
-    if (relationList) {
-        layer.close(relationListIndex);
-    }
-}
-
-function refuseAddThisUser(userId) {
-
-    //var text = '落花有意，流水无情。相见想闻，不如不见不闻。';
-    var text = '系统抛了一枚硬币，觉得你俩不合适，所以驳回了你的申请。';
-    var usersId = [];
-    usersId[0] = userId;
-    sendMessage(text, usersId, -1);
-    var addFriendRow = document.getElementById(userId + 'addFriendRow');
-    addFriendRow.style.display = 'none';
-    relationApplyNumber--;
-    if (relationApplyNumber === 0)
-        layer.close(relationApply);
-}
-
+let relationApply = null;
+let relationApplyNumber = 0;
 function openRelationApply(content, from, to, type, time, message) {
-    var fromUser = null;
+    let fromUser = null;
     $.ajax({
         async: false, //设置同步
         type: 'GET',
@@ -522,9 +429,9 @@ function openRelationApply(content, from, to, type, time, message) {
             layer.alert('查询错误');
         }
     });
-    var addFriendApply = document.getElementById('addFriendApply');
+    let addFriendApply = document.getElementById('addFriendApply');
     if (!addFriendApply) {
-        var html = '<div id="addFriendApply" class="addFriend">'
+        let html = '<div id="addFriendApply" class="addFriend">'
             + '<div id="friendApplyBox" class="container addFriendBox">'
             + '</div>'
             + '</div>';
@@ -542,7 +449,7 @@ function openRelationApply(content, from, to, type, time, message) {
         });
     }
     relationApplyNumber++;
-    if (type == 5)
+    if (type === 5)
         var friendApplyHtml = '<div id="' + from + 'addFriendRow" class="row addFriendRow">'
             + '<div class="col-md-5 col-sm-5 col-xs-5 col-lg-5 addFriendImgBox">'
             + '<img src="img/photo.jpg" class="img-circle addFriendImg">'
@@ -569,7 +476,7 @@ function openRelationApply(content, from, to, type, time, message) {
             + '</div>'
             + '</div>';
     else if (type == 6) {
-        var group = ajaxGetGroupById(content);
+        let group = ajaxGetGroupById(content);
         friendApplyHtml = '<div id="' + group.id + 'addFriendRow" class="row addFriendRow">'
             + '<div class="col-md-5 col-sm-5 col-xs-5 col-lg-5 addFriendImgBox">'
             + '<img src="img/photo.jpg" class="img-circle addFriendImg">'
@@ -597,21 +504,20 @@ function openRelationApply(content, from, to, type, time, message) {
             + '</div>'
             + '</div>';
     }
-    var friendApplyBox = document.getElementById('friendApplyBox');
+    let friendApplyBox = document.getElementById('friendApplyBox');
     friendApplyBox.innerHTML += friendApplyHtml;
 }
 
 //ajax获取两用户之间的消息记录
 function getMessageRecordBetweenUsers(userId) {
-    var allMessages = null;
-    var twoUser = {};
+    let allMessages = null;
+    let twoUser = {};
     twoUser.userIdA = currentUser.userId;
     twoUser.userIdB = userId;
     $.ajax({
         async: false, //设置同步
         type: 'GET',
-        url: address + 'v1/messages',
-        data: twoUser,
+        url: address + 'v1/messages/' + twoUser.userIdA + "/" + twoUser.userIdB,
         dataType: 'json',
         success: function (result) {
             if (result.status === 1) {
@@ -632,7 +538,7 @@ function getMessageRecordBetweenUsers(userId) {
 
 //单人聊天窗口
 function chatWithSomeBody(userId, userName, userNickName) {
-    var chatWith = '<div class="chatWith">'
+    let chatWith = '<div class="chatWith">'
         + '<div id="' + userId + 'output" class="container output">'
         + '</div>'
         + '<hr/>'
@@ -665,11 +571,11 @@ function chatWithSomeBody(userId, userName, userNickName) {
     });
 
     //获取消息记录
-    var allMessages = getMessageRecordBetweenUsers(userId);
-    for (var i = 0; i < allMessages.length; i++) {
-        var usersId = new Array();
+    let allMessages = getMessageRecordBetweenUsers(userId);
+    for (let i = 0; i < allMessages.length; i++) {
+        let usersId = new Array();
         usersId[0] = allMessages[i].toId;
-        var jsonMessage = JSON.stringify({
+        let jsonMessage = JSON.stringify({
             from: allMessages[i].fromId,
             to: usersId,
             content: allMessages[i].content,
@@ -690,10 +596,10 @@ function binfEnter(obj, toUserId) {
 
 //发送消息传递准备工作
 function sendMessagePre(toUserId) {
-    var textAreaId = toUserId + 'messageText';
-    var message = document.getElementById(textAreaId).value;
+    let textAreaId = toUserId + 'messageText';
+    let message = document.getElementById(textAreaId).value;
     if (message != '') {
-        var toUsersId = new Array();
+        let toUsersId = new Array();
         toUsersId[0] = toUserId;
         sendMessage(message, toUsersId, 0);
         document.getElementById(textAreaId).value = '';
@@ -704,7 +610,7 @@ function sendMessagePre(toUserId) {
 
 //获取某人的所有群
 function getUserAllGroups() {
-    var allGroups = [];
+    let allGroups = [];
     $.ajax({
         async: false, //设置同步
         type: 'GET',
@@ -731,8 +637,8 @@ function getUserAllGroups() {
 
 //获取某群的所有人
 function getGroupAllUsers(id) {
-    var usersAndUserGroup = {};
-    var response = null;
+    let usersAndUserGroup = {};
+    let response = null;
     $.ajax({
         async: false, //设置同步
         type: 'GET',
@@ -746,7 +652,7 @@ function getGroupAllUsers(id) {
         }
     });
     if (response.status == 1) {
-        var content = JSON.parse(result.content);
+        let content = JSON.parse(result.content);
         usersAndUserGroup.userGroups = content.userGroups;
         usersAndUserGroup.users = content.users;
     }
@@ -759,11 +665,11 @@ function getGroupAllUsers(id) {
 }
 
 //创建群的窗口
-var createGroupIndex = null;
+let createGroupIndex = null;
 
 function createGroup() {
     //此处留待添加群头像上传的功能
-    var html = '<div class="createGroup">'
+    let html = '<div class="createGroup">'
         + '<div class="container createGroupBox">'
         + '<div class="row createGroupRow">'
         + '<div class="col-md-5 col-sm-5 col-xs-5 col-lg-5 createGroupImgBox">'
@@ -801,12 +707,12 @@ function createGroup() {
 //创建群的操作
 function ajaxCreateGroup() {
     if (createGroupIndex != null) {
-        var createGroup = {};
+        let createGroup = {};
         createGroup.groupName = document.getElementById('createGroupName').value;
         createGroup.groupIntroduction = document.getElementById('createGroupIntroduction').value;
         createGroup.groupCreatorId = currentUser.userId;
         layer.close(createGroupIndex);
-        var response = null;
+        let response = null;
         $.ajax({
             async: false, //设置同步
             type: 'POST',
@@ -845,11 +751,11 @@ function ajaxCreateGroup() {
 
 //ajax获取单个用户与群组的聊天记录
 function getMessageRecordBetweenUserAndGroup(id) {
-    var userGroup = {};
+    let userGroup = {};
     userGroup.userId = currentUser.userId;
     userGroup.id = id;
     userGroup.limit = 50;
-    var response = null;
+    let response = null;
     $.ajax({
         async: false, //设置同步
         type: 'GET',
@@ -864,7 +770,7 @@ function getMessageRecordBetweenUserAndGroup(id) {
         }
     });
     if (response.status == 1) {
-        var allMessages = response.content;
+        let allMessages = response.content;
         allMessages = eval("(" + allMessages + ")");
         return allMessages;
     }
@@ -876,7 +782,7 @@ function getMessageRecordBetweenUserAndGroup(id) {
 
 //群组聊天窗口
 function chatWithGroup(id, groupId, groupName, groupCreatorId) {
-    var chatWith = '<div class="chatWith">'
+    let chatWith = '<div class="chatWith">'
         + '<div id="' + id + 'outputGroup" class="container output">'
         + '</div>'
         + '<hr/>'
@@ -912,12 +818,12 @@ function chatWithGroup(id, groupId, groupName, groupCreatorId) {
     });
 
     //获取消息记录
-    var allMessages = getMessageRecordBetweenUserAndGroup(id);
-    for (var i = 0; i < allMessages.length; i++) {
-        var usersId = new Array();
+    let allMessages = getMessageRecordBetweenUserAndGroup(id);
+    for (let i = 0; i < allMessages.length; i++) {
+        let usersId = new Array();
         usersId[0] = id;
         usersId[1] = allMessages[i].toId;
-        var jsonMessage = JSON.stringify({
+        let jsonMessage = JSON.stringify({
             from: allMessages[i].fromId,
             to: usersId,
             content: allMessages[i].content,
@@ -937,8 +843,8 @@ function binfEnterGroup(obj, id) {
 }
 
 function ajaxGetGroupById(id) {
-    var group = null;
-    var response = null;
+    let group = null;
+    let response = null;
     $.ajax({
         async: false, //设置同步
         type: 'GET',
@@ -970,15 +876,15 @@ function ajaxGetGroupById(id) {
 
 //发送群聊消息传递准备工作
 function sendGroupMessagePre(id) {
-    var group = ajaxGetGroupById(id);
+    let group = ajaxGetGroupById(id);
 
-    var textAreaId = id + 'messageTextGroup';
-    var message = document.getElementById(textAreaId).value;
+    let textAreaId = id + 'messageTextGroup';
+    let message = document.getElementById(textAreaId).value;
     if (message != '') {
-        var toUsersIdString = new Array();
+        let toUsersIdString = new Array();
         toUsersIdString = (group.groupMembers).split(',');
-        var toUsersId = new Array();
-        for (var i = 0; i < toUsersIdString.length; i++) {
+        let toUsersId = new Array();
+        for (let i = 0; i < toUsersIdString.length; i++) {
             toUsersId[i] = parseInt(toUsersIdString[i]);
         }
         sendMessage(message, toUsersId, 1);
@@ -988,8 +894,8 @@ function sendGroupMessagePre(id) {
 
 //加群邀请好友名单
 function groupInvite(id) {
-    var allRelations = getAllRelations();
-    var html = '<div class="groupInviteList">' +
+    let allRelations = getAllRelations();
+    let html = '<div class="groupInviteList">' +
         '<table class="table table-striped table-hover">' +
         '<tr>' +
         '<th>#</th>' +
@@ -997,7 +903,7 @@ function groupInvite(id) {
         '<th>昵称</th>' +
         '<th>邀请</th>' +
         '</tr>';
-    for (var i = 0; i < allRelations.length; i++) {
+    for (let i = 0; i < allRelations.length; i++) {
         html += '<tr>' +
             '<td>' +
             (i + 1) +
@@ -1025,18 +931,18 @@ function groupInvite(id) {
 }
 
 function groupInviteUser(id, userId) {
-    var message = id;
-    var toUsersId = new Array();
+    let message = id;
+    let toUsersId = new Array();
     toUsersId[0] = userId;
     sendMessage(message, toUsersId, 6);
 }
 
 //同意加群邀请
 function agreeGroupInvite(id) {
-    var addGroup = {};
+    let addGroup = {};
     addGroup.id = id;
     addGroup.userId = currentUser.userId;
-    var response = null;
+    let response = null;
     $.ajax({
         async: false, //设置同步
         type: 'POST',
@@ -1060,7 +966,7 @@ function agreeGroupInvite(id) {
     // else {
     //     text = '是上天不允许我们建立联系啊！';
     // }
-    var addFriendRow = document.getElementById(id + 'addFriendRow');
+    let addFriendRow = document.getElementById(id + 'addFriendRow');
     addFriendRow.style.display = 'none';
     relationApplyNumber--;
     if (relationApplyNumber == 0)
@@ -1069,7 +975,7 @@ function agreeGroupInvite(id) {
 
 //拒绝加群邀请
 function refuseGroupInvite(id) {
-    var addFriendRow = document.getElementById(id + 'addFriendRow');
+    let addFriendRow = document.getElementById(id + 'addFriendRow');
     addFriendRow.style.display = 'none';
     relationApplyNumber--;
     if (relationApplyNumber == 0)
@@ -1078,10 +984,10 @@ function refuseGroupInvite(id) {
 
 //列出群成员
 function groupUserList(id) {
-    var usersAndUserGroup = getGroupAllUsers(id);
-    var users = usersAndUserGroup.users;
-    var userGroup = usersAndUserGroup.userGroups;
-    var html = '<div class="groupInviteList">' +
+    let usersAndUserGroup = getGroupAllUsers(id);
+    let users = usersAndUserGroup.users;
+    let userGroup = usersAndUserGroup.userGroups;
+    let html = '<div class="groupInviteList">' +
         '<table class="table table-striped table-hover">' +
         '<tr>' +
         '<th>#</th>' +
@@ -1091,7 +997,7 @@ function groupUserList(id) {
         '<th>等级</th>' +
         '<th>进群时间</th>' +
         '</tr>';
-    for (var i = 0; i < users.length; i++) {
+    for (let i = 0; i < users.length; i++) {
         html += '<tr>' +
             '<td>' +
             (i + 1) +

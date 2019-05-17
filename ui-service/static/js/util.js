@@ -1,7 +1,7 @@
-var address = "/";
+let address = "/";
 
 function setCookie(name, value, time) {
-    var exp = new Date();
+    let exp = new Date();
     exp.setTime(exp.getTime() + time * 60 * 60 * 1000); //3天过期
     document.cookie = name + "=" + encodeURIComponent(value)
         + ";expires=" + exp.toGMTString() + ";path=/";
@@ -9,7 +9,7 @@ function setCookie(name, value, time) {
 };
 
 function getCookie(name) {
-    var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+    let arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
     if (arr = document.cookie.match(reg))
         return unescape(arr[2]);
     else
@@ -21,13 +21,13 @@ function makeURL(url, name, value) {
 }
 
 function parseURL(name) {
-    var url = location.search;
-    var request = new Object();
+    let url = location.search;
+    let request = new Object();
     if (url.indexOf("?") != -1) {
-        var str = url.substr(1);
-        var strs = str.split("&");
-        for (var i = 0; i < strs.length; i++) {
-            var value = strs[i].split("=");
+        let str = url.substr(1);
+        let strs = str.split("&");
+        for (let i = 0; i < strs.length; i++) {
+            let value = strs[i].split("=");
             if (value[0] == name)
                 return decodeURI(value[1]);
         }
@@ -36,8 +36,8 @@ function parseURL(name) {
 }
 
 function getCurrentUser() {
-    var token = parseURL("token");
-    var response = null;
+    let token = parseURL("token");
+    let response = null;
     $.ajax({
         async: false, //设置同步
         type: 'GET',
@@ -50,7 +50,7 @@ function getCurrentUser() {
             layer.alert('网络错误');
         }
     });
-    if (response.status != 1) {
+    if (response.status !== 1) {
         layer.msg("登录状态失效，请重新登录");
         window.location.href = "login.html";
     }

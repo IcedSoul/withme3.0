@@ -39,8 +39,8 @@ public class MessageController {
 
 
     @ApiOperation(value = "Get message records between user A and user B", notes = "获取两个用户之间的聊天记录", response = Response.class)
-    @GetMapping(value = "/messages")
-    public Response getMessageRecordBetweenUsers(@RequestParam(value = "userIdA") Integer userIdA, @RequestParam("userIdB") Integer userIdB) {
+    @GetMapping(value = "/messages/{userIdA}/{userIdB}")
+    public Response getMessageRecordBetweenUsers(@PathVariable(value = "userIdA") Integer userIdA, @PathVariable("userIdB") Integer userIdB) {
         return messageService.getMessageRecordBetweenUsers(userIdA, userIdB);
     }
 

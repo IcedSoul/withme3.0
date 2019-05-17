@@ -45,7 +45,8 @@ public class JwtUtils {
                 return authUser;
             }
             return null;
-        } else
+        } else {
             return null;
+        }
     }
 }

@@ -10,9 +10,9 @@ import java.util.List;
  * Created by IcedSoul on 2018/2/20.
  */
 public interface MessageRepository extends JpaRepository<Message, Integer> {
-    List<Message> findAllByFromIdAndToIdAndIsTransport(Integer fromId, Integer toId, Integer isTransport);
+    List<Message> findAllByFromIdAndToId(Integer fromId, Integer toId);
 
-    List<Message> findAllByToIdAndTypeAndIsTransport(Integer toId, Integer type, Integer isTransport);
+    List<Message> findAllByToIdAndType(Integer toId, Integer type);
 
-    List<Message> findAllByToIdAndIsTransport(Integer toId, Integer isTransport);
+    List<Message> findAllByToId(Integer toId);
 }

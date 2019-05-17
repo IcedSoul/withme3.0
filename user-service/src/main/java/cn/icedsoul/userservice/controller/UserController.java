@@ -81,13 +81,13 @@ public class UserController {
     }
 
     @ApiOperation(value = "更新好友关系缓存字段", notes = "更新好友关系", response = Response.class)
-    @PatchMapping(value = "/user/userRelations")
+    @PostMapping(value = "/user/userRelations")
     public Response updateUserRelation(@RequestParam("userIdA") Integer userIdA, @RequestParam("userIdB") Integer userIdB) {
         return userService.updateUserRelation(userIdA, userIdB);
     }
 
     @ApiOperation(value = "更新用户群组缓存字段", notes = "更新用户群组", response = Response.class)
-    @PatchMapping(value = "/user/userGroups")
+    @PostMapping(value = "/user/userGroups")
     public Response updateUserGroup(@RequestParam("userId") Integer userId, @RequestParam("groupId") Integer groupId) {
         return userService.updateUserGroup(userId, groupId);
     }

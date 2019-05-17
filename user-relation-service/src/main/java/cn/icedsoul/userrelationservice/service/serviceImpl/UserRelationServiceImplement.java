@@ -38,7 +38,7 @@ public class UserRelationServiceImplement implements UserRelationService {
     @Transactional
     public Response buildRelation(Integer userIdA, Integer userIdB) {
         try {
-            log.info("I am building relation beween " + userIdA + " and " + userIdB);
+            log.info("I am building relation between " + userIdA + " and " + userIdB);
             UserRelation userRelation = new UserRelation();
             userRelation.setUserIdA(userIdA);
             userRelation.setUserIdB(userIdB);

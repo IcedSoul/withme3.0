@@ -1,8 +1,8 @@
 //获取服务端地址
-var ws = null;
-// ws = "ws://localhost:8282/" + parseURL("token");
-ws = "ws://10.141.211.176:21002/" + parseURL("token");
-var websocket = null;
+
+//let ws = "ws://localhost:8282/" + parseURL("token");
+let ws = "ws://10.141.211.176:21002/" + parseURL("token");
+let websocket = null;
 
 //判断当前浏览器是否支持WebSocket
 if ('WebSocket' in window) {
@@ -12,7 +12,7 @@ if ('WebSocket' in window) {
         icon: 2
     });
 }
-;
+
 
 //连接成功建立的回调方法
 websocket.onopen = function () {
