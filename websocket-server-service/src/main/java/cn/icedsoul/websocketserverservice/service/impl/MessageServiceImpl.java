@@ -3,8 +3,10 @@ package cn.icedsoul.websocketserverservice.service.impl;
 import cn.icedsoul.commonservice.dto.AuthUser;
 import cn.icedsoul.commonservice.util.Common;
 import cn.icedsoul.commonservice.util.JwtUtils;
-import cn.icedsoul.messageservice.domain.Message;
+
+import cn.icedsoul.commonservice.util.Response;
 import cn.icedsoul.websocketserverservice.constant.CONSTANT;
+import cn.icedsoul.websocketserverservice.domain.dto.Message;
 import cn.icedsoul.websocketserverservice.service.api.MessageService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -14,7 +16,15 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import lombok.extern.java.Log;
+import org.springframework.http.MediaType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
+import static cn.icedsoul.websocketserverservice.constant.CONSTANT.ADD_MESSAGE;
+import static cn.icedsoul.websocketserverservice.constant.CONSTANT.MESSAGE_BASE;
 import static cn.icedsoul.websocketserverservice.constant.Global.*;
 
 /**
@@ -91,16 +101,16 @@ public class MessageServiceImpl implements MessageService {
             Channel self = getChannel(message.getFromId());
             sendMessage(self, jsonMessage);
         }
-        else if (message.getType() == 1) {
+        if (message.getType() == 1) {
             message.setToId(users.getInteger(0));
             message.setType(2);
-            jedis.lpush(CONSTANT.MESSAGE, JSON.toJSONString(message));
+//            jedis.lpush(CONSTANT.MESSAGE, JSON.toJSONString(message));
             message.setType(1);
 
             for (int i = 1; i < users.size(); i++) {
                 message.setToId(users.getInteger(i));
                 sendMessage(getChannel(message.getToId()), jsonMessage);
-                jedis.lpush(CONSTANT.MESSAGE, JSON.toJSONString(message));
+//                jedis.lpush(CONSTANT.MESSAGE, JSON.toJSONString(message));
                 log.info("I send message to " + message.getToId());
             }
 
@@ -110,7 +120,11 @@ public class MessageServiceImpl implements MessageService {
                 message.setToId(users.getInteger(0));
                 Channel channel = getChannel(message.getToId());
                 if(channel != null) {
+                    saveMessage(message);
                     sendMessage(channel, jsonMessage);
+                }
+                else {
+
                 }
                 log.info("I send message to " + message.getToId());
             }
@@ -139,5 +153,23 @@ public class MessageServiceImpl implements MessageService {
 //        return jsonObjectMessage.toString();
 //    }
 
+    private void saveMessage(Message message){
+        MultiValueMap<String, Object> requestParams = new LinkedMultiValueMap<>();
+        requestParams.add("fromId", message.getFromId());
+        requestParams.add("toId", message.getToId());
+        requestParams.add("content", message.getContent());
+        requestParams.add("type", message.getType());
+        requestParams.add("time", sdf.format(message.getTime()));
+
+        Mono<Response> response = WebClient.create(MESSAGE_BASE).post()
+                .uri(ADD_MESSAGE)
+//                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .syncBody(requestParams)
+                .retrieve()
+                .bodyToMono(Response.class);
+        Response res = response.block();
+        assert res != null;
+        log.info("I save Message" + res.toString());
+    }
 
 }

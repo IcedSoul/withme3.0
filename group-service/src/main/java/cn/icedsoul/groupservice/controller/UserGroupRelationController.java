@@ -23,4 +23,6 @@ public class UserGroupRelationController {
     public Response addGroupUsers(@RequestParam("id") Integer id, @RequestParam("userId") Integer userId) {
         return userGroupRelationService.addGroupUsers(id, userId);
     }
+
+
 }

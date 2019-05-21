@@ -51,8 +51,9 @@ public class GroupServiceImplement implements GroupService {
                     jsonObject1.put("users", "[]");
                 }
             }
-            else
+            else {
                 jsonObject1.put("users", "[]");
+            }
             List<UserGroupRelation> userGroupRelations = userGroupRelationRepository.findByGroupId(id);
             jsonObject1.put("userGroups", JSONArray.toJSONString(userGroupRelations, SerializerFeature.UseSingleQuotes));
 

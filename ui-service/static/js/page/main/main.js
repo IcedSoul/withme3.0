@@ -34,6 +34,9 @@ function handleReceiveMessage(message) {
 
 //将消息显示在网页上
 function showReceiveMessage(content, from, to, type, time, message) {
+    if(type === 3 || type === 4){
+        return;
+    }
     let times = time.split(' ');
     let now = getDateFull();
     let nows = now.split(' ');
@@ -509,15 +512,17 @@ function openRelationApply(content, from, to, type, time, message) {
 }
 
 //ajax获取两用户之间的消息记录
-function getMessageRecordBetweenUsers(userId) {
+function getMessageRecordBetweenUsers(userId, page, number) {
     let allMessages = null;
     let twoUser = {};
     twoUser.userIdA = currentUser.userId;
     twoUser.userIdB = userId;
+    twoUser.page = page;
+    twoUser.number = number;
     $.ajax({
         async: false, //设置同步
         type: 'GET',
-        url: address + 'v1/messages/' + twoUser.userIdA + "/" + twoUser.userIdB,
+        url: address + 'v1/messages/' + twoUser.userIdA + "/" + twoUser.userIdB + "/" + twoUser.page + "/" + twoUser.number,
         dataType: 'json',
         success: function (result) {
             if (result.status === 1) {
@@ -571,7 +576,7 @@ function chatWithSomeBody(userId, userName, userNickName) {
     });
 
     //获取消息记录
-    let allMessages = getMessageRecordBetweenUsers(userId);
+    let allMessages = getMessageRecordBetweenUsers(userId, 0, 30);
     for (let i = 0; i < allMessages.length; i++) {
         let usersId = new Array();
         usersId[0] = allMessages[i].toId;

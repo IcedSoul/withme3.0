@@ -1,7 +1,9 @@
 package cn.icedsoul.websocketserverservice;
 
+import cn.icedsoul.websocketserverservice.domain.dto.Message;
 import cn.icedsoul.websocketserverservice.init.WebSocketServerInitializer;
 import cn.icedsoul.websocketserverservice.constant.CONSTANT;
+import cn.icedsoul.websocketserverservice.service.impl.MessageServiceImpl;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
@@ -13,6 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.net.ssl.SSLException;
 import java.security.cert.CertificateException;
+import java.sql.Timestamp;
+import java.util.Date;
+
+import static cn.icedsoul.websocketserverservice.constant.Global.sdf;
 
 /**
  * Created by 14437 on 2018/2/8.
@@ -22,6 +28,14 @@ public class WebSocketServer {
 
     public static void main(String[] args) throws CertificateException, SSLException {
         new WebSocketServer().run();
+//        MessageServiceImpl messageService = new MessageServiceImpl();
+//        Message message = new Message();
+//        message.setFromId(1);
+//        message.setToId(2);
+//        message.setTime(Timestamp.valueOf(sdf.format(new Date())));
+//        message.setContent("234");
+//        message.setType(1);
+//        messageService.saveMessage(message);
     }
 
 //    public void initNetty() {

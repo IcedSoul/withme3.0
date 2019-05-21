@@ -6,17 +6,21 @@ import cn.icedsoul.messageservice.domain.Message;
 import cn.icedsoul.messageservice.repository.MessageRepository;
 import cn.icedsoul.messageservice.service.serviceApi.MessageService;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.SimpleDateFormatSerializer;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
 
 @Service
+@Log
 public class MessageServiceImplement implements MessageService {
 
     @Autowired
@@ -32,6 +36,7 @@ public class MessageServiceImplement implements MessageService {
             message.setType(type);
             message.setTime(Common.getTimeFromString(time));
             messageRepository.save(message);
+            log.info("I insert message " + message.toString() + " to message-mysql");
             return new Response(1, "Insert message success", null);
         } catch (Exception e){
             e.printStackTrace();
@@ -40,10 +45,10 @@ public class MessageServiceImplement implements MessageService {
     }
 
     @Override
-    public Response getMessageRecordBetweenUsers(Integer userIdA, Integer userIdB) {
+    public Response getMessageRecordBetweenUsers(Integer userIdA, Integer userIdB, Integer page, Integer number) {
         try {
-            List<Message> messages = messageRepository.findAllByFromIdAndToId(userIdA, userIdB);
-            messages.addAll(messageRepository.findAllByFromIdAndToId(userIdB, userIdA));
+            Pageable sortedByTime = PageRequest.of(page, number, Sort.by("time"));
+            List<Message> messages = messageRepository.findAllByFromIdAndToIdOrFromIdAndToId(userIdA, userIdB, userIdB, userIdA, sortedByTime);
             return new Response(1, "Get message record between users success", JSONArray.toJSONString(messages, SerializerFeature.UseSingleQuotes));
         } catch (Exception e) {
             e.printStackTrace();

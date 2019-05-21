@@ -48,7 +48,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<Object> 
      * @throws Exception
      */
     @Override
-    public void messageReceived(ChannelHandlerContext ctx, Object msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, Object msg) throws Exception {
         // 传统的HTTP接入
         if (msg instanceof FullHttpRequest) {
             log.info("========= Http请求接入=========");

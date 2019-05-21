@@ -2,8 +2,10 @@ package cn.icedsoul.websocketserverservice.constant;
 
 import cn.icedsoul.websocketserverservice.jedis.JedisPoolUtil;
 import io.netty.channel.Channel;
+import org.springframework.web.reactive.function.client.WebClient;
 import redis.clients.jedis.Jedis;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,5 +24,7 @@ public class Global {
 
     public static Integer onLineNumber = 0;
 
-    public static Jedis jedis = JedisPoolUtil.getJedis();
+//    public static Jedis jedis = JedisPoolUtil.getJedis();
+
+    public static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
 }
