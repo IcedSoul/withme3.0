@@ -17,7 +17,11 @@ import cn.icedsoul.userservice.constant.CONSTANT;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 import java.sql.Timestamp;
@@ -36,8 +40,8 @@ public class UserServiceImplement implements UserService {
     @Autowired
     UserDetailRepository userDetailRepository;
 
-//    @Autowired
-//    RestTemplate restTemplate;
+    @Autowired
+    RestTemplate restTemplate;
 
 
     @Override
@@ -54,8 +58,9 @@ public class UserServiceImplement implements UserService {
                     String token = JwtUtils.createJWT(JSON.toJSONString(authUser));
                     return new Response(1, "登陆成功", token);
 
-                } else
+                } else {
                     return new Response(-1, "用户名或者密码错误", null);
+                }
             } else {
                 return new Response(-1, "用户不存在", null);
             }
@@ -92,8 +97,9 @@ public class UserServiceImplement implements UserService {
                 user.setUserRole(0);
                 userRepository.save(user);
                 return new Response(1, "注册成功", null);
-            } else
+            } else {
                 return new Response(-1, "用户名已存在", null);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -108,8 +114,8 @@ public class UserServiceImplement implements UserService {
             User user = userRepository.findByUserId(userId);
             if (!Common.isNull(user)) {
                 if (!Common.isEmpty(user.getUserRelations())) {
-                    String relations[] = user.getUserRelations().split(",");
-                    for (String friendId : relations) {
+                    String[] relation = user.getUserRelations().split(",");
+                    for (String friendId : relation) {
                         User user1 = userRepository.findByUserId(Integer.valueOf(friendId));
                         userList.add(user1);
                     }
@@ -129,13 +135,14 @@ public class UserServiceImplement implements UserService {
             String groups = "";
             if (!Common.isNull(user)) {
                 if (!Common.isEmpty(user.getUserGroups())) {
-//                    MultiValueMap<String,String> requestEntity = new LinkedMultiValueMap<>();
-//                    requestEntity.add("userName", userName);
-//                    requestEntity.add("userPassword", userPassword);
-//                    ResponseEntity<Response> responseResponseEntity = restTemplate.postForEntity(URL.USER_GROUP_LIST_URL,)
+                    ResponseEntity<Response> responseResponseEntity = restTemplate.getForEntity(CONSTANT.GROUP_FIND_BY_IDS, Response.class, user.getUserGroups());
+                    Response response = responseResponseEntity.getBody();
+                    if(response.getStatus() == 1){
+                        return new Response(1, "获取用户群组成功", response.getContent());
+                    }
                 }
             }
-            return new Response(1, "获取用户群组成功", groups);
+            return new Response(1, "获取用户群组异常", groups);
         } catch (Exception e) {
             e.printStackTrace();
             return new Response(-1, "获取用户群组异常", null);
@@ -157,11 +164,7 @@ public class UserServiceImplement implements UserService {
     public Response findUserByName(String name) {
         try {
             User user = userRepository.findByUserName(name);
-            AuthUser authUser = new AuthUser();
-            authUser.setUserId(user.getUserId());
-            authUser.setUserName(user.getUserName());
-            authUser.setUserNickName(user.getUserNickName());
-            authUser.setExpireTime(Common.getCurrentTime());
+            AuthUser authUser = new AuthUser(user.getUserId(), user.getUserName(), user.getUserNickName(), Common.getCurrentTime());
             return new Response(1, "获取用户信息成功", JSON.toJSONString(authUser));
         } catch (Exception e) {
             e.printStackTrace();
@@ -173,11 +176,7 @@ public class UserServiceImplement implements UserService {
     public Response findUserById(String id) {
         try {
             User user = userRepository.findByUserId(Integer.valueOf(id));
-            AuthUser authUser = new AuthUser();
-            authUser.setUserId(user.getUserId());
-            authUser.setUserName(user.getUserName());
-            authUser.setUserNickName(user.getUserNickName());
-            authUser.setExpireTime(Common.getCurrentTime());
+            AuthUser authUser = new AuthUser(user.getUserId(), user.getUserName(), user.getUserNickName(), Common.getCurrentTime());
             return new Response(1, "获取用户信息成功", JSON.toJSONString(authUser));
         } catch (Exception e) {
             e.printStackTrace();
@@ -191,15 +190,19 @@ public class UserServiceImplement implements UserService {
         try {
             User userA = userRepository.findByUserId(userIdA);
             User userB = userRepository.findByUserId(userIdB);
-            if (Common.isEmpty(userA.getUserRelations()))
+            if (Common.isEmpty(userA.getUserRelations())) {
                 userA.setUserRelations(String.valueOf(userB.getUserId()));
-            else
-                userA.setUserRelations(userA.getUserRelations() + "," + String.valueOf(userB.getUserId()));
+            }
+            else {
+                userA.setUserRelations(userA.getUserRelations() + "," + userB.getUserId());
+            }
             userRepository.save(userA);
-            if (Common.isEmpty(userB.getUserRelations()))
+            if (Common.isEmpty(userB.getUserRelations())) {
                 userB.setUserRelations(String.valueOf(userA.getUserId()));
-            else
-                userB.setUserRelations(userB.getUserRelations() + "," + String.valueOf(userA.getUserId()));
+            }
+            else {
+                userB.setUserRelations(userB.getUserRelations() + "," + userA.getUserId());
+            }
             userRepository.save(userB);
             return new Response(1, "添加好友关系成功", null);
         } catch (Exception e){
@@ -211,15 +214,11 @@ public class UserServiceImplement implements UserService {
     @Override
     public Response getUsersByUserIds(String userIds) {
         try {
-            String users[] = userIds.split(",");
+            String[] users = userIds.split(",");
             List<AuthUser> userList = new ArrayList<>();
             for (String userId : users) {
                 User user = userRepository.findByUserId(Integer.valueOf(userId));
-                AuthUser authUser = new AuthUser();
-                authUser.setUserId(user.getUserId());
-                authUser.setUserName(user.getUserName());
-                authUser.setUserNickName(user.getUserNickName());
-                authUser.setExpireTime(Common.getCurrentTime());
+                AuthUser authUser = new AuthUser(user.getUserId(), user.getUserName(), user.getUserNickName(), Common.getCurrentTime());
                 userList.add(authUser);
             }
             return new Response(1, "获取用户成功", JSONArray.toJSONString(userList));
@@ -233,10 +232,12 @@ public class UserServiceImplement implements UserService {
     public Response updateUserGroup(Integer userId, Integer groupId) {
         try {
             User user = userRepository.findByUserId(userId);
-            if (Common.isEmpty(user.getUserGroups()))
+            if (Common.isEmpty(user.getUserGroups())) {
                 user.setUserGroups(String.valueOf(userId));
-            else
+            }
+            else {
                 user.setUserGroups(user.getUserGroups() + "," + String.valueOf(groupId));
+            }
             userRepository.save(user);
             return new Response(1, "获取用户成功", JSONArray.toJSONString(user));
         } catch (Exception e){

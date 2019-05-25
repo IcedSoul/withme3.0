@@ -1,9 +1,6 @@
 package cn.icedsoul.websocketserverservice.constant;
 
-import cn.icedsoul.websocketserverservice.jedis.JedisPoolUtil;
 import io.netty.channel.Channel;
-import org.springframework.web.reactive.function.client.WebClient;
-import redis.clients.jedis.Jedis;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;

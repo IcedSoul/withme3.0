@@ -10,9 +10,13 @@ import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.SimpleDateFormatSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -43,14 +47,19 @@ public class GroupMessageServiceImplement implements GroupMessageService {
     /**
      *
      * @param userId
-     * @param groupId
+     * @param id
+     * @param page
+     * @param number
      * @return
      */
     @Override
-    public Response getMessageRecordBetweenUserAndGroup(Integer userId, Integer groupId, Integer limit) {
+    public Response getMessageRecordBetweenUserAndGroup(Integer userId, Integer id, Integer page, Integer number) {
         try {
             //userCheck
-            List<GroupMessage> groupMessages = groupMessageRepository.findAll(groupId, limit);
+            Pageable sortedByTime = PageRequest.of(page, number, Sort.by("time").descending());
+            List<GroupMessage> groupMessages = groupMessageRepository.findAllById(id, sortedByTime);
+            Collections.sort(groupMessages);
+            //下次尝试直接返回对象看是否能够转为json对象
             return new Response(1, "获取群组聊天记录成功", JSONArray.toJSONString(groupMessages, SerializerFeature.UseSingleQuotes));
         } catch (Exception e) {
             e.printStackTrace();

@@ -34,4 +34,10 @@ public class GroupController {
     public Response findGroupById(@PathVariable("id") Integer id) {
         return groupService.findGroupById(id);
     }
+
+    @ApiOperation(value = "根据ids获取群组", notes = "根据ids获取群组", response = Response.class)
+    @GetMapping(value = "/groups/{ids}")
+    public Response findGroupById(@PathVariable("ids") String ids) {
+        return groupService.findGroupByIds(ids);
+    }
 }

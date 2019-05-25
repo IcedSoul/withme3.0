@@ -17,6 +17,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -47,8 +48,9 @@ public class MessageServiceImplement implements MessageService {
     @Override
     public Response getMessageRecordBetweenUsers(Integer userIdA, Integer userIdB, Integer page, Integer number) {
         try {
-            Pageable sortedByTime = PageRequest.of(page, number, Sort.by("time"));
+            Pageable sortedByTime = PageRequest.of(page, number, Sort.by("time").descending());
             List<Message> messages = messageRepository.findAllByFromIdAndToIdOrFromIdAndToId(userIdA, userIdB, userIdB, userIdA, sortedByTime);
+            Collections.sort(messages);
             return new Response(1, "Get message record between users success", JSONArray.toJSONString(messages, SerializerFeature.UseSingleQuotes));
         } catch (Exception e) {
             e.printStackTrace();

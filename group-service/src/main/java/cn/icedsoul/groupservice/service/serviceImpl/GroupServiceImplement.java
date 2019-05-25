@@ -22,6 +22,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -122,6 +123,17 @@ public class GroupServiceImplement implements GroupService {
             e.printStackTrace();
             return new Response(-1, "获取用户群组异常", null);
         }
+    }
+
+    @Override
+    public Response findGroupByIds(String ids) {
+        List<Groups> groups = new ArrayList<>();
+        String[] id = ids.split(",");
+        for(String groupId : id){
+            Groups groups1 = groupRepository.findById(Integer.valueOf(groupId)).get();
+            groups.add(groups1);
+        }
+        return new Response(1, "获取群组成功", JSONArray.toJSONString(groups));
     }
 
 

@@ -634,7 +634,7 @@ function getUserAllGroups() {
         }
     });
     //划重点划重点，这里的eval方法不同于prase方法，外面加括号
-    if(allGroups != ""){
+    if(allGroups !== ""){
         allGroups = eval("(" + allGroups + ")");
     }
     return allGroups;

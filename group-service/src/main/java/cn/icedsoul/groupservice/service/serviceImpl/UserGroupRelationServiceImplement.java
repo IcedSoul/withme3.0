@@ -41,10 +41,12 @@ public class UserGroupRelationServiceImplement implements UserGroupRelationServi
             userGroupRelation.setGroupUserNickName("");
             userGroupRelationRepository.save(userGroupRelation);
             Groups group = groupRepository.getOne(id);
-            if (Common.isEmpty(group.getGroupMembers()))
+            if (Common.isEmpty(group.getGroupMembers())) {
                 group.setGroupMembers(String.valueOf(userGroupRelation.getUserId()));
-            else
-                group.setGroupMembers(group.getGroupMembers() + "," + String.valueOf(userGroupRelation.getUserId()));
+            }
+            else {
+                group.setGroupMembers(group.getGroupMembers() + "," + userGroupRelation.getUserId());
+            }
             group.setGroupUserCount(group.getGroupUserCount() + 1);
             groupRepository.save(group);
 

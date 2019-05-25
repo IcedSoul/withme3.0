@@ -24,7 +24,6 @@ public class CONSTANT {
     public static Integer MAX_WAIT = 1000;
     public static Integer MAX_IDLE = 10;
 
-//    public static String REDIS_ADDRESS = "10.141.211.176";
     public static String REDIS_ADDRESS = "redis";
     public static Integer REDIS_PORT = 6379;
 
@@ -41,6 +40,12 @@ public class CONSTANT {
      * 存储Message相关
      */
     public static String MESSAGE_BASE = "http://message-service:8081";
-//    public static String MESSAGE_BASE = "http://10.141.211.176:21005";
     public static String ADD_MESSAGE = "/v1/message";
+
+    /**
+     * 存储Group Message 相关
+     */
+    public static String GROUP_MESSAGE_BASE = "http://group-message-service:8081";
+    //    public static String MESSAGE_BASE = "http://10.141.211.176:21005";
+    public static String ADD_GROUP_MESSAGE = "/v1/groupMessage";
 }

@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Data
-public class Message {
+public class Message implements Comparable<Message>{
     @Id
     @GeneratedValue
     @Column(nullable = false, columnDefinition = "Int(11) COMMENT '消息主键'")
@@ -27,4 +27,9 @@ public class Message {
     @Column(nullable = false, columnDefinition = "datetime COMMENT '发送消息时间'")
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Timestamp time;
+
+    @Override
+    public int compareTo(Message o) {
+        return this.time.compareTo(o.getTime());
+    }
 }

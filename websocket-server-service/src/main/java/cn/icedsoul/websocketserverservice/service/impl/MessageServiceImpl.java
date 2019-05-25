@@ -5,7 +5,6 @@ import cn.icedsoul.commonservice.util.Common;
 import cn.icedsoul.commonservice.util.JwtUtils;
 
 import cn.icedsoul.commonservice.util.Response;
-import cn.icedsoul.websocketserverservice.constant.CONSTANT;
 import cn.icedsoul.websocketserverservice.domain.dto.Message;
 import cn.icedsoul.websocketserverservice.service.api.MessageService;
 import com.alibaba.fastjson.JSON;
@@ -16,15 +15,13 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import lombok.extern.java.Log;
-import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import static cn.icedsoul.websocketserverservice.constant.CONSTANT.ADD_MESSAGE;
-import static cn.icedsoul.websocketserverservice.constant.CONSTANT.MESSAGE_BASE;
+import static cn.icedsoul.commonservice.util.Common.isNull;
+import static cn.icedsoul.websocketserverservice.constant.CONSTANT.*;
 import static cn.icedsoul.websocketserverservice.constant.Global.*;
 
 /**
@@ -95,22 +92,24 @@ public class MessageServiceImpl implements MessageService {
         message.setType(jsonObjectMessage.getInteger("type"));
         message.setTime(Common.getCurrentTime());
         JSONArray users = jsonObjectMessage.getJSONArray("to");
-
+        Channel self = getChannel(message.getFromId());
         if (message.getType() == 0) {
             log.info("I send message to myself " + message.getFromId());
-            Channel self = getChannel(message.getFromId());
             sendMessage(self, jsonMessage);
         }
         if (message.getType() == 1) {
             message.setToId(users.getInteger(0));
-            message.setType(2);
-//            jedis.lpush(CONSTANT.MESSAGE, JSON.toJSONString(message));
-            message.setType(1);
-
+            saveGroupMessage(message, JSONArray.toJSONString(users));
             for (int i = 1; i < users.size(); i++) {
                 message.setToId(users.getInteger(i));
-                sendMessage(getChannel(message.getToId()), jsonMessage);
-//                jedis.lpush(CONSTANT.MESSAGE, JSON.toJSONString(message));
+                Channel channel = getChannel(message.getToId());
+                if(!isNull(channel)){
+                    sendMessage(channel, jsonMessage);
+                }
+                else {
+                    //TODO offline group message handle
+                }
+
                 log.info("I send message to " + message.getToId());
             }
 
@@ -119,12 +118,12 @@ public class MessageServiceImpl implements MessageService {
             if(users.size() > 0) {
                 message.setToId(users.getInteger(0));
                 Channel channel = getChannel(message.getToId());
-                if(channel != null) {
+                if(isNull(channel)) {
                     saveMessage(message);
                     sendMessage(channel, jsonMessage);
                 }
                 else {
-
+                    //TODO offline message handle
                 }
                 log.info("I send message to " + message.getToId());
             }
@@ -161,9 +160,35 @@ public class MessageServiceImpl implements MessageService {
         requestParams.add("type", message.getType());
         requestParams.add("time", sdf.format(message.getTime()));
 
-        Mono<Response> response = WebClient.create(MESSAGE_BASE).post()
-                .uri(ADD_MESSAGE)
-//                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+        seneSyncHttpRequest(MESSAGE_BASE, ADD_MESSAGE, requestParams);
+
+//        Mono<Response> response = WebClient.create(MESSAGE_BASE).post()
+//                .uri(ADD_MESSAGE)
+////                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+//                .syncBody(requestParams)
+//                .retrieve()
+//                .bodyToMono(Response.class);
+//        Response res = response.block();
+//        assert res != null;
+//        log.info("I save Message" + res.toString());
+    }
+
+    private void saveGroupMessage(Message message, String toId){
+        MultiValueMap<String, Object> requestParams = new LinkedMultiValueMap<>();
+        requestParams.add("fromId", message.getFromId());
+        requestParams.add("groupId", message.getToId());
+        requestParams.add("toId", toId);
+        requestParams.add("content", message.getContent());
+        requestParams.add("type", message.getType());
+        requestParams.add("time", sdf.format(message.getTime()));
+
+        seneSyncHttpRequest(GROUP_MESSAGE_BASE, ADD_GROUP_MESSAGE, requestParams);
+
+    }
+
+    private void seneSyncHttpRequest(String baseURL, String path, MultiValueMap requestParams){
+        Mono<Response> response = WebClient.create(baseURL).post()
+                .uri(path)
                 .syncBody(requestParams)
                 .retrieve()
                 .bodyToMono(Response.class);

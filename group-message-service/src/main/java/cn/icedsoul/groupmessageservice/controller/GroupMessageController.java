@@ -22,17 +22,18 @@ public class GroupMessageController {
 
     @ApiOperation(value = "Add GroupMessage Record", notes = "Add GroupMessage Record", response = Response.class)
     @PostMapping(value = "/groupMessage")
-    public Response addMessage(@RequestParam("fromId")Integer fromId, @RequestParam("fromId")Integer groupId,
+    public Response addMessage(@RequestParam("fromId")Integer fromId, @RequestParam("groupId")Integer groupId,
                                @RequestParam("toId")String toId, @RequestParam("content") String content,
                                @RequestParam("type")Integer type, @RequestParam("time") String time){
         return groupMessageService.addGroupMessage(fromId,groupId, toId, content, type, time);
     }
 
 
-    @ApiOperation(value = "Get message records between user A and Group B", notes = "Get message records between user A and Group B", response = Response.class)
-    @GetMapping(value = "/groupMessages")
-    public Response getMessageRecordBetweenUsers(@RequestParam(value = "userId") Integer userId, @RequestParam("groupId") Integer groupId, @RequestParam("limit") Integer limit) {
-        return groupMessageService.getMessageRecordBetweenUserAndGroup(userId, groupId, limit);
+    @ApiOperation(value = "Get message records of Group B", notes = "Get message records of Group B", response = Response.class)
+    @GetMapping(value = "/groupMessages/{userId}/{id}/{page}/{number}")
+    public Response getMessageRecordBetweenUsers(@PathVariable(value = "userId") Integer userId, @PathVariable("id") Integer id,
+                                                 @PathVariable("page") Integer page, @PathVariable("number") Integer number) {
+        return groupMessageService.getMessageRecordBetweenUserAndGroup(userId, id, page, number);
     }
 
 }

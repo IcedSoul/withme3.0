@@ -10,5 +10,6 @@ public interface GroupService {
 
     Response findGroupById(Integer id);
     // Response findGroupByGroupId(String jsonObj);
+    Response findGroupByIds(String ids);
 
 }
