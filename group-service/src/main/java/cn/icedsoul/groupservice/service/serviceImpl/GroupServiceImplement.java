@@ -11,9 +11,7 @@ import cn.icedsoul.groupservice.service.serviceApi.GroupService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import com.alibaba.fastjson.serializer.SimpleDateFormatSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,9 +19,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -41,7 +39,11 @@ public class GroupServiceImplement implements GroupService {
     @Override
     public Response getGroupUsers(Integer id) {
         try {
-            Groups groups = groupRepository.getOne(id);
+            Optional<Groups> groupsOptional = groupRepository.findById(id);
+            Groups groups = null;
+            if(groupsOptional.isPresent()) {
+                groups = groupsOptional.get();
+            }
             JSONObject jsonObject1 = new JSONObject();
             if (!Common.isNull(groups) && !Common.isEmpty(groups.getGroupMembers())) {
                 Response response = restTemplate.getForEntity(CONSTANT.USER_SERVICE_GET_USERS_BY_USERIDS, Response.class, groups.getGroupMembers()).getBody();
@@ -92,7 +94,7 @@ public class GroupServiceImplement implements GroupService {
             userGroupRelation.setGroupUserNickName("");
             userGroupRelation.setGroupLevel(10);
             userGroupRelationRepository.save(userGroupRelation);
-            groups.setGroupMembers(groups.getId() + "," + String.valueOf(groupCreatorId));
+            groups.setGroupMembers(String.valueOf(groupCreatorId));
             groups.setGroupUserCount(groups.getGroupUserCount() + 1);
             groupRepository.save(groups);
             JSONObject jsonObject1 = new JSONObject();
@@ -117,8 +119,12 @@ public class GroupServiceImplement implements GroupService {
     @Override
     public Response findGroupById(Integer id) {
         try {
-            Groups groups = groupRepository.getOne(id);
-            return new Response(1, "获取用户群组成功", JSON.toJSONString(groups));
+            Optional<Groups> groupsOptional = groupRepository.findById(id);
+            if(groupsOptional.isPresent()){
+                Groups groups = groupsOptional.get();
+                return new Response(1, "获取用户群组成功", JSON.toJSONString(groups, SerializerFeature.UseSingleQuotes));
+            }
+            return new Response(0, "该群组不存在", null);
         } catch (Exception e) {
             e.printStackTrace();
             return new Response(-1, "获取用户群组异常", null);
@@ -127,21 +133,13 @@ public class GroupServiceImplement implements GroupService {
 
     @Override
     public Response findGroupByIds(String ids) {
-        List<Groups> groups = new ArrayList<>();
-        String[] id = ids.split(",");
-        for(String groupId : id){
-            Groups groups1 = groupRepository.findById(Integer.valueOf(groupId)).get();
-            groups.add(groups1);
+        String[] strIds = ids.split(",");
+        List<Integer> intIds = new ArrayList<>();
+        for(String groupId : strIds){
+            intIds.add(Integer.valueOf(groupId));
         }
+        List<Groups> groups = groupRepository.findByIdIn(intIds);
         return new Response(1, "获取群组成功", JSONArray.toJSONString(groups));
     }
 
-
-    private static SerializeConfig mapping = new SerializeConfig();
-    private static String dateFormat;
-
-    static {
-        dateFormat = "yyyy-MM-dd HH:mm:ss";
-        mapping.put(Timestamp.class, new SimpleDateFormatSerializer(dateFormat));
-    }
 }

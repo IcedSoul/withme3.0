@@ -118,7 +118,7 @@ public class MessageServiceImpl implements MessageService {
             if(users.size() > 0) {
                 message.setToId(users.getInteger(0));
                 Channel channel = getChannel(message.getToId());
-                if(isNull(channel)) {
+                if(!isNull(channel)) {
                     saveMessage(message);
                     sendMessage(channel, jsonMessage);
                 }
@@ -160,7 +160,7 @@ public class MessageServiceImpl implements MessageService {
         requestParams.add("type", message.getType());
         requestParams.add("time", sdf.format(message.getTime()));
 
-        seneSyncHttpRequest(MESSAGE_BASE, ADD_MESSAGE, requestParams);
+        sendSyncHttpRequest(MESSAGE_BASE, ADD_MESSAGE, requestParams);
 
 //        Mono<Response> response = WebClient.create(MESSAGE_BASE).post()
 //                .uri(ADD_MESSAGE)
@@ -181,12 +181,11 @@ public class MessageServiceImpl implements MessageService {
         requestParams.add("content", message.getContent());
         requestParams.add("type", message.getType());
         requestParams.add("time", sdf.format(message.getTime()));
-
-        seneSyncHttpRequest(GROUP_MESSAGE_BASE, ADD_GROUP_MESSAGE, requestParams);
+        sendSyncHttpRequest(GROUP_MESSAGE_BASE, ADD_GROUP_MESSAGE, requestParams);
 
     }
 
-    private void seneSyncHttpRequest(String baseURL, String path, MultiValueMap requestParams){
+    private void sendSyncHttpRequest(String baseURL, String path, MultiValueMap requestParams){
         Mono<Response> response = WebClient.create(baseURL).post()
                 .uri(path)
                 .syncBody(requestParams)

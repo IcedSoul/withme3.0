@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface GroupRepository extends JpaRepository<Groups, Integer> {
     Groups findByGroupId(String groupId);
+    List<Groups> findByIdIn(List<Integer> ids);
 }

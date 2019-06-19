@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface GroupMessageRepository extends JpaRepository<GroupMessage, Integer> {
 
-    List<GroupMessage> findAllById(Integer id, Pageable pageable);
+    List<GroupMessage> findAllByGroupId(Integer id, Pageable pageable);
 
     List<GroupMessage> findAllByFromIdAndToId(Integer fromId, Integer toId);
 

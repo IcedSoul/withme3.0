@@ -38,7 +38,7 @@ public class UserGroupRelationServiceImplement implements UserGroupRelationServi
             userGroupRelation.setGroupLevel(0);
             userGroupRelation.setUserId(userId);
             userGroupRelation.setEnterGroupTime(Common.getCurrentTime());
-            userGroupRelation.setGroupUserNickName("");
+            userGroupRelation.setGroupUserNickName(" ");
             userGroupRelationRepository.save(userGroupRelation);
             Groups group = groupRepository.getOne(id);
             if (Common.isEmpty(group.getGroupMembers())) {

@@ -215,8 +215,10 @@ public class UserServiceImplement implements UserService {
     public Response getUsersByUserIds(String userIds) {
         try {
             String[] users = userIds.split(",");
+//            ArrayList<Integer> intIds = new ArrayList<>();
             List<AuthUser> userList = new ArrayList<>();
             for (String userId : users) {
+                //TODO 优化为不使用循环
                 User user = userRepository.findByUserId(Integer.valueOf(userId));
                 AuthUser authUser = new AuthUser(user.getUserId(), user.getUserName(), user.getUserNickName(), Common.getCurrentTime());
                 userList.add(authUser);

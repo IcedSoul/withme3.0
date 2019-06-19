@@ -5,10 +5,12 @@ import cn.icedsoul.commonservice.util.Response;
 import cn.icedsoul.groupmessageservice.domain.GroupMessage;
 import cn.icedsoul.groupmessageservice.repository.GroupMessageRepository;
 import cn.icedsoul.groupmessageservice.service.serviceApi.GroupMessageService;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.SimpleDateFormatSerializer;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
+@Log
 public class GroupMessageServiceImplement implements GroupMessageService {
 
     @Autowired
@@ -55,9 +58,9 @@ public class GroupMessageServiceImplement implements GroupMessageService {
     @Override
     public Response getMessageRecordBetweenUserAndGroup(Integer userId, Integer id, Integer page, Integer number) {
         try {
-            //userCheck
+            //TODO 检查user是否是当前群组的
             Pageable sortedByTime = PageRequest.of(page, number, Sort.by("time").descending());
-            List<GroupMessage> groupMessages = groupMessageRepository.findAllById(id, sortedByTime);
+            List<GroupMessage> groupMessages = groupMessageRepository.findAllByGroupId(id, sortedByTime);
             Collections.sort(groupMessages);
             //下次尝试直接返回对象看是否能够转为json对象
             return new Response(1, "获取群组聊天记录成功", JSONArray.toJSONString(groupMessages, SerializerFeature.UseSingleQuotes));
