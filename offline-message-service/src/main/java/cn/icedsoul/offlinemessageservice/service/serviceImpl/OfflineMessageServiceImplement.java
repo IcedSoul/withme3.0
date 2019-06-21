@@ -54,13 +54,13 @@ public class OfflineMessageServiceImplement implements OfflineMessageService {
     public Response getOfflineMessageTo(Integer userId) {
         try {
             List<OfflineMessage> messages = offlineMessageRepository.findAllByToId(userId);
-            if(messages.size() >= 0){
-                offlineMessageRepository.deleteAllByToId(userId);
-                Response response = restTemplate.postForEntity(CONSTANT.MESSAGE_SERVICE_ADD_MESSAGES, messages, Response.class).getBody();
-                if(response.getStatus() != 1){
-                    throw new Exception();
-                }
-            }
+
+            offlineMessageRepository.deleteAllByToId(userId);
+//            Response response = restTemplate.postForEntity(CONSTANT.MESSAGE_SERVICE_ADD_MESSAGES, messages, Response.class).getBody();
+//            if(response.getStatus() != 1){
+//                throw new Exception();
+//            }
+
             List<OfflineGroupMessage> groupMessages = offlineGroupMessageRepository.findAllByToId(userId);
             for(OfflineGroupMessage offlineGroupMessage : groupMessages){
                 messages.add(new OfflineMessage(offlineGroupMessage));

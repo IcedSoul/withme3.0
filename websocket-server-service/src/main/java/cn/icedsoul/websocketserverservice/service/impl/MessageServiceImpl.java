@@ -94,7 +94,6 @@ public class MessageServiceImpl implements MessageService {
         JSONArray users = jsonObjectMessage.getJSONArray("to");
         Channel self = getChannel(message.getFromId());
         if (message.getType() == 0) {
-            log.info("I send message to myself " + message.getFromId());
             sendMessage(self, jsonMessage);
         }
         if (message.getType() == 1) {
@@ -107,7 +106,7 @@ public class MessageServiceImpl implements MessageService {
                     sendMessage(channel, jsonMessage);
                 }
                 else {
-                    //TODO offline group message handle
+                    saveMessage(message, OFFLINE_MESSAGE_BASE, ADD_OFFLINE_MESSAGE);
                 }
 
                 log.info("I send message to " + message.getToId());
@@ -119,11 +118,12 @@ public class MessageServiceImpl implements MessageService {
                 message.setToId(users.getInteger(0));
                 Channel channel = getChannel(message.getToId());
                 if(!isNull(channel)) {
-                    saveMessage(message);
+                    saveMessage(message, MESSAGE_BASE, ADD_MESSAGE);
                     sendMessage(channel, jsonMessage);
                 }
                 else {
-                    //TODO offline message handle
+                    saveMessage(message, MESSAGE_BASE, ADD_MESSAGE);
+                    saveMessage(message, OFFLINE_MESSAGE_BASE, ADD_OFFLINE_MESSAGE);
                 }
                 log.info("I send message to " + message.getToId());
             }
@@ -152,7 +152,7 @@ public class MessageServiceImpl implements MessageService {
 //        return jsonObjectMessage.toString();
 //    }
 
-    private void saveMessage(Message message){
+    private void saveMessage(Message message, String baseUrl, String path){
         MultiValueMap<String, Object> requestParams = new LinkedMultiValueMap<>();
         requestParams.add("fromId", message.getFromId());
         requestParams.add("toId", message.getToId());
@@ -160,7 +160,7 @@ public class MessageServiceImpl implements MessageService {
         requestParams.add("type", message.getType());
         requestParams.add("time", sdf.format(message.getTime()));
 
-        sendSyncHttpRequest(MESSAGE_BASE, ADD_MESSAGE, requestParams);
+        sendSyncHttpRequest(baseUrl, path, requestParams);
 
 //        Mono<Response> response = WebClient.create(MESSAGE_BASE).post()
 //                .uri(ADD_MESSAGE)
@@ -182,8 +182,18 @@ public class MessageServiceImpl implements MessageService {
         requestParams.add("type", message.getType());
         requestParams.add("time", sdf.format(message.getTime()));
         sendSyncHttpRequest(GROUP_MESSAGE_BASE, ADD_GROUP_MESSAGE, requestParams);
-
     }
+
+//    private void saveOffLineMessage(Message message){
+//        MultiValueMap<String, Object> requestParams = new LinkedMultiValueMap<>();
+//        requestParams.add("fromId", message.getFromId());
+//        requestParams.add("toId", message.getToId());
+//        requestParams.add("content", message.getContent());
+//        requestParams.add("type", message.getType());
+//        requestParams.add("time", sdf.format(message.getTime()));
+//
+//        sendSyncHttpRequest(OFFLINE_MESSAGE_BASE, ADD_OFFLINE_MESSAGE, requestParams);
+//    }
 
     private void sendSyncHttpRequest(String baseURL, String path, MultiValueMap requestParams){
         Mono<Response> response = WebClient.create(baseURL).post()

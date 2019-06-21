@@ -22,11 +22,8 @@ public class User {
     private String userNickName;
     @Column(nullable = true, columnDefinition = "varchar(50) COMMENT '用户头像路径'")
     private String userImgPath;
-    /**
-     * 在线状态似乎不应该持久化到数据库，此处暂时保留，但修改时不使用。
-     */
-    @Column(nullable = false, columnDefinition = "Int(11) COMMENT '是否在线标识（留待使用）'")
-    private int userIsOnline;
+    @Column(nullable = false, columnDefinition = "Int(11) COMMENT '是否有离线消息'")
+    private int hasOffLineMessage;
     @Column(nullable = true, columnDefinition = "varchar(5000) COMMENT '联系人列表'")
     private String userRelations;
     @Column(nullable = true, columnDefinition = "varchar(5000) COMMENT '群组列表'")

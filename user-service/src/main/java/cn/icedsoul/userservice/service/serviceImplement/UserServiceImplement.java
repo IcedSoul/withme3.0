@@ -90,7 +90,7 @@ public class UserServiceImplement implements UserService {
                 User user = new User();
                 user.setUserId(userDetail1.getUserDetailId());
                 user.setUserName(userDetail1.getUserDetailName());
-                user.setUserIsOnline(0);
+                user.setHasOffLineMessage(0);
                 user.setUserNickName(userDetail1.getUserDetailNickName());
                 user.setUserGroups("");
                 user.setUserRelations("");

@@ -48,4 +48,10 @@ public class CONSTANT {
     public static String GROUP_MESSAGE_BASE = "http://group-message-service:8081";
     //    public static String MESSAGE_BASE = "http://10.141.211.176:21005";
     public static String ADD_GROUP_MESSAGE = "/v1/groupMessage";
+
+    /**
+     * 存储离线消息 相关
+     */
+    public static String OFFLINE_MESSAGE_BASE = "http://offline-message-service:8081";
+    public static String ADD_OFFLINE_MESSAGE = "/v1/offlineMessage";
 }

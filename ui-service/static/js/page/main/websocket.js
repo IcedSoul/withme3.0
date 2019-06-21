@@ -19,6 +19,7 @@ websocket.onopen = function () {
     //显示在线状态
     //通知自己的所有好友自己上线啦
     onLineStatusNotice(3);
+    showOfflineMessage();
 };
 
 //接收到消息的回调方法
