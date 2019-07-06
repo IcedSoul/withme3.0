@@ -235,10 +235,10 @@ public class UserServiceImplement implements UserService {
         try {
             User user = userRepository.findByUserId(userId);
             if (Common.isEmpty(user.getUserGroups())) {
-                user.setUserGroups(String.valueOf(userId));
+                user.setUserGroups(String.valueOf(groupId));
             }
             else {
-                user.setUserGroups(user.getUserGroups() + "," + String.valueOf(groupId));
+                user.setUserGroups(user.getUserGroups() + "," + groupId);
             }
             userRepository.save(user);
             return new Response(1, "获取用户成功", JSONArray.toJSONString(user));
