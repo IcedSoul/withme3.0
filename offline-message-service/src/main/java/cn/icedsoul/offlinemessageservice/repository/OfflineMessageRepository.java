@@ -9,4 +9,5 @@ public interface OfflineMessageRepository extends JpaRepository<OfflineMessage, 
     List<OfflineMessage> findAllByToId(Integer toId);
 //    List<OfflineMessage> findAllByFromId(Integer fromId);
     void deleteAllByToId(Integer toId);
+    OfflineMessage findByFromIdAndToIdAndType(Integer fromId, Integer toId, Integer type);
 }
