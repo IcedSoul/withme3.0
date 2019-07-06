@@ -180,7 +180,7 @@ function chatWithGroup(id, groupId, groupName, groupCreatorId) {
         + id
         + ')">发送</button>'
         + '<button type="button" class="btn btn-default pull-right smallOffset" onclick="groupUserList(' + id + ')">查看群成员</button>';
-    if (groupCreatorId == currentUser.userId)
+    if (groupCreatorId === currentUser.userId)
         chatWith += '<button type="button" class="btn btn-default pull-right smallOffset" onclick="groupInvite(' + id + ')">邀请新成员</button>';
     chatWith += '</div>'
         + '<div class="input">'

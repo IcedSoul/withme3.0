@@ -81,25 +81,8 @@ function showReceiveMessage(content, from, to, type, time, message) {
         if (type === 1) {
             messageReceiver = '#' + to[0] + 'outputGroup';
             target = document.getElementById(to[0] + 'outputGroup');
-            let fromUser = null;
+            let fromUser = getUserById(from);
 
-            $.ajax({
-                async: false, //设置同步
-                type: 'GET',
-                url: address + 'v1/user/id/' + from,
-                dataType: 'json',
-                success: function (result) {
-                    if (result.status === 1) {
-                        fromUser = JSON.parse(result.content);
-                    }
-                    else {
-                        layer.alert('查询错误');
-                    }
-                },
-                error: function (result) {
-                    layer.alert('查询错误');
-                }
-            });
             showTime = fromUser.userNickName + '&nbsp;&nbsp;' + showTime;
         }
         leftArrow = '<div class="row singleMessage">'
@@ -127,24 +110,9 @@ function showReceiveMessage(content, from, to, type, time, message) {
 //消息通知
 function doMessageNotice(content, from, to, type, time, message) {
     let fromUser = null;
-    $.ajax({
-        async: false, //设置同步
-        type: 'GET',
-        url: address + 'v1/user/id/' + from,
-        dataType: 'json',
-        success: function (result) {
-            if (result.status === 1) {
-                fromUser = JSON.parse(result.content);
-            }
-            else {
-                layer.alert('查询错误');
-            }
-        },
-        error: function (result) {
-            layer.alert('查询错误');
-        }
-    });
-
+    if(type !== 7){
+        fromUser = getUserById(from);
+    }
     if (noticeIndex == null) {
         let html = '<div class="notice">' +
             '<div class="noticePosition" onclick="openNotice();">' +
@@ -164,46 +132,52 @@ function doMessageNotice(content, from, to, type, time, message) {
             id: 'notice'
         });
     }
-    if (type == 0 || type == -1 || type == 1) {
+    if (type === 0 || type === -1 || type === 1 || type === 7) {
         noticeUser[noticeCount] = fromUser;
         noticeMessage[noticeCount] = message;
         noticeCount++;
     }
     let noticeText = document.getElementById('noticeText');
-    //这里也遇到了一个坑，哎。因为之前这里没有传type这个参数，所以这里判断的时候不会生效，那么提示区的文本自然就空掉了
-    //不多说，都是泪。下次注意这种错误。
     let text = '';
-    if (type == 0 || type == -1) {
+    if (type === 0 || type === -1) {
         text += fromUser.userNickName + ':' + content;
     }
-    else if (type == 3) {
+    else if (type === 3) {
         text = '您的联系人&nbsp;' + fromUser.userNickName + '&nbsp;上线了';
         statusChangeMark = 1;
     }
-    else if (type == 4) {
+    else if (type === 4) {
         text = '您的联系人 &nbsp;' + fromUser.userNickName + '&nbsp;下线了';
         statusChangeMark = 1;
     }
-    else if (type == 1) {
+    else if (type === 1) {
         let group = ajaxGetGroupById(to[0]);
         text = group.groupName + '|' + fromUser.userNickName + ':' + content;
+    }
+    else if (type === 7) {
+        let group = ajaxGetGroupById(from);
+        text = group.groupName + ' 有 ' + content + " 条新消息";
     }
     text += '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
     noticeText.innerHTML += text;
 }
 
-function openNotice(content, from, to, time) {
+function openNotice() {
     layer.close(noticeIndex);
-    if (statusChangeMark == 1) {
+    if (statusChangeMark === 1) {
         listRelation();
     }
     for (let i = 0; i < noticeCount; i++) {
         let messages = JSON.parse(noticeMessage[i]);
-        if (messages.type == 0 || messages.type == -1) {
+        if (messages.type === 0 || messages.type === -1) {
             chatWithSomeBody(noticeUser[i].userId, noticeUser[i].userName, noticeUser[i].userNickName);
         }
-        else if (messages.type == 1) {
+        else if (messages.type === 1) {
             let group = ajaxGetGroupById(messages.to[0]);
+            chatWithGroup(group.id, group.groupId, group.groupName, group.groupCreatorId);
+        }
+        else if (messages.type === 7) {
+            let group = ajaxGetGroupById(messages.from);
             chatWithGroup(group.id, group.groupId, group.groupName, group.groupCreatorId);
         }
     }
@@ -452,24 +426,7 @@ function listRelation() {
 let relationApply = null;
 let relationApplyNumber = 0;
 function openRelationApply(content, from, to, type, time, message) {
-    let fromUser = null;
-    $.ajax({
-        async: false, //设置同步
-        type: 'GET',
-        url: address + 'v1/user/id/' + from,
-        dataType: 'json',
-        success: function (result) {
-            if (result.status === 1) {
-                fromUser = JSON.parse(result.content);
-            }
-            else {
-                layer.alert('查询错误');
-            }
-        },
-        error: function (result) {
-            layer.alert('查询错误');
-        }
-    });
+    let fromUser = getUserById(from);
     let addFriendApply = document.getElementById('addFriendApply');
     if (!addFriendApply) {
         let html = '<div id="addFriendApply" class="addFriend">'

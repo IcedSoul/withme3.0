@@ -57,3 +57,25 @@ function getCurrentUser() {
     else
         return JSON.parse(response.content);
 }
+
+function getUserById(id) {
+    let user = null;
+    $.ajax({
+        async: false, //设置同步
+        type: 'GET',
+        url: address + 'v1/user/id/' + id,
+        dataType: 'json',
+        success: function (result) {
+            if (result.status === 1) {
+                user = JSON.parse(result.content);
+            }
+            else {
+                layer.alert('查询错误');
+            }
+        },
+        error: function (result) {
+            layer.alert('查询错误');
+        }
+    });
+    return user;
+}

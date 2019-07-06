@@ -35,13 +35,22 @@ public class OfflineMessageServiceImplement implements OfflineMessageService {
     @Override
     public Response addOfflineMessage(Integer fromId, Integer toId, String content, Integer type, String time) {
         try {
-            OfflineMessage offlineMessage = new OfflineMessage();
-            offlineMessage.setFromId(fromId);
-            offlineMessage.setToId(toId);
-            offlineMessage.setContent(content);
-            offlineMessage.setType(type);
-            offlineMessage.setTime(Common.getTimeFromString(time));
-            offlineMessageRepository.save(offlineMessage);
+            OfflineMessage message = offlineMessageRepository.findByFromIdAndToIdAndType(fromId, toId, type);
+            if(Common.isNull(message)) {
+                OfflineMessage offlineMessage = new OfflineMessage();
+                offlineMessage.setFromId(fromId);
+                offlineMessage.setToId(toId);
+                offlineMessage.setContent(content);
+                offlineMessage.setType(type);
+                offlineMessage.setTime(Common.getTimeFromString(time));
+                offlineMessageRepository.save(offlineMessage);
+            }
+            else {
+                Integer count = Integer.valueOf(message.getContent());
+                message.setContent(String.valueOf(++count));
+                offlineMessageRepository.save(message);
+            }
+
             return new Response(1, "Insert offline message success", null);
         } catch (Exception e){
             e.printStackTrace();
