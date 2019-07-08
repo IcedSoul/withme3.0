@@ -8,10 +8,11 @@
 
 
 ## 运行说明
-1. 安装 Docker 以及 Docker Compose
+1. 安装 Maven, Docker 以及 Docker Compose
 2. 代码clone或者下载到本地后请进入WithMe3.0/ 目录，master分支。
 3. 执行 
     ```shell
+    mvn clean package -DskipTests
     docker-compose build
     docker-compose up
     ```
