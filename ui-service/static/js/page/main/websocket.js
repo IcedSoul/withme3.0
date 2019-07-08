@@ -1,7 +1,8 @@
-//获取服务端地址
-
-//let ws = "ws://localhost:8282/" + parseURL("token");
-let ws = "ws://localhost:21002/" + parseURL("token");
+//show 专有，正式代码没有
+layer.alert("你好，欢迎尝试WithMe，你有一个初始好友和一个初始群组。初始好友当然是我啦，初始群组是包含所有注册用户的群组，你可以打开瞧一瞧。有任何问题或者意见可以添加QQ群：730490237交流~也欢迎访问我的个人博客：https://blog.icedsoul.cn");
+//获取服务端地
+// let ws = "ws://localhost:21002/" + parseURL("token");
+let ws = "ws://119.23.212.211:21002/" + parseURL("token");
 let websocket = null;
 
 //判断当前浏览器是否支持WebSocket

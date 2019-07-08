@@ -37,35 +37,29 @@ public class UserRelationServiceImplement implements UserRelationService {
     @Override
     @Transactional
     public Response buildRelation(Integer userIdA, Integer userIdB) {
-        try {
-            log.info("I am building relation between " + userIdA + " and " + userIdB);
-            UserRelation userRelation = new UserRelation();
-            userRelation.setUserIdA(userIdA);
-            userRelation.setUserIdB(userIdB);
-            userRelation.setRelationStatus(1);
-            Date date = new Date();
-            Timestamp timestamp = new Timestamp(date.getTime());
-            userRelation.setRelationStart(timestamp);
-            userRelationRepository.save(userRelation);
-            // 此处使用远程网络调用，暂且采用同步的方式，如果性能出现瓶颈可以考虑用异步
-            MultiValueMap<String, Integer> requestEntity = new LinkedMultiValueMap<>();
-            requestEntity.add("userIdA", userIdA);
-            requestEntity.add("userIdB", userIdB);
-            ResponseEntity<Response> responseEntity =
-                    restTemplate.postForEntity(CONSTANT.USER_SERVICE_UPDATE_RELATION, requestEntity, Response.class);
-            Response response = responseEntity.getBody();
-            if(response.getStatus() == 1) {
-                return new Response(1, "添加好友成功", null);
-            }
-            else {
-                userRelationRepository.deleteById(new UserRelationPriKey(userIdA, userIdB));
-                return new Response(-1, "添加好友失败", null);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        log.info("I am building relation between " + userIdA + " and " + userIdB);
+        UserRelation userRelation = new UserRelation();
+        userRelation.setUserIdA(userIdA);
+        userRelation.setUserIdB(userIdB);
+        userRelation.setRelationStatus(1);
+        Date date = new Date();
+        Timestamp timestamp = new Timestamp(date.getTime());
+        userRelation.setRelationStart(timestamp);
+        userRelationRepository.save(userRelation);
+        // 此处使用远程网络调用，暂且采用同步的方式，如果性能出现瓶颈可以考虑用异步
+        MultiValueMap<String, Integer> requestEntity = new LinkedMultiValueMap<>();
+        requestEntity.add("userIdA", userIdA);
+        requestEntity.add("userIdB", userIdB);
+        ResponseEntity<Response> responseEntity =
+                restTemplate.postForEntity(CONSTANT.USER_SERVICE_UPDATE_RELATION, requestEntity, Response.class);
+        Response response = responseEntity.getBody();
+        if(response.getStatus() == 1) {
+            return new Response(1, "添加好友成功", null);
+        }
+        else {
+            userRelationRepository.deleteById(new UserRelationPriKey(userIdA, userIdB));
             return new Response(-1, "添加好友失败", null);
         }
-
     }
 
     @Override

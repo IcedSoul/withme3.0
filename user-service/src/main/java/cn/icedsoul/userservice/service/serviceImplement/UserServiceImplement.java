@@ -92,11 +92,36 @@ public class UserServiceImplement implements UserService {
                 user.setUserName(userDetail1.getUserDetailName());
                 user.setHasOffLineMessage(0);
                 user.setUserNickName(userDetail1.getUserDetailNickName());
+                //show专有
                 user.setUserGroups("");
                 user.setUserRelations("");
                 user.setUserRole(0);
-                userRepository.save(user);
-                return new Response(1, "注册成功", null);
+//                user = userRepository.save(user);
+                user = userRepository.saveAndFlush(user);
+
+                //添加管理员为好友
+                MultiValueMap<String, Integer> requestEntity = new LinkedMultiValueMap<>();
+                requestEntity.add("userIdA", user.getUserId());
+                requestEntity.add("userIdB", 1);
+                ResponseEntity<Response> responseEntity =
+                        restTemplate.postForEntity(CONSTANT.USER_RELATION_SERVICE_BUILD_RELATION, requestEntity, Response.class);
+                Response response = responseEntity.getBody();
+                if(response.getStatus() != 1) {
+                    return new Response(-1, "添加管理员失败", null);
+                }
+
+                //加入初始群组
+                MultiValueMap<String, Integer> requestEntity1 = new LinkedMultiValueMap<>();
+                requestEntity1.add("id", 1);
+                requestEntity1.add("userId", user.getUserId());
+                ResponseEntity<Response> responseEntity1 =
+                        restTemplate.postForEntity(CONSTANT.GROUP_SERVICE_ADD_USER, requestEntity1, Response.class);
+                Response response1 = responseEntity1.getBody();
+                if(response1.getStatus() != 1) {
+                    return new Response(-1, "添加初始群组失败", null);
+                }
+
+                return new Response(-1, "注册成功", null);
             } else {
                 return new Response(-1, "用户名已存在", null);
             }
@@ -106,6 +131,7 @@ public class UserServiceImplement implements UserService {
             return new Response(-1, "注册异常", null);
         }
     }
+
 
     @Override
     public Response getRelations(Integer userId) {

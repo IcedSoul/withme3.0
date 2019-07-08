@@ -107,7 +107,7 @@ public class MessageServiceImpl implements MessageService {
                 }
                 else {
                     message.setFromId(users.getInteger(0));
-                    message.setContent("0");
+                    message.setContent("1");
                     message.setType(7);
                     saveMessage(message, OFFLINE_MESSAGE_BASE, ADD_OFFLINE_MESSAGE);
                 }
