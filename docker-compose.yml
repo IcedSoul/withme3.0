@@ -39,6 +39,12 @@ services:
       - withme-mysql
     ports:
     - 21003:8081
+    deploy:
+      resources:
+        limits:
+          memory: 50M
+        reservations:
+          memory: 20M
     networks:
     - withme-network
 
@@ -50,6 +56,12 @@ services:
     restart: always
     ports:
     - 21004:8081
+    deploy:
+      resources:
+        limits:
+          memory: 50M
+        reservations:
+          memory: 20M
     networks:
     - withme-network
 
@@ -61,6 +73,12 @@ services:
     restart: always
     ports:
     - 21005:8081
+    deploy:
+      resources:
+        limits:
+          memory: 50M
+        reservations:
+          memory: 20M
     networks:
     - withme-network
 
@@ -72,6 +90,12 @@ services:
       restart: always
       ports:
       - 21006:8081
+      deploy:
+        resources:
+          limits:
+            memory: 50M
+          reservations:
+            memory: 20M
       networks:
       - withme-network
 
@@ -83,6 +107,12 @@ services:
       restart: always
       ports:
       - 21007:8081
+      deploy:
+        resources:
+          limits:
+            memory: 50M
+          reservations:
+            memory: 20M
       networks:
       - withme-network
 
@@ -94,6 +124,12 @@ services:
       restart: always
       ports:
       - 21008:8081
+      deploy:
+        resources:
+          limits:
+            memory: 50M
+          reservations:
+            memory: 20M
       networks:
       - withme-network
 
@@ -104,6 +140,12 @@ services:
     restart: always
     ports:
       - 80:8081
+    deploy:
+      resources:
+        limits:
+          memory: 100M
+        reservations:
+          memory: 20M
     networks:
       - withme-network
 
@@ -114,6 +156,12 @@ services:
     restart: always
     ports:
     - 21002:8282
+    deploy:
+      resources:
+        limits:
+          memory: 100M
+        reservations:
+          memory: 20M
     networks:
     - withme-network
 
