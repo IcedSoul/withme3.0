@@ -1,0 +1,14 @@
+cn/icedsoul/offlinemessageservice/domain/OfflineGroupMessage.class
+cn/icedsoul/offlinemessageservice/repository/OfflineGroupMessageRepository.class
+cn/icedsoul/offlinemessageservice/controller/OfflineGroupMessageController.class
+cn/icedsoul/offlinemessageservice/service/serviceImpl/OfflineGroupMessageServiceImplement.class
+cn/icedsoul/offlinemessageservice/controller/OfflineMessageController.class
+cn/icedsoul/offlinemessageservice/service/serviceApi/OfflineMessageService.class
+cn/icedsoul/offlinemessageservice/constant/CONSTANT.class
+cn/icedsoul/offlinemessageservice/service/serviceImpl/OfflineMessageServiceImplement.class
+cn/icedsoul/offlinemessageservice/config/RestTemplateConfig.class
+cn/icedsoul/offlinemessageservice/config/SwaggerConfig.class
+cn/icedsoul/offlinemessageservice/repository/OfflineMessageRepository.class
+cn/icedsoul/offlinemessageservice/service/serviceApi/OfflineGroupMessageService.class
+cn/icedsoul/offlinemessageservice/domain/OfflineMessage.class
+cn/icedsoul/offlinemessageservice/OfflineMessageServiceApplication.class

@@ -1,0 +1,16 @@
+cn/icedsoul/groupservice/domain/prikey/UserGroupRelationPriKey.class
+cn/icedsoul/groupservice/domain/PriKey/UserGroupRelationPriKey.class
+cn/icedsoul/groupservice/repository/UserGroupRelationRepository.class
+cn/icedsoul/groupservice/domain/UserGroupRelation.class
+cn/icedsoul/groupservice/service/serviceApi/UserGroupRelationService.class
+cn/icedsoul/groupservice/service/serviceImpl/GroupServiceImplement.class
+cn/icedsoul/groupservice/repository/GroupRepository.class
+cn/icedsoul/groupservice/domain/Groups.class
+cn/icedsoul/groupservice/constant/CONSTANT.class
+cn/icedsoul/groupservice/GroupServiceApplication.class
+cn/icedsoul/groupservice/service/serviceImpl/UserGroupRelationServiceImplement.class
+cn/icedsoul/groupservice/config/SwaggerConfig.class
+cn/icedsoul/groupservice/controller/UserGroupRelationController.class
+cn/icedsoul/groupservice/config/RestTemplateConfig.class
+cn/icedsoul/groupservice/service/serviceApi/GroupService.class
+cn/icedsoul/groupservice/controller/GroupController.class

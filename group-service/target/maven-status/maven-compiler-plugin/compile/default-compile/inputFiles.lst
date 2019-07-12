@@ -1,0 +1,16 @@
+/code/Github/WithMe3.0/group-service/src/main/java/cn/icedsoul/groupservice/service/serviceImpl/UserGroupRelationServiceImplement.java
+/code/Github/WithMe3.0/group-service/src/main/java/cn/icedsoul/groupservice/controller/GroupController.java
+/code/Github/WithMe3.0/group-service/src/main/java/cn/icedsoul/groupservice/repository/UserGroupRelationRepository.java
+/code/Github/WithMe3.0/group-service/src/main/java/cn/icedsoul/groupservice/domain/prikey/UserGroupRelationPriKey.java
+/code/Github/WithMe3.0/group-service/src/main/java/cn/icedsoul/groupservice/domain/PriKey/UserGroupRelationPriKey.java
+/code/Github/WithMe3.0/group-service/src/main/java/cn/icedsoul/groupservice/config/RestTemplateConfig.java
+/code/Github/WithMe3.0/group-service/src/main/java/cn/icedsoul/groupservice/domain/Groups.java
+/code/Github/WithMe3.0/group-service/src/main/java/cn/icedsoul/groupservice/constant/CONSTANT.java
+/code/Github/WithMe3.0/group-service/src/main/java/cn/icedsoul/groupservice/service/serviceApi/GroupService.java
+/code/Github/WithMe3.0/group-service/src/main/java/cn/icedsoul/groupservice/config/SwaggerConfig.java
+/code/Github/WithMe3.0/group-service/src/main/java/cn/icedsoul/groupservice/GroupServiceApplication.java
+/code/Github/WithMe3.0/group-service/src/main/java/cn/icedsoul/groupservice/service/serviceImpl/GroupServiceImplement.java
+/code/Github/WithMe3.0/group-service/src/main/java/cn/icedsoul/groupservice/repository/GroupRepository.java
+/code/Github/WithMe3.0/group-service/src/main/java/cn/icedsoul/groupservice/controller/UserGroupRelationController.java
+/code/Github/WithMe3.0/group-service/src/main/java/cn/icedsoul/groupservice/service/serviceApi/UserGroupRelationService.java
+/code/Github/WithMe3.0/group-service/src/main/java/cn/icedsoul/groupservice/domain/UserGroupRelation.java
