@@ -1,0 +1,48 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.18.0 (06a2e56)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: group-mysql
+  name: group-mysql
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: group-mysql
+    spec:
+      containers:
+      - args:
+        - --character-set-server=utf8mb4
+        - --collation-server=utf8mb4_unicode_ci
+        env:
+        - name: MYSQL_DATABASE
+          value: group
+        - name: MYSQL_ROOT_PASSWORD
+          value: root
+        image: mysql:5.6
+        name: group-mysql
+        ports:
+        - containerPort: 3306
+        resources: {}
+        volumeMounts:
+        - mountPath: /etc/my.cnf
+          name: group-mysql-claim0
+        - mountPath: /var/lib/mysql
+          name: group-mysql-claim1
+      restartPolicy: Always
+      volumes:
+      - name: group-mysql-claim0
+        persistentVolumeClaim:
+          claimName: group-mysql-claim0
+      - name: group-mysql-claim1
+        persistentVolumeClaim:
+          claimName: group-mysql-claim1
+status: {}

@@ -15,6 +15,7 @@
 3. 执行 
     ```shell
     mvn clean package -DskipTests
+    cd /deployment/docker-compose
     docker-compose build
     docker-compose up
     ```

@@ -4,12 +4,12 @@ services:
   redis:
     image: redis
     ports:
-    - 6379:6379
+      - 6379:6379
     restart: always
     command: /bin/bash -c "redis-server /etc/redis/redis.conf"
     volumes:
-    - ./redis/redis.cnf:/etc/redis/redis.conf
-    - ./redis/data:/etc/redis/data
+      - ./redis/redis.cnf:/etc/redis/redis.conf
+      - ./redis/data:/etc/redis/data
     networks:
       - withme-network
 
@@ -17,7 +17,7 @@ services:
   user-mysql:
     image: mysql:5.6
     ports:
-    - 3307:3306
+      - 3307:3306
     command: [
       --character-set-server=utf8mb4,
       --collation-server=utf8mb4_unicode_ci
@@ -26,15 +26,15 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: user
     volumes:
-    - ./user-mysql/mysql.cnf:/etc/my.cnf
-    - ./user-mysql/data:/var/lib/mysql
+      - ./user-mysql/mysql.cnf:/etc/my.cnf
+      - ./user-mysql/data:/var/lib/mysql
     networks:
-    - withme-network
+      - withme-network
 
   user-relation-mysql:
     image: mysql:5.6
     ports:
-    - 3308:3306
+      - 3308:3306
     command: [
       --character-set-server=utf8mb4,
       --collation-server=utf8mb4_unicode_ci
@@ -43,15 +43,15 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: user-relation
     volumes:
-    - ./user-relation-mysql/mysql.cnf:/etc/my.cnf
-    - ./user-relation-mysql/data:/var/lib/mysql
+      - ./user-relation-mysql/mysql.cnf:/etc/my.cnf
+      - ./user-relation-mysql/data:/var/lib/mysql
     networks:
-    - withme-network
+      - withme-network
 
   message-mysql:
     image: mysql:5.6
     ports:
-    - 3309:3306
+      - 3309:3306
     command: [
       --character-set-server=utf8mb4,
       --collation-server=utf8mb4_unicode_ci
@@ -60,15 +60,15 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: message
     volumes:
-    - ./message-mysql/mysql.cnf:/etc/my.cnf
-    - ./message-mysql/data:/var/lib/mysql
+      - ./message-mysql/mysql.cnf:/etc/my.cnf
+      - ./message-mysql/data:/var/lib/mysql
     networks:
-    - withme-network
+      - withme-network
 
   group-mysql:
     image: mysql:5.6
     ports:
-    - 3310:3306
+      - 3310:3306
     command: [
       --character-set-server=utf8mb4,
       --collation-server=utf8mb4_unicode_ci
@@ -77,15 +77,15 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: group
     volumes:
-    - ./group-mysql/mysql.cnf:/etc/my.cnf
-    - ./group-mysql/data:/var/lib/mysql
+      - ./group-mysql/mysql.cnf:/etc/my.cnf
+      - ./group-mysql/data:/var/lib/mysql
     networks:
-    - withme-network
+      - withme-network
 
   group-message-mysql:
     image: mysql:5.6
     ports:
-    - 3311:3306
+      - 3311:3306
     command: [
       --character-set-server=utf8mb4,
       --collation-server=utf8mb4_unicode_ci
@@ -94,15 +94,15 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: group_message
     volumes:
-    - ./group-message-mysql/mysql.cnf:/etc/my.cnf
-    - ./group-message-mysql/data:/var/lib/mysql
+      - ./group-message-mysql/mysql.cnf:/etc/my.cnf
+      - ./group-message-mysql/data:/var/lib/mysql
     networks:
-    - withme-network
+      - withme-network
 
   offline-message-mysql:
     image: mysql:5.6
     ports:
-    - 3312:3306
+      - 3312:3306
     command: [
       --character-set-server=utf8mb4,
       --collation-server=utf8mb4_unicode_ci
@@ -111,81 +111,81 @@ services:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: offline_message
     volumes:
-    - ./offline-message-mysql/mysql.cnf:/etc/my.cnf
-    - ./offline-message-mysql/data:/var/lib/mysql
+      - ./offline-message-mysql/mysql.cnf:/etc/my.cnf
+      - ./offline-message-mysql/data:/var/lib/mysql
     networks:
-    - withme-network
+      - withme-network
 
   # common service
   user-service:
-    build: user-service
+    build: ../../user-service
     image: withme3.0/user-service
     restart: always
     depends_on:
       - user-mysql
     ports:
-    - 21003:8081
+      - 21003:8081
     networks:
-    - withme-network
+      - withme-network
 
   user-relation-service:
-    build: user-relation-service
+    build: ../../user-relation-service
     image: withme3.0/user-relation-service
     depends_on:
       - user-relation-mysql
     restart: always
     ports:
-    - 21004:8081
+      - 21004:8081
     networks:
-    - withme-network
+      - withme-network
 
   message-service:
-    build: message-service
+    build: ../../message-service
     image: withme3.0/message-service
     depends_on:
-    - message-mysql
+      - message-mysql
     restart: always
     ports:
-    - 21005:8081
+      - 21005:8081
     networks:
-    - withme-network
+      - withme-network
 
   group-service:
-      build: group-service
-      image: withme3.0/group-service
-      depends_on:
+    build: ../../group-service
+    image: withme3.0/group-service
+    depends_on:
       - group-mysql
-      restart: always
-      ports:
+    restart: always
+    ports:
       - 21006:8081
-      networks:
+    networks:
       - withme-network
 
   group-message-service:
-      build: group-message-service
-      image: withme3.0/group-message-service
-      depends_on:
+    build: ../../group-message-service
+    image: withme3.0/group-message-service
+    depends_on:
       - group-message-mysql
-      restart: always
-      ports:
+    restart: always
+    ports:
       - 21007:8081
-      networks:
+    networks:
       - withme-network
 
   offline-message-service:
-      build: offline-message-service
-      image: withme3.0/offline-message-service
-      depends_on:
+    build: ../../offline-message-service
+    image: withme3.0/offline-message-service
+    depends_on:
       - offline-message-mysql
-      restart: always
-      ports:
+    restart: always
+    ports:
       - 21008:8081
-      networks:
+    networks:
       - withme-network
 
   # ui-service
   ui-service:
-    build: ui-service
+    build: ../../ui-service
     image: withme3.0/ui-service
     restart: always
     ports:
@@ -195,17 +195,26 @@ services:
 
   # websocket service
   websocket-server-service:
-    build: websocket-server-service
+    build: ../../websocket-server-service
     image: withme3.0/websocket-server-service
     restart: always
     links:
       - redis
     depends_on:
-    - redis
+      - redis
     ports:
-    - 21002:8282
+      - 21002:8282
     networks:
-    - withme-network
+      - withme-network
+
+#  zk-center:
+#    image: zookeeper
+#    restart: always
+#    ports:
+#      - 2181:2181
+#    networks:
+#      - withme-network
+
 
 
 networks:
