@@ -18,7 +18,7 @@ spec:
         io.kompose.service: websocket-server-service
     spec:
       containers:
-      - image: withme3.0/websocket-server-service
+      - image: icedsoul/websocket-server-service
         name: websocket-server-service
         ports:
         - containerPort: 8282

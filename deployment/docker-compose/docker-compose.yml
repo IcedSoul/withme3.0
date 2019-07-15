@@ -119,7 +119,7 @@ services:
   # common service
   user-service:
     build: ../../user-service
-    image: withme3.0/user-service
+    image: icedsoul/user-service
     restart: always
     depends_on:
       - user-mysql
@@ -130,7 +130,7 @@ services:
 
   user-relation-service:
     build: ../../user-relation-service
-    image: withme3.0/user-relation-service
+    image: icedsoul/user-relation-service
     depends_on:
       - user-relation-mysql
     restart: always
@@ -141,7 +141,7 @@ services:
 
   message-service:
     build: ../../message-service
-    image: withme3.0/message-service
+    image: icedsoul/message-service
     depends_on:
     - message-mysql
     restart: always
@@ -152,7 +152,7 @@ services:
 
   group-service:
       build: ../../group-service
-      image: withme3.0/group-service
+      image: icedsoul/group-service
       depends_on:
       - group-mysql
       restart: always
@@ -163,7 +163,7 @@ services:
 
   group-message-service:
       build: ../../group-message-service
-      image: withme3.0/group-message-service
+      image: icedsoul/group-message-service
       depends_on:
       - group-message-mysql
       restart: always
@@ -174,7 +174,7 @@ services:
 
   offline-message-service:
       build: ../../offline-message-service
-      image: withme3.0/offline-message-service
+      image: icedsoul/offline-message-service
       depends_on:
       - offline-message-mysql
       restart: always
@@ -186,7 +186,7 @@ services:
   # ui-service
   ui-service:
     build: ../../ui-service
-    image: withme3.0/ui-service
+    image: icedsoul/ui-service
     restart: always
     ports:
       - 80:8081
@@ -196,7 +196,7 @@ services:
   # websocket service
   websocket-server-service:
     build: ../../websocket-server-service
-    image: withme3.0/websocket-server-service
+    image: icedsoul/websocket-server-service
     restart: always
     links:
       - redis

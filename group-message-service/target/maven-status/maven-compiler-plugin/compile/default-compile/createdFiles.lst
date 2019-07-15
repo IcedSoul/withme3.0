@@ -1,7 +1,0 @@
-cn/icedsoul/groupmessageservice/service/serviceApi/GroupMessageService.class
-cn/icedsoul/groupmessageservice/controller/GroupMessageController.class
-cn/icedsoul/groupmessageservice/GroupMessageServiceApplication.class
-cn/icedsoul/groupmessageservice/service/serviceImpl/GroupMessageServiceImplement.class
-cn/icedsoul/groupmessageservice/config/SwaggerConfig.class
-cn/icedsoul/groupmessageservice/repository/GroupMessageRepository.class
-cn/icedsoul/groupmessageservice/domain/GroupMessage.class

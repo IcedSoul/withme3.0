@@ -18,7 +18,7 @@ spec:
         io.kompose.service: offline-message-service
     spec:
       containers:
-      - image: withme3.0/offline-message-service
+      - image: icedsoul/offline-message-service
         name: offline-message-service
         ports:
         - containerPort: 8081

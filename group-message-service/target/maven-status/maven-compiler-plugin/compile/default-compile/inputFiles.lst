@@ -1,7 +1,0 @@
-/code/Github/WithMe3.0/group-message-service/src/main/java/cn/icedsoul/groupmessageservice/service/serviceImpl/GroupMessageServiceImplement.java
-/code/Github/WithMe3.0/group-message-service/src/main/java/cn/icedsoul/groupmessageservice/controller/GroupMessageController.java
-/code/Github/WithMe3.0/group-message-service/src/main/java/cn/icedsoul/groupmessageservice/repository/GroupMessageRepository.java
-/code/Github/WithMe3.0/group-message-service/src/main/java/cn/icedsoul/groupmessageservice/domain/GroupMessage.java
-/code/Github/WithMe3.0/group-message-service/src/main/java/cn/icedsoul/groupmessageservice/GroupMessageServiceApplication.java
-/code/Github/WithMe3.0/group-message-service/src/main/java/cn/icedsoul/groupmessageservice/config/SwaggerConfig.java
-/code/Github/WithMe3.0/group-message-service/src/main/java/cn/icedsoul/groupmessageservice/service/serviceApi/GroupMessageService.java

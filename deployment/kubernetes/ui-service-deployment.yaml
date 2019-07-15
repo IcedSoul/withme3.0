@@ -18,7 +18,7 @@ spec:
         io.kompose.service: ui-service
     spec:
       containers:
-      - image: withme3.0/ui-service
+      - image: icedsoul/ui-service
         name: ui-service
         ports:
         - containerPort: 8081

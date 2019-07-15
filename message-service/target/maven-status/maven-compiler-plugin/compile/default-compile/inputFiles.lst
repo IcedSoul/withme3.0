@@ -1,7 +1,0 @@
-/code/Github/WithMe3.0/message-service/src/main/java/cn/icedsoul/messageservice/MessageServiceApplication.java
-/code/Github/WithMe3.0/message-service/src/main/java/cn/icedsoul/messageservice/controller/MessageController.java
-/code/Github/WithMe3.0/message-service/src/main/java/cn/icedsoul/messageservice/config/SwaggerConfig.java
-/code/Github/WithMe3.0/message-service/src/main/java/cn/icedsoul/messageservice/domain/Message.java
-/code/Github/WithMe3.0/message-service/src/main/java/cn/icedsoul/messageservice/service/serviceImpl/MessageServiceImplement.java
-/code/Github/WithMe3.0/message-service/src/main/java/cn/icedsoul/messageservice/repository/MessageRepository.java
-/code/Github/WithMe3.0/message-service/src/main/java/cn/icedsoul/messageservice/service/serviceApi/MessageService.java

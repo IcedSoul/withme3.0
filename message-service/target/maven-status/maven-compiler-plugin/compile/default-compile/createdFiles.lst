@@ -1,7 +1,0 @@
-cn/icedsoul/messageservice/controller/MessageController.class
-cn/icedsoul/messageservice/service/serviceApi/MessageService.class
-cn/icedsoul/messageservice/domain/Message.class
-cn/icedsoul/messageservice/service/serviceImpl/MessageServiceImplement.class
-cn/icedsoul/messageservice/config/SwaggerConfig.class
-cn/icedsoul/messageservice/MessageServiceApplication.class
-cn/icedsoul/messageservice/repository/MessageRepository.class
