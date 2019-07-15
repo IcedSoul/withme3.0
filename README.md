@@ -10,6 +10,7 @@
 
 
 ## 运行说明
+### 使用Docker-Compose运行
 1. 安装 Maven, Docker 以及 Docker Compose
 2. 代码clone或者下载到本地后请进入WithMe3.0/ 目录，master分支。
 3. 执行 
@@ -20,6 +21,52 @@
     docker-compose up
     ```
 4. 在浏览器中访问 http://localhost/ 即可访问项目主页面。
+
+### 部署至Kubernetes集群
+前提是有一个至少拥有两个节点且内存充足的Kubernetes集群，关于Kubernetes搭建教程请参考官方文档和博客。
+
+1. 配置私有Docker镜像仓库或者注册DockerHub账号，打包并上传此项目镜像。
+2. 修改 deployment/kubernetes/deployment中各服务镜像地址为自己的私有镜像仓库或者DockerHub仓库。
+3. 配置 nfs文件共享服务器，并且在共享目录下（/nfs/share）新建如下文件夹
+    - group-mysql/data
+    - group-message-mysql/data
+    - message-mysql/data
+    - offline-message-mysql/data
+    - user-mysql/data
+    - user-relation-mysql/data
+    - redis/data
+    
+    ```
+    cp -a ./ui-service /nfs-share/ui-service
+    ```
+    
+    之后分别修改 /deployment/kubernetes/pv 下各文件夹 spec.nfs.path 为你的共享文件夹名称加上述名称（若为nfs-share则不必修改），同时修改server为你的nfs服务器IP地址。
+    *请注意：确保集群每个Node都安装nfs*
+ 4. 在项目根目录依次执行以下命令：
+ ```shell
+ # 创建pv
+ kubectl create -f deployment/kubernetes/pv
+ 
+ # 创建pvc
+ kubectl create -f deployment/kubernetes/pvc
+ 
+ # 创建deployment
+ kubectl create -f deployment/kubernetes/deployment
+ 
+ # 创建service
+ kubectl create -f deployment/kubernetes/service
+ ```
+    
+5. 可在http://[cluster-master-ip]:30001 访问项目主页。
+
+如果不进行前两步操作，则默认从我的DockerHub仓库中拉取镜像，本地修改无法生效。  
+
+若集群已存在pv策略，可根据自己集群情况执行第三步的pv配置。  
+
+Kubernetes部署初步试运行，尚有Bug，后续会修复并更新更多相关文档和说明，开发笔记中也会更新踩坑记录。
+
+
+
 ## 启动失败原因及解决方法
 ### 内存过小
 因为项目使用了多个MySQL数据库，如果机器内存过小可能会启动失败。内存较小机器可切换至share-db分支，此分支所有数据库使用同一个MySQL数据库，较小内存机器也可以正常启动。
