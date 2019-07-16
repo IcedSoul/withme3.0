@@ -11,7 +11,7 @@ metadata:
 spec:
   ports:
   - name: "21002"
-    port: 21002
+    port: 8282
     targetPort: 8282
   selector:
     io.kompose.service: websocket-server-service

@@ -11,7 +11,7 @@ metadata:
 spec:
   ports:
   - name: "21007"
-    port: 21007
+    port: 8081
     targetPort: 8081
   selector:
     io.kompose.service: group-message-service

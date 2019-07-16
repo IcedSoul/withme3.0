@@ -11,7 +11,7 @@ metadata:
 spec:
   ports:
   - name: "21005"
-    port: 21005
+    port: 8081
     targetPort: 8081
   selector:
     io.kompose.service: message-service

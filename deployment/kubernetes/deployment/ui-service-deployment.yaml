@@ -10,8 +10,7 @@ metadata:
   name: ui-service
 spec:
   replicas: 1
-  strategy:
-    type: Recreate
+  strategy: {}
   template:
     metadata:
       creationTimestamp: null
@@ -19,22 +18,10 @@ spec:
         io.kompose.service: ui-service
     spec:
       containers:
-        - image: nginx
+        - image: icedsoul/ui-service
           name: ui-service
           ports:
             - containerPort: 8081
           resources: {}
-          volumeMounts:
-            - mountPath: /etc/nginx/nginx.conf
-              name: ui-service-claim0
-            - mountPath: /usr/share/nginx/html
-              name: ui-service-claim1
       restartPolicy: Always
-      volumes:
-        - name: ui-service-claim0
-          persistentVolumeClaim:
-            claimName: ui-service-claim0
-        - name: ui-service-claim1
-          persistentVolumeClaim:
-            claimName: ui-service-claim1
 status: {}

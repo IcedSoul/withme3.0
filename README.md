@@ -36,10 +36,6 @@
     - user-relation-mysql/data
     - redis/data
     
-    ```
-    cp -a ./ui-service /nfs-share/ui-service
-    ```
-    
     之后分别修改 /deployment/kubernetes/pv 下各文件夹 spec.nfs.path 为你的共享文件夹名称加上述名称（若为nfs-share则不必修改），同时修改server为你的nfs服务器IP地址。
     *请注意：确保集群每个Node都安装nfs*
  4. 在项目根目录依次执行以下命令：
@@ -67,7 +63,7 @@ Kubernetes部署初步试运行，尚有Bug，后续会修复并更新更多相�
 
 
 
-## 启动失败原因及解决方法
+## DockerCompose启动失败原因及解决方法
 ### 内存过小
 因为项目使用了多个MySQL数据库，如果机器内存过小可能会启动失败。内存较小机器可切换至share-db分支，此分支所有数据库使用同一个MySQL数据库，较小内存机器也可以正常启动。
 
@@ -79,12 +75,11 @@ Kubernetes部署初步试运行，尚有Bug，后续会修复并更新更多相�
 | redis | 6379 | 6379 | 可以 |
 | mysql | 3307 ～ 3312 | 3306 | 可以 |
 | service | 21003 ~ 21008| 8081 | 可以 |
-| websocket-service | 21002 | 8282 | 不可以 |
+| websocket-service | 21002 | 8282 | 可以 |
 | nginx | 80 | 8081 | 不可以 |
 
-其中除nginx和websocket-service这两个，其它端口映射都可以取消。  
-其实websocket-service这个端口使用nginx代理后也可以不映射到主机的，不过目前我还没配，配过之后会更新这里的说明。
-需要保证上面 **主机映射端口** 这一列端口没有占用，如果占用可以去docker-compose.yml文件中取消或者修改端口映射，只要 **别改最后两个** 就好。
+其中除nginx之外，其它端口映射都可以取消。  
+需要保证上面 **主机映射端口** 这一列端口没有占用，如果占用可以去docker-compose.yml文件中取消或者修改端口映射，只要 **别改ui-service主机映射端口** 就好。
 
 ## 开发计划
 ### 业务

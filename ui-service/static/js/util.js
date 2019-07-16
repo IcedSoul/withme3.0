@@ -1,4 +1,5 @@
 let address = "/";
+let wsAddress = "ws://localhost:8282/";
 
 function setCookie(name, value, time) {
     let exp = new Date();

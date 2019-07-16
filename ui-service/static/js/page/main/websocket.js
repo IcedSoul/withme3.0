@@ -1,6 +1,6 @@
 //获取服务端地址
 
-let ws = "ws://localhost:8282/" + parseURL("token");
+let ws = wsAddress + parseURL("token");
 // let ws = "ws://10.141.211.176:21002/" + parseURL("token");
 let websocket = null;
 
