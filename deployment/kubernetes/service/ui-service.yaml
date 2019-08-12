@@ -15,6 +15,10 @@ spec:
     port: 80
     targetPort: 8081
     nodePort: 30001
+  - name: "8282"
+    port: 8282
+    targetPort: 8282
+    nodePort: 30002
   selector:
     io.kompose.service: ui-service
 status:

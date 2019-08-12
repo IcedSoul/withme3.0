@@ -9,7 +9,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Recycle
-  storageClassName: nfs
+  storageClassName: redis
   mountOptions:
     - hard
     - nfsvers=4.1

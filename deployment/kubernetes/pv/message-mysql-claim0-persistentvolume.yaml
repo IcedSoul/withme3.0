@@ -9,7 +9,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Recycle
-  storageClassName: nfs
+  storageClassName: message-mysql
   mountOptions:
     - hard
     - nfsvers=4.1

@@ -1,0 +1,22 @@
+# nfs-share文件夹下执行pv回收
+
+rm -rf  group-message-mysql/data
+mkdir group-message-mysql/data
+
+rm -rf  group-mysql/data
+mkdir group-mysql/data
+
+rm -rf  message-mysql/data
+mkdir message-mysql/data
+
+rm -rf  offline-message-mysql/data
+mkdir offline-message-mysql/data
+
+rm -rf  redis/data
+mkdir redis/data
+
+rm -rf  user-mysql/data
+mkdir user-mysql/data
+
+rm -rf  user-relation-mysql/data
+mkdir user-relation-mysql/data

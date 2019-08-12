@@ -1,5 +1,5 @@
 let address = "/";
-let wsAddress = "ws://localhost:8282/";
+let wsAddress = "ws://"+ window.location.hostname +":30002/";
 
 function setCookie(name, value, time) {
     let exp = new Date();

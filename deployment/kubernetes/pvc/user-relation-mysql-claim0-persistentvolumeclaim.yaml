@@ -11,5 +11,5 @@ spec:
   resources:
     requests:
       storage: 100Mi
-  storageClassName: nfs
+  storageClassName: user-relation-mysql
 status: {}
