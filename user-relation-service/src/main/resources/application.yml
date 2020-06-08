@@ -4,7 +4,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://user-relation-mysql:3306/user-relation?characterEncoding=utf8&useSSL=false
+    url: jdbc:mysql://user-relation-mysql:3306/user_relation?characterEncoding=utf8&useSSL=false
     username: root
     password: root
   jpa:

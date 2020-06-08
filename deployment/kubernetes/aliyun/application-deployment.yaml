@@ -14,12 +14,14 @@ spec:
         app: group-message-service
     spec:
       containers:
-        - image: icedsoul/group-message-service
+        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/group-message-service
           name: group-message-service
           ports:
             - containerPort: 8081
           resources: {}
       restartPolicy: Always
+      imagePullSecrets:
+      - name: withme-vpc
 
 ---
 
@@ -39,12 +41,14 @@ spec:
         app: group-service
     spec:
       containers:
-        - image: icedsoul/group-service
+        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/group-service
           name: group-service
           ports:
             - containerPort: 8081
           resources: {}
       restartPolicy: Always
+      imagePullSecrets:
+      - name: withme-vpc
 
 
 ---
@@ -65,12 +69,14 @@ spec:
         app: message-service
     spec:
       containers:
-        - image: icedsoul/message-service
+        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/message-service
           name: message-service
           ports:
             - containerPort: 8081
           resources: {}
       restartPolicy: Always
+      imagePullSecrets:
+      - name: withme-vpc
 
 ---
 
@@ -90,12 +96,14 @@ spec:
         app: offline-message-service
     spec:
       containers:
-        - image: icedsoul/offline-message-service
+        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/offline-message-service
           name: offline-message-service
           ports:
             - containerPort: 8081
           resources: {}
       restartPolicy: Always
+      imagePullSecrets:
+      - name: withme-vpc
 
 ---
 
@@ -115,12 +123,14 @@ spec:
         app: ui-service
     spec:
       containers:
-        - image: icedsoul/ui-service
+        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/ui-service
           name: ui-service
           ports:
             - containerPort: 8081
           resources: {}
       restartPolicy: Always
+      imagePullSecrets:
+      - name: withme-vpc
 
 ---
 
@@ -140,12 +150,14 @@ spec:
         app: user-relation-service
     spec:
       containers:
-        - image: icedsoul/user-relation-service
+        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/user-relation-service
           name: user-relation-service
           ports:
             - containerPort: 8081
           resources: {}
       restartPolicy: Always
+      imagePullSecrets:
+      - name: withme-vpc
 
 
 ---
@@ -166,12 +178,14 @@ spec:
         app: user-service
     spec:
       containers:
-        - image: icedsoul/user-service
+        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/user-service
           name: user-service
           ports:
             - containerPort: 8081
           resources: {}
       restartPolicy: Always
+      imagePullSecrets:
+      - name: withme-vpc
 
 ---
 
@@ -191,12 +205,14 @@ spec:
         app: websocket-server-service
     spec:
       containers:
-        - image: icedsoul/websocket-server-service
+        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/websocket-server-service
           name: websocket-server-service
           ports:
             - containerPort: 8282
           resources: {}
       restartPolicy: Always
+      imagePullSecrets:
+      - name: withme-vpc
       
 ---
 
@@ -213,6 +229,7 @@ spec:
       targetPort: 8081
   selector:
     app: group-message-service
+    
 
 
 ---
@@ -274,10 +291,10 @@ metadata:
 spec:
   type: NodePort
   ports:
-    - name: "8281"
-      port: 8281
-      targetPort: 8281
-      nodePort: 30001
+    - name: "80"
+      port: 80
+      targetPort: 8081
+      nodePort: 30005
     - name: "8282"
       port: 8282
       targetPort: 8282

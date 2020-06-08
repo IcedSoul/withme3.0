@@ -112,7 +112,7 @@ services:
   # common service
   user-service:
     build: ../../user-service
-    image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/withme/user-service
+    image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/user-service
     restart: always
     depends_on:
       - user-mysql
@@ -123,7 +123,7 @@ services:
 
   user-relation-service:
     build: ../../user-relation-service
-    image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/withme/user-relation-service
+    image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/user-relation-service
     depends_on:
       - user-relation-mysql
     restart: always
@@ -134,7 +134,7 @@ services:
 
   message-service:
     build: ../../message-service
-    image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/withme/message-service
+    image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/message-service
     depends_on:
     - message-mysql
     restart: always
@@ -145,7 +145,7 @@ services:
 
   group-service:
       build: ../../group-service
-      image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/withme/group-service
+      image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/group-service
       depends_on:
       - group-mysql
       restart: always
@@ -156,7 +156,7 @@ services:
 
   group-message-service:
       build: ../../group-message-service
-      image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/withme/group-message-service
+      image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/group-message-service
       depends_on:
       - group-message-mysql
       restart: always
@@ -167,7 +167,7 @@ services:
 
   offline-message-service:
       build: ../../offline-message-service
-      image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/withme/offline-message-service
+      image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/offline-message-service
       depends_on:
       - offline-message-mysql
       restart: always
@@ -179,7 +179,7 @@ services:
   # ui-service
   ui-service:
     build: ../../ui-service
-    image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/withme/ui-service
+    image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/ui-service
     restart: always
     ports:
       - 80:8081
@@ -190,7 +190,7 @@ services:
   # websocket service
   websocket-server-service:
     build: ../../websocket-server-service
-    image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/withme/websocket-server-service
+    image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/websocket-server-service
     restart: always
 #    links:
 #      - redis

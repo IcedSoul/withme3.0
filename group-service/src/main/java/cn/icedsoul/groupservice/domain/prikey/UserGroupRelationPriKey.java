@@ -1,4 +1,4 @@
-package cn.icedsoul.groupservice.domain.prikey;
+package cn.icedsoul.groupservice.domain.PriKey;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

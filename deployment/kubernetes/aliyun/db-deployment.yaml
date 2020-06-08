@@ -28,9 +28,9 @@ spec:
           ports:
             - containerPort: 3306
           resources: {}
-          volumeMounts:
-            - mountPath: /var/lib/mysql
-              name: group-message-mysql-claim0
+#          volumeMounts:
+#            - mountPath: /var/lib/mysql
+#              name: group-message-mysql-claim0
       restartPolicy: Always
 #      volumes:
 #        - name: group-message-mysql-claim0
@@ -69,9 +69,9 @@ spec:
           ports:
             - containerPort: 3306
           resources: {}
-          volumeMounts:
-            - mountPath: /var/lib/mysql
-              name: group-mysql-claim0
+#          volumeMounts:
+#            - mountPath: /var/lib/mysql
+#              name: group-mysql-claim0
       restartPolicy: Always
 #      volumes:
 #        - name: group-mysql-claim0
@@ -110,9 +110,9 @@ spec:
           ports:
             - containerPort: 3306
           resources: {}
-          volumeMounts:
-            - mountPath: /var/lib/mysql
-              name: message-mysql-claim0
+#          volumeMounts:
+#            - mountPath: /var/lib/mysql
+#              name: message-mysql-claim0
       restartPolicy: Always
 #      volumes:
 #        - name: message-mysql-claim0
@@ -151,9 +151,9 @@ spec:
           ports:
             - containerPort: 3306
           resources: {}
-          volumeMounts:
-            - mountPath: /var/lib/mysql
-              name: offline-message-mysql-claim0
+#          volumeMounts:
+#            - mountPath: /var/lib/mysql
+#              name: offline-message-mysql-claim0
       restartPolicy: Always
 #      volumes:
 #        - name: offline-message-mysql-claim0
@@ -192,9 +192,9 @@ spec:
           ports:
             - containerPort: 3306
           resources: {}
-          volumeMounts:
-            - mountPath: /var/lib/mysql
-              name: user-mysql-claim0
+#          volumeMounts:
+#            - mountPath: /var/lib/mysql
+#              name: user-mysql-claim0
       restartPolicy: Always
 #      volumes:
 #        - name: user-mysql-claim0
@@ -225,7 +225,7 @@ spec:
             - --collation-server=utf8mb4_unicode_ci
           env:
             - name: MYSQL_DATABASE
-              value: user-relation
+              value: user_relation
             - name: MYSQL_ROOT_PASSWORD
               value: root
           image: mysql:5.6
@@ -233,9 +233,9 @@ spec:
           ports:
             - containerPort: 3306
           resources: {}
-          volumeMounts:
-            - mountPath: /var/lib/mysql
-              name: user-relation-mysql-claim0
+#          volumeMounts:
+#            - mountPath: /var/lib/mysql
+#              name: user-relation-mysql-claim0
       restartPolicy: Always
 #      volumes:
 #        - name: user-relation-mysql-claim0
