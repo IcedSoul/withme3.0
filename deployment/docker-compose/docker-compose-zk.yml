@@ -41,7 +41,7 @@ services:
     ]
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: user-relation
+      MYSQL_DATABASE: user_relation
     volumes:
       - ./user-relation-mysql/mysql.cnf:/etc/my.cnf
       - ./user-relation-mysql/data:/var/lib/mysql

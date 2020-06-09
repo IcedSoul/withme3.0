@@ -124,6 +124,7 @@ spec:
     spec:
       containers:
         - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/ui-service
+          imagePullPolicy: Always
           name: ui-service
           ports:
             - containerPort: 8081
