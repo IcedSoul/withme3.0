@@ -1,0 +1,265 @@
+version: '3'
+services:
+  # mysql
+  user-mysql:
+    image: mysql:5.6
+    expose:
+      - 3306
+    command: [
+      --character-set-server=utf8mb4,
+      --collation-server=utf8mb4_unicode_ci
+    ]
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: user
+    volumes:
+      - ../../user-mysql/data:/var/lib/mysql
+    deploy:
+      resources:
+        limits:
+          cpus: '0.05'
+          memory: 100M
+    networks:
+      - withme-network
+
+  user-relation-mysql:
+    image: mysql:5.6
+    expose:
+      - 3306
+    command: [
+      --character-set-server=utf8mb4,
+      --collation-server=utf8mb4_unicode_ci
+    ]
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: user_relation
+    volumes:
+      - ../../user-relation-mysql/data:/var/lib/mysql
+    deploy:
+      resources:
+        limits:
+          cpus: '0.05'
+          memory: 100M
+    networks:
+      - withme-network
+
+  message-mysql:
+    image: mysql:5.6
+    expose:
+      - 3306
+    command: [
+      --character-set-server=utf8mb4,
+      --collation-server=utf8mb4_unicode_ci
+    ]
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: message
+    volumes:
+      - ../../message-mysql/data:/var/lib/mysql
+    deploy:
+      resources:
+        limits:
+          cpus: '0.05'
+          memory: 100M
+    networks:
+      - withme-network
+
+  group-mysql:
+    image: mysql:5.6
+    expose:
+      - 3306
+    command: [
+      --character-set-server=utf8mb4,
+      --collation-server=utf8mb4_unicode_ci
+    ]
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: group
+    volumes:
+      - ../../group-mysql/data:/var/lib/mysql
+    deploy:
+      resources:
+        limits:
+          cpus: '0.05'
+          memory: 100M
+    networks:
+      - withme-network
+
+  group-message-mysql:
+    image: mysql:5.6
+    expose:
+      - 3306
+    command: [
+      --character-set-server=utf8mb4,
+      --collation-server=utf8mb4_unicode_ci
+    ]
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: group_message
+    volumes:
+      - ../../group-message-mysql/data:/var/lib/mysql
+    deploy:
+      resources:
+        limits:
+          cpus: '0.05'
+          memory: 100M
+    networks:
+      - withme-network
+
+  offline-message-mysql:
+    image: mysql:5.6
+    expose:
+      - 3306
+    command: [
+      --character-set-server=utf8mb4,
+      --collation-server=utf8mb4_unicode_ci
+    ]
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: offline_message
+    volumes:
+      - ../../offline-message-mysql/data:/var/lib/mysql
+    deploy:
+      resources:
+        limits:
+          cpus: '0.05'
+          memory: 100M
+    networks:
+      - withme-network
+
+  # common service
+  user-service:
+    build: ../../user-service
+    image: icedsoul/user-service
+    restart: always
+    depends_on:
+      - user-mysql
+    expose:
+      - 8081
+    deploy:
+      resources:
+        limits:
+          cpus: '0.05'
+          memory: 100M
+    networks:
+      - withme-network
+
+  user-relation-service:
+    build: ../../user-relation-service
+    image: icedsoul/user-relation-service
+    depends_on:
+      - user-relation-mysql
+    restart: always
+    expose:
+      - 8081
+    deploy:
+      resources:
+        limits:
+          cpus: '0.05'
+          memory: 100M
+    networks:
+      - withme-network
+
+  message-service:
+    build: ../../message-service
+    image: icedsoul/message-service
+    depends_on:
+      - message-mysql
+    restart: always
+    expose:
+      - 8081
+    deploy:
+      resources:
+        limits:
+          cpus: '0.05'
+          memory: 100M
+    networks:
+      - withme-network
+
+  group-service:
+    build: ../../group-service
+    image: icedsoul/group-service
+    depends_on:
+      - group-mysql
+    restart: always
+    expose:
+      - 8081
+    deploy:
+      resources:
+        limits:
+          cpus: '0.05'
+          memory: 100M
+    networks:
+      - withme-network
+
+  group-message-service:
+    build: ../../group-message-service
+    image: icedsoul/group-message-service
+    depends_on:
+      - group-message-mysql
+    restart: always
+    expose:
+      - 8081
+    deploy:
+      resources:
+        limits:
+          cpus: '0.05'
+          memory: 100M
+    networks:
+      - withme-network
+
+  offline-message-service:
+    build: ../../offline-message-service
+    image: icedsoul/offline-message-service
+    depends_on:
+      - offline-message-mysql
+    restart: always
+    expose:
+      - 8081
+    deploy:
+      resources:
+        limits:
+          cpus: '0.05'
+          memory: 100M
+    networks:
+      - withme-network
+
+  # ui-service
+  ui-service:
+    build: ../../ui-service
+    image: icedsoul/ui-service
+    restart: always
+    ports:
+      - 80:8081
+      - 30002:8282
+    deploy:
+      resources:
+        limits:
+          cpus: '0.05'
+          memory: 100M
+    networks:
+      - withme-network
+
+  # websocket service
+  websocket-server-service:
+    build: ../../websocket-server-service
+    image: icedsoul/websocket-server-service
+    restart: always
+    #    links:
+    #      - redis
+    #    depends_on:
+    #    - redis
+    expose:
+      - 8282
+    deploy:
+      resources:
+        limits:
+          cpus: '0.05'
+          memory: 100M
+    networks:
+      - withme-network
+
+
+networks:
+  withme-network:
+    driver: bridge

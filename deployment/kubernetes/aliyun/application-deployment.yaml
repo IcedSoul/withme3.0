@@ -10,6 +10,9 @@ spec:
   strategy: {}
   template:
     metadata:
+      annotations:
+        armsPilotAutoEnable: "on"
+        armsPilotCreateAppName: "group-message-service"
       labels:
         app: group-message-service
     spec:
@@ -37,6 +40,9 @@ spec:
   strategy: {}
   template:
     metadata:
+      annotations:
+        armsPilotAutoEnable: "on"
+        armsPilotCreateAppName: "group-service"
       labels:
         app: group-service
     spec:
@@ -65,6 +71,9 @@ spec:
   strategy: {}
   template:
     metadata:
+      annotations:
+        armsPilotAutoEnable: "on"
+        armsPilotCreateAppName: "message-service"
       labels:
         app: message-service
     spec:
@@ -92,6 +101,9 @@ spec:
   strategy: {}
   template:
     metadata:
+      annotations:
+        armsPilotAutoEnable: "on"
+        armsPilotCreateAppName: "offline-message-service"
       labels:
         app: offline-message-service
     spec:
@@ -119,6 +131,9 @@ spec:
   strategy: {}
   template:
     metadata:
+      annotations:
+        armsPilotAutoEnable: "on"
+        armsPilotCreateAppName: "ui-service"
       labels:
         app: ui-service
     spec:
@@ -147,6 +162,9 @@ spec:
   strategy: {}
   template:
     metadata:
+      annotations:
+        armsPilotAutoEnable: "on"
+        armsPilotCreateAppName: "user-relation-service"
       labels:
         app: user-relation-service
     spec:
@@ -175,6 +193,9 @@ spec:
   strategy: {}
   template:
     metadata:
+      annotations:
+        armsPilotAutoEnable: "on"
+        armsPilotCreateAppName: "user-service"
       labels:
         app: user-service
     spec:
@@ -202,6 +223,9 @@ spec:
   strategy: {}
   template:
     metadata:
+      annotations:
+        armsPilotAutoEnable: "on"
+        armsPilotCreateAppName: "websocket-server-service"
       labels:
         app: websocket-server-service
     spec:
