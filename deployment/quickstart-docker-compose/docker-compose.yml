@@ -3,7 +3,7 @@ services:
   # mysql
   user-mysql:
     image: mysql:5.6
-    expose:
+    ports:
       - 3306
     command: [
       --character-set-server=utf8mb4,
@@ -12,8 +12,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: user
-    volumes:
-      - ../../user-mysql/data:/var/lib/mysql
     deploy:
       resources:
         limits:
@@ -24,7 +22,7 @@ services:
 
   user-relation-mysql:
     image: mysql:5.6
-    expose:
+    ports:
       - 3306
     command: [
       --character-set-server=utf8mb4,
@@ -33,8 +31,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: user_relation
-    volumes:
-      - ../../user-relation-mysql/data:/var/lib/mysql
     deploy:
       resources:
         limits:
@@ -45,7 +41,7 @@ services:
 
   message-mysql:
     image: mysql:5.6
-    expose:
+    ports:
       - 3306
     command: [
       --character-set-server=utf8mb4,
@@ -54,8 +50,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: message
-    volumes:
-      - ../../message-mysql/data:/var/lib/mysql
     deploy:
       resources:
         limits:
@@ -66,7 +60,7 @@ services:
 
   group-mysql:
     image: mysql:5.6
-    expose:
+    ports:
       - 3306
     command: [
       --character-set-server=utf8mb4,
@@ -75,8 +69,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: group
-    volumes:
-      - ../../group-mysql/data:/var/lib/mysql
     deploy:
       resources:
         limits:
@@ -87,7 +79,7 @@ services:
 
   group-message-mysql:
     image: mysql:5.6
-    expose:
+    ports:
       - 3306
     command: [
       --character-set-server=utf8mb4,
@@ -96,8 +88,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: group_message
-    volumes:
-      - ../../group-message-mysql/data:/var/lib/mysql
     deploy:
       resources:
         limits:
@@ -108,7 +98,7 @@ services:
 
   offline-message-mysql:
     image: mysql:5.6
-    expose:
+    ports:
       - 3306
     command: [
       --character-set-server=utf8mb4,
@@ -117,8 +107,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: offline_message
-    volumes:
-      - ../../offline-message-mysql/data:/var/lib/mysql
     deploy:
       resources:
         limits:
@@ -132,10 +120,10 @@ services:
     build: ../../user-service
     image: icedsoul/user-service
     restart: always
+    ports:
+      - 8081
     depends_on:
       - user-mysql
-    expose:
-      - 8081
     deploy:
       resources:
         limits:
@@ -150,7 +138,7 @@ services:
     depends_on:
       - user-relation-mysql
     restart: always
-    expose:
+    ports:
       - 8081
     deploy:
       resources:
@@ -166,7 +154,7 @@ services:
     depends_on:
       - message-mysql
     restart: always
-    expose:
+    ports:
       - 8081
     deploy:
       resources:
@@ -182,7 +170,7 @@ services:
     depends_on:
       - group-mysql
     restart: always
-    expose:
+    ports:
       - 8081
     deploy:
       resources:
@@ -198,7 +186,7 @@ services:
     depends_on:
       - group-message-mysql
     restart: always
-    expose:
+    ports:
       - 8081
     deploy:
       resources:
@@ -214,7 +202,7 @@ services:
     depends_on:
       - offline-message-mysql
     restart: always
-    expose:
+    ports:
       - 8081
     deploy:
       resources:
@@ -245,12 +233,12 @@ services:
     build: ../../websocket-server-service
     image: icedsoul/websocket-server-service
     restart: always
+    ports:
+      - 8282
     #    links:
     #      - redis
     #    depends_on:
     #    - redis
-    expose:
-      - 8282
     deploy:
       resources:
         limits:
