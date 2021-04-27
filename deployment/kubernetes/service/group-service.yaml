@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.18.0 (06a2e56)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: group-service
+  name: group-service
+spec:
+  ports:
+  - name: "21006"
+    port: 8081
+    targetPort: 8081
+  selector:
+    io.kompose.service: group-service
+status:
+  loadBalancer: {}

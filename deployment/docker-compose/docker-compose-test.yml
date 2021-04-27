@@ -1,0 +1,16 @@
+version: '3'
+services:
+  # ui-service
+  ui-service:
+    build: ../../ui-service
+    image: withme3.0/ui-service
+    restart: always
+    ports:
+      - 80:80
+    networks:
+      - withme-network
+
+
+networks:
+  withme-network:
+    driver: bridge

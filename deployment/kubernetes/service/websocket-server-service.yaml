@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.18.0 (06a2e56)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: websocket-server-service
+  name: websocket-server-service
+spec:
+  ports:
+  - name: "21002"
+    port: 8282
+    targetPort: 8282
+  selector:
+    io.kompose.service: websocket-server-service
+status:
+  loadBalancer: {}

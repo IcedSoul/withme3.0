@@ -1,0 +1,383 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: group-message-service
+spec:
+  selector:
+    matchLabels:
+      app: group-message-service
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        armsPilotAutoEnable: "on"
+        armsPilotCreateAppName: "group-message-service"
+      labels:
+        app: group-message-service
+    spec:
+      containers:
+        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/group-message-service
+          name: group-message-service
+          ports:
+            - containerPort: 8081
+          resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+      - name: withme-vpc
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: group-service
+spec:
+  selector:
+    matchLabels:
+      app: group-service
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        armsPilotAutoEnable: "on"
+        armsPilotCreateAppName: "group-service"
+      labels:
+        app: group-service
+    spec:
+      containers:
+        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/group-service
+          name: group-service
+          ports:
+            - containerPort: 8081
+          resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+      - name: withme-vpc
+
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: message-service
+spec:
+  selector:
+    matchLabels:
+      app: message-service
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        armsPilotAutoEnable: "on"
+        armsPilotCreateAppName: "message-service"
+      labels:
+        app: message-service
+    spec:
+      containers:
+        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/message-service
+          name: message-service
+          ports:
+            - containerPort: 8081
+          resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+      - name: withme-vpc
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: offline-message-service
+spec:
+  selector:
+    matchLabels:
+      app: offline-message-service
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        armsPilotAutoEnable: "on"
+        armsPilotCreateAppName: "offline-message-service"
+      labels:
+        app: offline-message-service
+    spec:
+      containers:
+        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/offline-message-service
+          name: offline-message-service
+          ports:
+            - containerPort: 8081
+          resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+      - name: withme-vpc
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui-service
+spec:
+  selector:
+    matchLabels:
+      app: ui-service
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        armsPilotAutoEnable: "on"
+        armsPilotCreateAppName: "ui-service"
+      labels:
+        app: ui-service
+    spec:
+      containers:
+        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/ui-service
+          imagePullPolicy: Always
+          name: ui-service
+          ports:
+            - containerPort: 8081
+          resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+      - name: withme-vpc
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-relation-service
+spec:
+  selector:
+    matchLabels:
+      app: user-relation-service
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        armsPilotAutoEnable: "on"
+        armsPilotCreateAppName: "user-relation-service"
+      labels:
+        app: user-relation-service
+    spec:
+      containers:
+        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/user-relation-service
+          name: user-relation-service
+          ports:
+            - containerPort: 8081
+          resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+      - name: withme-vpc
+
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-service
+spec:
+  selector:
+    matchLabels:
+      app: user-service
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        armsPilotAutoEnable: "on"
+        armsPilotCreateAppName: "user-service"
+      labels:
+        app: user-service
+    spec:
+      containers:
+        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/user-service
+          name: user-service
+          ports:
+            - containerPort: 8081
+          resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+      - name: withme-vpc
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: websocket-server-service
+spec:
+  selector:
+    matchLabels:
+      app: websocket-server-service
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        armsPilotAutoEnable: "on"
+        armsPilotCreateAppName: "websocket-server-service"
+      labels:
+        app: websocket-server-service
+    spec:
+      containers:
+        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/websocket-server-service
+          name: websocket-server-service
+          ports:
+            - containerPort: 8282
+          resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+      - name: withme-vpc
+      
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: group-message-service
+  name: group-message-service
+spec:
+  ports:
+    - name: "21007"
+      port: 8081
+      targetPort: 8081
+  selector:
+    app: group-message-service
+    
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: group-service
+  name: group-service
+spec:
+  ports:
+    - name: "21006"
+      port: 8081
+      targetPort: 8081
+  selector:
+    app: group-service
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: message-service
+  name: message-service
+spec:
+  ports:
+    - name: "21005"
+      port: 8081
+      targetPort: 8081
+  selector:
+    app: message-service
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: offline-message-service
+  name: offline-message-service
+spec:
+  ports:
+    - name: "21008"
+      port: 8081
+      targetPort: 8081
+  selector:
+    app: offline-message-service
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ui-service
+  name: ui-service
+spec:
+  type: NodePort
+  ports:
+    - name: "80"
+      port: 80
+      targetPort: 8081
+      nodePort: 30005
+    - name: "8282"
+      port: 8282
+      targetPort: 8282
+      nodePort: 30002
+  selector:
+    app: ui-service
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: user-relation-service
+  name: user-relation-service
+spec:
+  ports:
+    - name: "21004"
+      port: 8081
+      targetPort: 8081
+  selector:
+    app: user-relation-service
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: user-service
+  name: user-service
+spec:
+  ports:
+    - name: "21003"
+      port: 8081
+      targetPort: 8081
+  selector:
+    app: user-service
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: websocket-server-service
+  name: websocket-server-service
+spec:
+  ports:
+    - name: "21002"
+      port: 8282
+      targetPort: 8282
+  selector:
+    app: websocket-server-service
+
+
+
+
+
+
+

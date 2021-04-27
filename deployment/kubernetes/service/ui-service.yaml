@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.18.0 (06a2e56)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: ui-service
+  name: ui-service
+spec:
+  type: NodePort
+  ports:
+  - name: "80"
+    port: 80
+    targetPort: 8081
+    nodePort: 30001
+  - name: "8282"
+    port: 8282
+    targetPort: 8282
+    nodePort: 30002
+  selector:
+    io.kompose.service: ui-service
+status:
+  loadBalancer: {}

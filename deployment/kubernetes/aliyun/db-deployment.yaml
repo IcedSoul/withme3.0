@@ -1,0 +1,347 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: group-message-mysql
+spec:
+  selector:
+    matchLabels:
+      app: group-message-mysql
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: group-message-mysql
+    spec:
+      containers:
+        - args:
+            - --character-set-server=utf8mb4
+            - --collation-server=utf8mb4_unicode_ci
+          env:
+            - name: MYSQL_DATABASE
+              value: group_message
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+          image: mysql:5.6
+          name: group-message-mysql
+          ports:
+            - containerPort: 3306
+          resources: {}
+#          volumeMounts:
+#            - mountPath: /var/lib/mysql
+#              name: group-message-mysql-claim0
+      restartPolicy: Always
+#      volumes:
+#        - name: group-message-mysql-claim0
+#          persistentVolumeClaim:
+#            claimName: group-message-mysql-claim0
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: group-mysql
+spec:
+  selector:
+    matchLabels:
+      app: group-mysql
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: group-mysql
+    spec:
+      containers:
+        - args:
+            - --character-set-server=utf8mb4
+            - --collation-server=utf8mb4_unicode_ci
+          env:
+            - name: MYSQL_DATABASE
+              value: group
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+          image: mysql:5.6
+          name: group-mysql
+          ports:
+            - containerPort: 3306
+          resources: {}
+#          volumeMounts:
+#            - mountPath: /var/lib/mysql
+#              name: group-mysql-claim0
+      restartPolicy: Always
+#      volumes:
+#        - name: group-mysql-claim0
+#          persistentVolumeClaim:
+#            claimName: group-mysql-claim0
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: message-mysql
+spec:
+  selector:
+    matchLabels:
+      app: message-mysql
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: message-mysql
+    spec:
+      containers:
+        - args:
+            - --character-set-server=utf8mb4
+            - --collation-server=utf8mb4_unicode_ci
+          env:
+            - name: MYSQL_DATABASE
+              value: message
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+          image: mysql:5.6
+          name: message-mysql
+          ports:
+            - containerPort: 3306
+          resources: {}
+#          volumeMounts:
+#            - mountPath: /var/lib/mysql
+#              name: message-mysql-claim0
+      restartPolicy: Always
+#      volumes:
+#        - name: message-mysql-claim0
+#          persistentVolumeClaim:
+#            claimName: message-mysql-claim0
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: offline-message-mysql
+spec:
+  selector:
+    matchLabels:
+      app: offline-message-mysql
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: offline-message-mysql
+    spec:
+      containers:
+        - args:
+            - --character-set-server=utf8mb4
+            - --collation-server=utf8mb4_unicode_ci
+          env:
+            - name: MYSQL_DATABASE
+              value: offline_message
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+          image: mysql:5.6
+          name: offline-message-mysql
+          ports:
+            - containerPort: 3306
+          resources: {}
+#          volumeMounts:
+#            - mountPath: /var/lib/mysql
+#              name: offline-message-mysql-claim0
+      restartPolicy: Always
+#      volumes:
+#        - name: offline-message-mysql-claim0
+#          persistentVolumeClaim:
+#            claimName: offline-message-mysql-claim0
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-mysql
+spec:
+  selector:
+    matchLabels:
+      app: user-mysql
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: user-mysql
+    spec:
+      containers:
+        - args:
+            - --character-set-server=utf8mb4
+            - --collation-server=utf8mb4_unicode_ci
+          env:
+            - name: MYSQL_DATABASE
+              value: user
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+          image: mysql:5.6
+          name: user-mysql
+          ports:
+            - containerPort: 3306
+          resources: {}
+#          volumeMounts:
+#            - mountPath: /var/lib/mysql
+#              name: user-mysql-claim0
+      restartPolicy: Always
+#      volumes:
+#        - name: user-mysql-claim0
+#          persistentVolumeClaim:
+#            claimName: user-mysql-claim0
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-relation-mysql
+spec:
+  selector:
+    matchLabels:
+      app: user-relation-mysql
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: user-relation-mysql
+    spec:
+      containers:
+        - args:
+            - --character-set-server=utf8mb4
+            - --collation-server=utf8mb4_unicode_ci
+          env:
+            - name: MYSQL_DATABASE
+              value: user_relation
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+          image: mysql:5.6
+          name: user-relation-mysql
+          ports:
+            - containerPort: 3306
+          resources: {}
+#          volumeMounts:
+#            - mountPath: /var/lib/mysql
+#              name: user-relation-mysql-claim0
+      restartPolicy: Always
+#      volumes:
+#        - name: user-relation-mysql-claim0
+#          persistentVolumeClaim:
+#            claimName: user-relation-mysql-claim0
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: group-message-mysql
+  name: group-message-mysql
+spec:
+  ports:
+    - name: "3311"
+      port: 3306
+      targetPort: 3306
+  selector:
+    app: group-message-mysql
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: group-mysql
+  name: group-mysql
+spec:
+  ports:
+    - name: "3310"
+      port: 3306
+      targetPort: 3306
+  selector:
+    app: group-mysql
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: message-mysql
+  name: message-mysql
+spec:
+  ports:
+    - name: "3309"
+      port: 3306
+      targetPort: 3306
+  selector:
+    app: message-mysql
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: offline-message-mysql
+  name: offline-message-mysql
+spec:
+  ports:
+    - name: "3312"
+      port: 3306
+      targetPort: 3306
+  selector:
+    app:  offline-message-mysql
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: user-mysql
+  name: user-mysql
+spec:
+  ports:
+    - name: "3307"
+      port: 3306
+      targetPort: 3306
+  selector:
+    app: user-mysql
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: user-relation-mysql
+  name: user-relation-mysql
+spec:
+  ports:
+    - name: "3308"
+      port: 3306
+      targetPort: 3306
+  selector:
+    app: user-relation-mysql
+
+
+
+
+
+
+
