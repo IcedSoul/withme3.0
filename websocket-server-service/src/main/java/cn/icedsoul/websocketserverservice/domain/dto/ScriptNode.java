@@ -49,7 +49,6 @@ public class ScriptNode {
      * E: 结局，打印完结局之后
      */
     public enum NodeType {
-
         /**
          * 旁白
          */

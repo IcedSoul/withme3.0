@@ -35,6 +35,9 @@ public class CONSTANT {
     public static String ONLINE_LIST = "onLineList";
 
     public static String MESSAGE = "message";
+    public static String ROBOT_NAME = "admin-robot";
+    public static String USER_ID = "userId";
+    public static String SPLIT_COMMA = ",";
 
     /**
      * 存储Message相关
@@ -46,7 +49,6 @@ public class CONSTANT {
      * 存储Group Message 相关
      */
     public static String GROUP_MESSAGE_BASE = "http://group-message-service:8081";
-    //    public static String MESSAGE_BASE = "http://10.141.211.176:21005";
     public static String ADD_GROUP_MESSAGE = "/v1/groupMessage";
 
     /**
@@ -54,4 +56,33 @@ public class CONSTANT {
      */
     public static String OFFLINE_MESSAGE_BASE = "http://offline-message-service:8081";
     public static String ADD_OFFLINE_MESSAGE = "/v1/offlineMessage";
+
+    /**
+     * 获取用户信息 相关
+     */
+    public static String USER_SERVICE_BASE = "http://user-service:8081";
+    public static String GET_USER_BY_NAME = "/v1/user/userName/";
+
+    public static String ROLE_CHOICE = "choice";
+    public static String ROLE_CAT = "cat";
+    public static String ROLE_CEO = "ceo";
+    public static String ROLE_NEW_GRAD = "new_grad";
+    public static String ROLE_AUNT = "aunt";
+
+    public static final String CHOICE_SCRIPT = "websocket-server-service/src/resources/choice.txt";
+    public static final String NEW_GRAD_TEST_SCRIPT = "websocket-server-service/src/resources/newgrad.txt";
+    public static final String CEO_TEST_SCRIPT = "websocket-server-service/src/resources/ceo.txt";
+    public static final String CAT_TEST_SCRIPT = "websocket-server-service/src/resources/cat.txt";
+    public static final String AUNT_TEST_SCRIPT = "websocket-server-service/src/resources/aunt.txt";
+
+    public static final String GAME_START = ROLE_CHOICE + "1";
+    public static final String CAT_START = ROLE_CAT + "1";
+    public static final String CEO_START = ROLE_CEO + "1";
+    public static final String NEW_GRAD_START = ROLE_NEW_GRAD + "1";
+    public static final String AUNT_START = ROLE_AUNT + "1";
+
+    public static final String MESSAGE_CONTENT_SPLIT = "\\$";
+
+    public static final String CHOICE_PARSE_EXCEPTION_NOTICE = "请输入格式和范围正确的数字选项，如1、2、3或4等";
+    public static final String[] ROLE_CHOICE_ARRAY = new String[]{"", CEO_START, NEW_GRAD_START, AUNT_START, CAT_START};
 }

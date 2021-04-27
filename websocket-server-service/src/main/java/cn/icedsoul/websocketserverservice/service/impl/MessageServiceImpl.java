@@ -5,7 +5,9 @@ import cn.icedsoul.commonservice.util.Common;
 import cn.icedsoul.commonservice.util.JwtUtils;
 
 import cn.icedsoul.commonservice.util.Response;
+import cn.icedsoul.websocketserverservice.common.base.Tuple;
 import cn.icedsoul.websocketserverservice.domain.dto.Message;
+import cn.icedsoul.websocketserverservice.domain.dto.ScriptNode;
 import cn.icedsoul.websocketserverservice.service.api.MessageService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -14,11 +16,16 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static cn.icedsoul.commonservice.util.Common.isNull;
 import static cn.icedsoul.websocketserverservice.constant.CONSTANT.*;
@@ -28,15 +35,9 @@ import static cn.icedsoul.websocketserverservice.constant.Global.*;
  * @author IcedSoul
  * @date 19-5-17 上午9:47
  */
-@Log
+@Slf4j
 public class MessageServiceImpl implements MessageService {
 
-    /**
-     * 不确定是每个用户都分配一个jedis连接比较好还是全部使用一个比较好，暂时采用每个用户新获取一个jedis对象，
-     * 以后如果这里出现瓶颈那么再做优化
-     *
-     * Jedis连接
-     */
     AuthUser user = new AuthUser();
 
     @Override
@@ -48,33 +49,12 @@ public class MessageServiceImpl implements MessageService {
             log.info("用户token校验失败，请重新登陆！");
             return;
         }
-
-        //获取Jedis连接
-//        jedis = JedisPoolUtil.getJedis();
-//        log.info("[Jedis:] : 获取Jedis连接");
-//        //如果有办法在redis初始化时设置key和value，那么这里的判断可以省略*
-//        //增加在线人数
-//        if(jedis.exists(CONSTANT.ONLINE_COUNT)){
-//            jedis.incr(CONSTANT.ONLINE_COUNT);
-//        }
-//        else {
-//            jedis.set(CONSTANT.ONLINE_COUNT, "1");
-//        }
-//        //改变用户在线状态(存储channel对象（也不知道能不能存）)
-//        //更为优雅地存储在线用户（哈希表）
-////        this.self = ctx.channel();
-//        if(jedis.exists(CONSTANT.ONLINE_LIST)){
-//            jedis.hset(CONSTANT.ONLINE_LIST,String.valueOf(user.getUserId()), JSON.toJSONString(ctx.channel()));
-//        }
-//        else {
-//            Map<String, String> onLineList = new HashMap<>();
-//            onLineList.put(String.valueOf(user.getUserId()), JSON.toJSONString(ctx.channel()));
-//            jedis.hmset(CONSTANT.ONLINE_LIST, onLineList);
-//        }
-//        log.info("[存储用户channel对象：] " + JSON.toJSONString(ctx.channel()));
         onLineList.put(user.getUserId(), ctx.channel());
         onLineNumber++;
+
+        initUser(user.getUserId());
     }
+
 
     @Override
     public void onClose() {
@@ -84,7 +64,6 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void onMessage(ChannelHandlerContext ctx, String jsonMessage) {
-        log.info("I receive message " + jsonMessage);
         Message message = new Message();
         JSONObject jsonObjectMessage = JSON.parseObject(jsonMessage);
         message.setFromId(jsonObjectMessage.getInteger("from"));
@@ -111,29 +90,89 @@ public class MessageServiceImpl implements MessageService {
                     message.setType(7);
                     saveMessage(message, OFFLINE_MESSAGE_BASE, ADD_OFFLINE_MESSAGE);
                 }
-
-                log.info("I send message to " + message.getToId());
             }
 
         }
         else {
-            if(users.size() > 0) {
-                message.setToId(users.getInteger(0));
-                Channel channel = getChannel(message.getToId());
-                if(!isNull(channel)) {
-                    saveMessage(message, MESSAGE_BASE, ADD_MESSAGE);
-                    sendMessage(channel, jsonMessage);
-                }
-                else {
-                    saveMessage(message, MESSAGE_BASE, ADD_MESSAGE);
-                    saveMessage(message, OFFLINE_MESSAGE_BASE, ADD_OFFLINE_MESSAGE);
-                }
-                log.info("I send message to " + message.getToId());
-            }
+            robotHandleMessage(message.getFromId(), message);
         }
 
 
     }
+
+    /**
+     * 机器人处理会话
+     * @param userId 用户ID
+     * @param message 消息
+     */
+    private void robotHandleMessage(Integer userId, Message message) {
+        try {
+            ScriptNode scriptNode = onlineUserStatus.getOrDefault(userId, null);
+            if(Objects.isNull(scriptNode)){
+                initUser(userId);
+                throw new Exception("用户状态异常");
+            }
+            switch (scriptNode.getType().getKey()) {
+                case ScriptNode.NARRATIVE:
+                    //发送旁白消息
+                    sendMessageToUserFromRobot(userId, scriptNode.getContents().get(0).getFirst());
+                    //旁白消息发送完自动更新节点状态
+                    onlineUserStatus.put(userId, gameMap.get(scriptNode.getContents().get(0).getSecond()));
+                    robotHandleMessage(userId, null);
+                    break;
+                case ScriptNode.START:
+                    //开始状态修改为choice文件才有，为选择其它文件的形态
+                    //message为null说明是从其它状态跳转过来
+                    if(Objects.isNull(message)){
+                        sendMessagesToUserFromRobotByContents(userId, scriptNode.getContents());
+                    }
+                    else {
+                        try {
+                            Integer choice = Integer.valueOf(message.getContent());
+                            if(choice <= 0 || choice > scriptNode.getContents().size()){
+                                throw new Exception("选项超出正常范围");
+                            }
+                            sendMessageToUserFromRobot(userId, scriptNode.getContents().get(choice).getFirst());
+                            //切换到对应角色的状态
+                            onlineUserStatus.put(userId, gameMap.get(ROLE_CHOICE_ARRAY[choice]));
+                        } catch (Exception e){
+                            log.info("选择解析错误");
+                            sendMessageToUserFromRobot(userId, CHOICE_PARSE_EXCEPTION_NOTICE);
+                        }
+                        robotHandleMessage(userId, null);
+                    }
+                    break;
+                case ScriptNode.CHOICE:
+                    if(Objects.isNull(message)){
+                        sendMessagesToUserFromRobotByContents(userId, scriptNode.getContents());
+                    }
+                    else {
+                        try {
+                            int choice = Integer.parseInt(message.getContent());
+                            if(choice < 0 || choice >= scriptNode.getContents().size()){
+                                throw new Exception("选项超出正常范围");
+                            }
+                            onlineUserStatus.put(userId, gameMap.get(scriptNode.getContents().get(choice).getSecond()));
+                        } catch (Exception e){
+                            log.info("选择解析错误");
+                            sendMessageToUserFromRobot(userId, CHOICE_PARSE_EXCEPTION_NOTICE);
+                        }
+                        robotHandleMessage(userId, null);
+                    }
+                    break;
+                case ScriptNode.END:
+                    sendMessageToUserFromRobot(userId, scriptNode.getContents().get(0).getFirst());
+                    break;
+                default:
+                    throw new Exception();
+            }
+        } catch (Exception e){
+            log.info("机器人处理消息出现异常", e);
+        }
+
+
+    }
+
 
     private void sendMessage(Channel channel, String message) {
         channel.write(new TextWebSocketFrame(message));
@@ -144,17 +183,6 @@ public class MessageServiceImpl implements MessageService {
         return onLineList.get(userId);
     }
 
-//    public String getMessage(Message message) {
-//        //使用JSONObject方法构建Json数据
-//        JSONObject jsonObjectMessage = new JSONObject();
-//        jsonObjectMessage.put("from", String.valueOf(message.getFromId()));
-//        jsonObjectMessage.put("to", new String[]{String.valueOf(message.getToId())});
-//        jsonObjectMessage.put("content", String.valueOf(message.getContent()));
-//        jsonObjectMessage.put("type", String.valueOf(message.getType()));
-//        jsonObjectMessage.put("time", message.getTime().toString());
-//        return jsonObjectMessage.toString();
-//    }
-
     private void saveMessage(Message message, String baseUrl, String path){
         MultiValueMap<String, Object> requestParams = new LinkedMultiValueMap<>();
         requestParams.add("fromId", message.getFromId());
@@ -162,18 +190,7 @@ public class MessageServiceImpl implements MessageService {
         requestParams.add("content", message.getContent());
         requestParams.add("type", message.getType());
         requestParams.add("time", sdf.format(message.getTime()));
-
-        sendSyncHttpRequest(baseUrl, path, requestParams);
-
-//        Mono<Response> response = WebClient.create(MESSAGE_BASE).post()
-//                .uri(ADD_MESSAGE)
-////                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-//                .syncBody(requestParams)
-//                .retrieve()
-//                .bodyToMono(Response.class);
-//        Response res = response.block();
-//        assert res != null;
-//        log.info("I save Message" + res.toString());
+        sendSyncHttpPostRequest(baseUrl, path, requestParams);
     }
 
     private void saveGroupMessage(Message message, String toId){
@@ -184,29 +201,92 @@ public class MessageServiceImpl implements MessageService {
         requestParams.add("content", message.getContent());
         requestParams.add("type", message.getType());
         requestParams.add("time", sdf.format(message.getTime()));
-        sendSyncHttpRequest(GROUP_MESSAGE_BASE, ADD_GROUP_MESSAGE, requestParams);
+        sendSyncHttpPostRequest(GROUP_MESSAGE_BASE, ADD_GROUP_MESSAGE, requestParams);
     }
 
-//    private void saveOffLineMessage(Message message){
-//        MultiValueMap<String, Object> requestParams = new LinkedMultiValueMap<>();
-//        requestParams.add("fromId", message.getFromId());
-//        requestParams.add("toId", message.getToId());
-//        requestParams.add("content", message.getContent());
-//        requestParams.add("type", message.getType());
-//        requestParams.add("time", sdf.format(message.getTime()));
-//
-//        sendSyncHttpRequest(OFFLINE_MESSAGE_BASE, ADD_OFFLINE_MESSAGE, requestParams);
-//    }
-
-    private void sendSyncHttpRequest(String baseURL, String path, MultiValueMap requestParams){
-        Mono<Response> response = WebClient.create(baseURL).post()
+    /**
+     * 发送POST请求
+     * @param baseUrl 基本URL
+     * @param path 方法路径
+     * @param requestParams 请求参数
+     * @return 返回参数
+     */
+    private Response sendSyncHttpPostRequest(String baseUrl, String path, MultiValueMap<?, ?> requestParams){
+        Mono<Response> response = WebClient.create(baseUrl).post()
                 .uri(path)
                 .syncBody(requestParams)
                 .retrieve()
                 .bodyToMono(Response.class);
-        Response res = response.block();
-        assert res != null;
-        log.info("I save Message" + res.toString());
+        return response.block();
     }
 
+    /**
+     * 发送GET请求
+     * @param baseUrl 基本URL
+     * @param path 方法路径
+     * @return 返回参数
+     */
+    private Response sendSyncHttpGetRequest(String baseUrl, String path){
+        Mono<Response> response = WebClient.create(baseUrl).get()
+                .uri(path)
+                .retrieve()
+                .bodyToMono(Response.class);
+        return response.block();
+    }
+
+    /**
+     * 对新登陆的用户进行初始化操作，设置初登陆的用户状态，初始化机器人ID
+     * @param userId 用户ID
+     */
+    private void initUser(Integer userId) {
+        onlineUserStatus.put(userId, gameMap.get(GAME_START));
+        if(Objects.isNull(robotId)) {
+            Response response = sendSyncHttpGetRequest(USER_SERVICE_BASE, GET_USER_BY_NAME + ROBOT_NAME);
+            if (!Objects.isNull(response) && !Objects.isNull(response.getContent())) {
+                JSONObject jsonObjectMessage = JSON.parseObject((String)response.getContent());
+                robotId = jsonObjectMessage.getInteger(USER_ID);
+            }
+        }
+    }
+
+    private void sendMessagesToUserFromRobotByContents(Integer userId, List<Tuple<String, String>> contents){
+        AtomicInteger i = new AtomicInteger(1);
+        contents.forEach(content -> sendMessageToUserFromRobot(userId, (i.getAndIncrement()) + SPLIT_COMMA + content.getFirst()));
+    }
+
+    /**
+     * 机器人向指定用户发送消息
+     * @param userId 用户ID
+     * @param messageContent 消息内容
+     */
+    private void sendMessageToUserFromRobot(Integer userId, String messageContent){
+        String[] messageContents = messageContent.split(MESSAGE_CONTENT_SPLIT);
+        for (String singleMessageContent : messageContents) {
+            Message message = new Message();
+            message.setFromId(robotId);
+            message.setToId(userId);
+            message.setContent(singleMessageContent);
+            message.setType(0);
+            Timestamp now = new Timestamp(System.currentTimeMillis());
+            message.setTime(now);
+            //保存消息
+            saveMessage(message, MESSAGE_BASE, ADD_MESSAGE);
+            sendMessage(onLineList.get(userId), getMessage(message));
+        }
+    }
+
+    /**
+     * 构建Json数据
+     * @param message Message对象
+     * @return Json字符串
+     */
+    public String getMessage(Message message) {
+        JSONObject jsonObjectMessage = new JSONObject();
+        jsonObjectMessage.put("from", String.valueOf(message.getFromId()));
+        jsonObjectMessage.put("to", new String[]{String.valueOf(message.getToId())});
+        jsonObjectMessage.put("content", String.valueOf(message.getContent()));
+        jsonObjectMessage.put("type", String.valueOf(message.getType()));
+        jsonObjectMessage.put("time", message.getTime().toString());
+        return jsonObjectMessage.toString();
+    }
 }

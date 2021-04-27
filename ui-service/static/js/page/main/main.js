@@ -195,13 +195,13 @@ function appendZero(s) {
 //获取当前时间日期
 function getDateFull() {
     let date = new Date();
-    let currentdate = date.getFullYear() + "-"
+    let currentDate = date.getFullYear() + "-"
         + appendZero(date.getMonth() + 1) + "-"
         + appendZero(date.getDate()) + " "
         + appendZero(date.getHours()) + ":"
         + appendZero(date.getMinutes()) + ":"
         + appendZero(date.getSeconds());
-    return currentdate;
+    return currentDate;
 }
 
 function closeWindow() {
@@ -234,7 +234,7 @@ function getAllRelations() {
         return null;
     }
     else {
-        if(response.content != "") {
+        if(response.content !== "") {
             return eval("(" + response.content + ")");
         }
         else
@@ -323,7 +323,7 @@ function listRelation() {
     for (let i = 0; i < allGroups.length; i++) {
         html += '<div class="relationSingle" onclick="chatWithGroup(' + allGroups[i].id + ',\'' + allGroups[i].groupId + '\',\'' + allGroups[i].groupName + '\',' + allGroups[i].groupCreatorId + ');">' +
             '<div class="photoBox">' +
-            '<img class="img-circle photo" src="img/photo.jpg"/>' +
+            '<img class="img-circle photo" src="img/photo.jpg" alt=""/>' +
             '</div>' +
             '<div class="list">' +
             allGroups[i].groupName +
