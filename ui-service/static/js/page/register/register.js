@@ -43,7 +43,7 @@ function checkRegister() {
     });
     if (registerResult.status === 1) {
         layer.msg('注册成功', {icon: 1});
-        window.location.href = "login.html";
+        window.location.href = "index.html";
     }
     else {
         layer.msg(registerResult.message, {icon: 2});

@@ -53,7 +53,7 @@ function getCurrentUser() {
     });
     if (response.status !== 1) {
         layer.msg("登录状态失效，请重新登录");
-        window.location.href = "login.html";
+        window.location.href = "index.html";
     }
     else
         return JSON.parse(response.content);

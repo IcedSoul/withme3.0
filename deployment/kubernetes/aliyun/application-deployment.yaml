@@ -17,7 +17,7 @@ spec:
         app: group-message-service
     spec:
       containers:
-        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/group-message-service
+        - image: registry.cn-shanghai.aliyuncs.com/xfguo/group-message-service
           name: group-message-service
           ports:
             - containerPort: 8081
@@ -47,7 +47,7 @@ spec:
         app: group-service
     spec:
       containers:
-        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/group-service
+        - image: registry.cn-shanghai.aliyuncs.com/xfguo/group-service
           name: group-service
           ports:
             - containerPort: 8081
@@ -78,7 +78,7 @@ spec:
         app: message-service
     spec:
       containers:
-        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/message-service
+        - image: registry.cn-shanghai.aliyuncs.com/xfguo/message-service
           name: message-service
           ports:
             - containerPort: 8081
@@ -108,7 +108,7 @@ spec:
         app: offline-message-service
     spec:
       containers:
-        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/offline-message-service
+        - image: registry.cn-shanghai.aliyuncs.com/xfguo/offline-message-service
           name: offline-message-service
           ports:
             - containerPort: 8081
@@ -138,7 +138,7 @@ spec:
         app: ui-service
     spec:
       containers:
-        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/ui-service
+        - image: registry.cn-shanghai.aliyuncs.com/xfguo/ui-service
           imagePullPolicy: Always
           name: ui-service
           ports:
@@ -169,7 +169,7 @@ spec:
         app: user-relation-service
     spec:
       containers:
-        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/user-relation-service
+        - image: registry.cn-shanghai.aliyuncs.com/xfguo/user-relation-service
           name: user-relation-service
           ports:
             - containerPort: 8081
@@ -200,7 +200,7 @@ spec:
         app: user-service
     spec:
       containers:
-        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/user-service
+        - image: registry.cn-shanghai.aliyuncs.com/xfguo/user-service
           name: user-service
           ports:
             - containerPort: 8081
@@ -230,7 +230,7 @@ spec:
         app: websocket-server-service
     spec:
       containers:
-        - image: registry-vpc.cn-beijing.aliyuncs.com/xfguo/test/websocket-server-service
+        - image: registry.cn-shanghai.aliyuncs.com/xfguo/websocket-server-service
           name: websocket-server-service
           ports:
             - containerPort: 8282

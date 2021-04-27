@@ -47,7 +47,7 @@ public class UserController {
     public Response register(@RequestParam("userName") String userName,
                              @RequestParam("userNickName") String userNickName,
                              @RequestParam("userPassword") String userPassword) {
-        return userService.register(userName, userNickName, userPassword);
+        return userService.register(userName, userNickName, userPassword, 0);
     }
 
     @ApiOperation(value = "获取用户好友", notes = "获取用户所有好友", response = Response.class)

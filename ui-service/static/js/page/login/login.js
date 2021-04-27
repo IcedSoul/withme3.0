@@ -1,9 +1,9 @@
 function checkLogin() {
-    var user = {};
+    let user = {};
     user.userName = document.getElementById("userName").value;
-    user.userPassword = document.getElementById("userPassword").value;
+    user.userPassword = "baiji-test";
     if (user.userName === '') {
-        layer.msg('用户名不能为空', {icon: 2});
+        layer.msg('花名不能为空', {icon: 2});
         return;
     }
     else if (user.userName.length >= 12) {
@@ -15,7 +15,7 @@ function checkLogin() {
         return;
     }
 
-    var loginResult = null;
+    let loginResult = null;
     $.ajax({
         async: false, //设置同步
         type: 'GET',

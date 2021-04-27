@@ -27,6 +27,8 @@ import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Created by IcedSoul on 2018/2/20.
@@ -44,13 +46,35 @@ public class UserServiceImplement implements UserService {
     RestTemplate restTemplate;
 
 
+
     @Override
     public Response login(String userName, String userPassword) {
         try {
+            //自动注册账号
+            Response response = register(UUID.randomUUID().toString(), userName, userPassword, 0);
+
+            //获取机器人
+            User robot = userRepository.findByUserName("admin-robot");
+
+            if(response.getStatus() != 1 || Objects.isNull(response.getContent()) || Objects.isNull(robot)){
+                return new Response(-1, "登录异常", null);
+            }
+            User user = (User) response.getContent();
+            //添加好友
+            MultiValueMap<String, Integer> requestEntity = new LinkedMultiValueMap<>();
+            requestEntity.add("userIdA", user.getUserId());
+            requestEntity.add("userIdB", robot.getUserId());
+            ResponseEntity<Response> responseEntity =
+                    restTemplate.postForEntity(CONSTANT.USER_RELATION_BUILD, requestEntity, Response.class);
+            Response response1 = responseEntity.getBody();
+            if(Objects.isNull(response1) || response1.getStatus() != 1) {
+                return new Response(1, "添加好友失败", null);
+            }
+
             UserDetail userDetail = userDetailRepository.findByUserDetailName(userName);
             if (userDetail != null) {
                 if (Common.isEquals(userDetail.getUserDetailPassword(), userPassword)) {
-                    Timestamp expireTime = new Timestamp(System.currentTimeMillis() + CONSTANT.EXPIRE_TIME * 1000 * 60);
+                    Timestamp expireTime = new Timestamp(System.currentTimeMillis() + (long) CONSTANT.EXPIRE_TIME * 1000 * 60);
                     AuthUser authUser = new AuthUser(userDetail.getUserDetailId(),
                             userDetail.getUserDetailName(),
                             userDetail.getUserDetailNickName(),
@@ -77,7 +101,7 @@ public class UserServiceImplement implements UserService {
 
     @Override
     @Transactional
-    public Response register(String userName, String userNickName, String userPassword) {
+    public Response register(String userName, String userNickName, String userPassword, Integer userRole) {
         try {
             if (userRepository.findByUserName(userName) == null) {
                 UserDetail userDetail = new UserDetail();
@@ -94,9 +118,9 @@ public class UserServiceImplement implements UserService {
                 user.setUserNickName(userDetail1.getUserDetailNickName());
                 user.setUserGroups("");
                 user.setUserRelations("");
-                user.setUserRole(0);
-                userRepository.save(user);
-                return new Response(1, "注册成功", null);
+                user.setUserRole(userRole);
+                User user1 = userRepository.save(user);
+                return new Response(1, "注册成功", user1);
             } else {
                 return new Response(-1, "用户名已存在", null);
             }

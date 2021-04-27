@@ -11,7 +11,7 @@ public interface UserService {
 
     Response logout(String token);
 
-    Response register(String userName, String userNickName, String userPassword);
+    Response register(String userName, String userNickName, String userPassword, Integer userRole);
 
     Response getRelations(Integer userId);
 
