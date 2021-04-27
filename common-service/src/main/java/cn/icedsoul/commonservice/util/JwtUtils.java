@@ -14,6 +14,9 @@ import java.security.Key;
 import java.sql.Timestamp;
 
 public class JwtUtils {
+    public static final String JWT_SPLITTER_REGEX = "\\.";
+    public static final Integer JWT_SEPARATED_SIZE = 3;
+
     public static String createJWT(String authUser) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(CONSTANT.SECRET_KEY);
@@ -27,7 +30,7 @@ public class JwtUtils {
     }
 
     public static AuthUser parseJWT(String jwt) {
-        if (jwt.split("\\.").length == 3) {
+        if (JWT_SEPARATED_SIZE.equals(jwt.split(JWT_SPLITTER_REGEX).length)) {
 //            String head = jwt.split("\\.")[0];
 //            String payload = jwt.split("\\.")[1];
             String sign = jwt.split("\\.")[2];
