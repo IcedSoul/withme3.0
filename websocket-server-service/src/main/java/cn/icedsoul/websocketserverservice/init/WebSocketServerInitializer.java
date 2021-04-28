@@ -37,7 +37,6 @@ public class WebSocketServerInitializer extends ChannelInitializer<SocketChannel
      */
     private void initGameMap(){
         try {
-            log.info("当前路径：{}", System.getProperty("user.dir"));
             gameMap.putAll(ScriptReaderUtil.parseScript(CHOICE_SCRIPT, ROLE_CHOICE));
             gameMap.putAll(ScriptReaderUtil.parseScript(CAT_TEST_SCRIPT, ROLE_CAT));
             gameMap.putAll(ScriptReaderUtil.parseScript(CEO_TEST_SCRIPT, ROLE_CEO));

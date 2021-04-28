@@ -69,11 +69,11 @@ public class CONSTANT {
     public static String ROLE_NEW_GRAD = "new_grad";
     public static String ROLE_AUNT = "aunt";
 
-    public static final String CHOICE_SCRIPT = "choice.txt";
-    public static final String NEW_GRAD_TEST_SCRIPT = "newgrad.txt";
-    public static final String CEO_TEST_SCRIPT = "ceo.txt";
-    public static final String CAT_TEST_SCRIPT = "cat.txt";
-    public static final String AUNT_TEST_SCRIPT = "aunt.txt";
+    public static final String CHOICE_SCRIPT = "/home/choice.txt";
+    public static final String NEW_GRAD_TEST_SCRIPT = "/home/newgrad.txt";
+    public static final String CEO_TEST_SCRIPT = "/home/ceo.txt";
+    public static final String CAT_TEST_SCRIPT = "/home/cat.txt";
+    public static final String AUNT_TEST_SCRIPT = "/home/aunt.txt";
 
     public static final String GAME_START = ROLE_CHOICE + "1";
     public static final String CAT_START = ROLE_CAT + "1";

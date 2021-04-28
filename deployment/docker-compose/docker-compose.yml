@@ -192,10 +192,8 @@ services:
     build: ../../websocket-server-service
     image: icedsoul/websocket-server-service
     restart: always
-#    links:
-#      - redis
-#    depends_on:
-#    - redis
+    volumes:
+      - ../../websocket-server-service/src/main/resources:/home/
     ports:
     - 21002:8282
     networks:
