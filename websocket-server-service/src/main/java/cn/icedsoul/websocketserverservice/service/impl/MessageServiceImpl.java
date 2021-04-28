@@ -133,11 +133,10 @@ public class MessageServiceImpl implements MessageService {
                     }
                     else {
                         try {
-                            Integer choice = Integer.valueOf(message.getContent());
+                            int choice = Integer.parseInt(message.getContent());
                             if(choice <= 0 || choice > scriptNode.getContents().size()){
                                 throw new Exception("选项超出正常范围");
                             }
-                            sendMessageToUserFromRobot(userId, scriptNode.getContents().get(choice).getFirst());
                             //切换到对应角色的状态
                             onlineUserStatus.put(userId, gameMap.get(ROLE_CHOICE_ARRAY[choice]));
                         } catch (Exception e){
