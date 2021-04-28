@@ -53,6 +53,7 @@ public class MessageServiceImpl implements MessageService {
         onLineNumber++;
 
         initUser(user.getUserId());
+        robotHandleMessage(user.getUserId(), null);
     }
 
 
@@ -64,6 +65,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     public void onMessage(ChannelHandlerContext ctx, String jsonMessage) {
+        log.info("send message, {}", jsonMessage);
         Message message = new Message();
         JSONObject jsonObjectMessage = JSON.parseObject(jsonMessage);
         message.setFromId(jsonObjectMessage.getInteger("from"));
@@ -112,8 +114,10 @@ public class MessageServiceImpl implements MessageService {
                 initUser(userId);
                 throw new Exception("用户状态异常");
             }
+            log.info("robot start handle message. currentNode: {}", scriptNode.toString());
             switch (scriptNode.getType().getKey()) {
                 case ScriptNode.NARRATIVE:
+                    log.info("旁白:");
                     //发送旁白消息
                     sendMessageToUserFromRobot(userId, scriptNode.getContents().get(0).getFirst());
                     //旁白消息发送完自动更新节点状态
@@ -121,6 +125,7 @@ public class MessageServiceImpl implements MessageService {
                     robotHandleMessage(userId, null);
                     break;
                 case ScriptNode.START:
+                    log.info("开始:");
                     //开始状态修改为choice文件才有，为选择其它文件的形态
                     //message为null说明是从其它状态跳转过来
                     if(Objects.isNull(message)){
@@ -143,7 +148,9 @@ public class MessageServiceImpl implements MessageService {
                     }
                     break;
                 case ScriptNode.CHOICE:
+                    log.info("选择:");
                     if(Objects.isNull(message)){
+                        log.info("提供选项:");
                         sendMessagesToUserFromRobotByContents(userId, scriptNode.getContents());
                     }
                     else {
@@ -161,6 +168,7 @@ public class MessageServiceImpl implements MessageService {
                     }
                     break;
                 case ScriptNode.END:
+                    log.info("结束:");
                     sendMessageToUserFromRobot(userId, scriptNode.getContents().get(0).getFirst());
                     break;
                 default:
@@ -175,6 +183,7 @@ public class MessageServiceImpl implements MessageService {
 
 
     private void sendMessage(Channel channel, String message) {
+        log.info("send message {}", message);
         channel.write(new TextWebSocketFrame(message));
         channel.flush();
     }
