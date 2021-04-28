@@ -186,6 +186,12 @@ public class MessageServiceImpl implements MessageService {
 
     private void sendMessage(Channel channel, String message) {
         log.info("send message {}", message);
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            log.info("sleep 异常");
+            e.printStackTrace();
+        }
         channel.write(new TextWebSocketFrame(message));
         channel.flush();
     }
