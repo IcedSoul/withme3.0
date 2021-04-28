@@ -54,7 +54,7 @@ public class UserServiceImplement implements UserService {
         try {
             log.info("login start, {}, {}", userName, userPassword);
             //自动注册账号
-            Response response = register(UUID.randomUUID().toString(), userName, userPassword, 0);
+            Response response = register(userName, userName, userPassword, 0);
 
             //获取机器人
             User robot = userRepository.findByUserName("admin-robot");
@@ -76,6 +76,7 @@ public class UserServiceImplement implements UserService {
             log.info("add friends, {}, {}", userName, userPassword);
 
             UserDetail userDetail = userDetailRepository.findByUserDetailName(userName);
+
             if (userDetail != null) {
                 if (Common.isEquals(userDetail.getUserDetailPassword(), userPassword)) {
                     Timestamp expireTime = new Timestamp(System.currentTimeMillis() + (long) CONSTANT.EXPIRE_TIME * 1000 * 60);
