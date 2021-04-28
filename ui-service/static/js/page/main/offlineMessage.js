@@ -11,7 +11,7 @@ function showOfflineMessage() {
             time: allMessages[i].time
         });
         handleReceiveMessage(jsonMessage);
-        // showReceiveMessage(allMessages[i].content, allMessages[i].fromId, usersId, allMessages[i].type, allMessages[i].time, jsonMessage);
+        showReceiveMessage(allMessages[i].content, allMessages[i].fromId, usersId, allMessages[i].type, allMessages[i].time, jsonMessage);
     }
 }
 

@@ -72,9 +72,9 @@ function showReceiveMessage(content, from, to, type, time, message) {
             $(messageReceiver).append(rightArrow);
             target.scrollTop = target.scrollHeight;
         }
-        // else {
-        //     doMessageNotice(content, from, to, type, time, message);
-        // }
+        else {
+            doMessageNotice(content, from, to, type, time, message);
+        }
     } else {
         let messageReceiver = '#' + from + 'output';
         let target = document.getElementById(from + 'output');
@@ -101,8 +101,8 @@ function showReceiveMessage(content, from, to, type, time, message) {
             $(messageReceiver).append(leftArrow);
             target.scrollTop = target.scrollHeight;
         }
-        // else
-        //     doMessageNotice(content, from, to, type, time, message);
+        else
+            doMessageNotice(content, from, to, type, time, message);
     }
 }
 
@@ -269,9 +269,9 @@ function changeToOnlineStatus(content, from, to, type, time, message) {
         onLineStatus.style.opacity = 0;
         offLineStatus.style.opacity = 1;
     }
-    // else {
-    //     doMessageNotice(content, from, to, type, time, message);
-    // }
+    else {
+        doMessageNotice(content, from, to, type, time, message);
+    }
 }
 
 //列出好友列表
