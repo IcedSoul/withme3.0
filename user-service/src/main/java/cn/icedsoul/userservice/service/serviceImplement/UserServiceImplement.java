@@ -119,7 +119,8 @@ public class UserServiceImplement implements UserService {
                 user.setUserGroups("");
                 user.setUserRelations("");
                 user.setUserRole(userRole);
-                User user1 = userRepository.save(user);
+                User user1 = userRepository.saveAndFlush(user);
+
                 return new Response(1, "注册成功", user1);
             } else {
                 return new Response(-1, "用户名已存在", null);
