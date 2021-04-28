@@ -16,6 +16,7 @@ import cn.icedsoul.userservice.repository.UserRepository;
 import cn.icedsoul.userservice.constant.CONSTANT;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,7 @@ import java.util.UUID;
  * Created by IcedSoul on 2018/2/20.
  */
 @Service
+@Slf4j
 public class UserServiceImplement implements UserService {
 
     @Autowired
@@ -50,6 +52,7 @@ public class UserServiceImplement implements UserService {
     @Override
     public Response login(String userName, String userPassword) {
         try {
+            log.info("login start, {}, {}", userName, userPassword);
             //自动注册账号
             Response response = register(UUID.randomUUID().toString(), userName, userPassword, 0);
 
@@ -70,6 +73,7 @@ public class UserServiceImplement implements UserService {
             if(Objects.isNull(response1) || response1.getStatus() != 1) {
                 return new Response(1, "添加好友失败", null);
             }
+            log.info("add friends, {}, {}", userName, userPassword);
 
             UserDetail userDetail = userDetailRepository.findByUserDetailName(userName);
             if (userDetail != null) {
@@ -109,7 +113,7 @@ public class UserServiceImplement implements UserService {
                 userDetail.setUserDetailNickName(userNickName);
                 userDetail.setUserDetailPassword(userPassword);
                 userDetail.setUserRegisterTime(Common.getCurrentTime());
-                userDetailRepository.save(userDetail);
+                userDetailRepository.saveAndFlush(userDetail);
                 UserDetail userDetail1 = userDetailRepository.findByUserDetailName(userName);
                 User user = new User();
                 user.setUserId(userDetail1.getUserDetailId());
@@ -120,7 +124,6 @@ public class UserServiceImplement implements UserService {
                 user.setUserRelations("");
                 user.setUserRole(userRole);
                 User user1 = userRepository.saveAndFlush(user);
-
                 return new Response(1, "注册成功", user1);
             } else {
                 return new Response(-1, "用户名已存在", null);
