@@ -53,22 +53,26 @@ public class ScriptReaderUtil {
                             .contents(Collections.singletonList(new Tuple(lineSplited.get(1), role + lineSplited.get(2))))
                             .build();
                     return new Tuple<>(primaryKey, scriptNode);
-                case ScriptNode.CHOICE:
+                case ScriptNode.START:
                     //2|3|abc|3|def|4|xyz|5|C|
                     List<Tuple<String, String>> contents = new ArrayList<>();
                     for (int i = 0; i < Integer.valueOf(lineSplited.get(1)); i++) {
                         contents.add(new Tuple<>(lineSplited.get(2 * i + 2), role + lineSplited.get(2 * i + 3)));
                     }
                     scriptNode = ScriptNode.builder()
-                            .type(ScriptNode.NodeType.CHOICE)
+                            .type(ScriptNode.NodeType.START)
                             .contents(contents)
                             .build();
                     return new Tuple<>(primaryKey, scriptNode);
-                case ScriptNode.START:
-                    //1|游戏开始|2|S|
+                case ScriptNode.CHOICE:
+                    //2|3|abc|3|def|4|xyz|5|C|
+                    List<Tuple<String, String>> contents1 = new ArrayList<>();
+                    for (int i = 0; i < Integer.valueOf(lineSplited.get(1)); i++) {
+                        contents1.add(new Tuple<>(lineSplited.get(2 * i + 2), role + lineSplited.get(2 * i + 3)));
+                    }
                     scriptNode = ScriptNode.builder()
-                            .type(ScriptNode.NodeType.START)
-                            .contents(Collections.singletonList(new Tuple(lineSplited.get(1), role + lineSplited.get(2))))
+                            .type(ScriptNode.NodeType.CHOICE)
+                            .contents(contents1)
                             .build();
                     return new Tuple<>(primaryKey, scriptNode);
                 case ScriptNode.END:

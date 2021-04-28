@@ -260,8 +260,9 @@ public class MessageServiceImpl implements MessageService {
     }
 
     private void sendMessagesToUserFromRobotByContents(Integer userId, List<Tuple<String, String>> contents){
-        AtomicInteger i = new AtomicInteger(1);
-        contents.forEach(content -> sendMessageToUserFromRobot(userId, (i.getAndIncrement()) + SPLIT_COMMA + content.getFirst()));
+        for (int i = 0; i < contents.size(); i++) {
+            sendMessageToUserFromRobot(userId, ((i + 1) + SPLIT_COMMA + contents.get(i).getFirst()));
+        }
     }
 
     /**

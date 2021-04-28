@@ -37,7 +37,7 @@ public class CONSTANT {
     public static String MESSAGE = "message";
     public static String ROBOT_NAME = "admin-robot";
     public static String USER_ID = "userId";
-    public static String SPLIT_COMMA = ",";
+    public static String SPLIT_COMMA = ".";
 
     /**
      * 存储Message相关
