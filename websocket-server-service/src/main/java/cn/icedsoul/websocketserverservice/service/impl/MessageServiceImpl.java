@@ -100,6 +100,21 @@ public class MessageServiceImpl implements MessageService {
                 robotHandleMessage(message.getFromId(), message);
             }
         }
+        else {
+            if(users.size() > 0) {
+                message.setToId(users.getInteger(0));
+                Channel channel = getChannel(message.getToId());
+                if(!isNull(channel)) {
+                    saveMessage(message, MESSAGE_BASE, ADD_MESSAGE);
+                    sendMessage(channel, jsonMessage);
+                }
+                else {
+                    saveMessage(message, MESSAGE_BASE, ADD_MESSAGE);
+                    saveMessage(message, OFFLINE_MESSAGE_BASE, ADD_OFFLINE_MESSAGE);
+                }
+                log.info("I send message to " + message.getToId());
+            }
+        }
 
 
     }
