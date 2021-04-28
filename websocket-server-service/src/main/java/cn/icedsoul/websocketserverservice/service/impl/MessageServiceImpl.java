@@ -130,6 +130,7 @@ public class MessageServiceImpl implements MessageService {
                     //message为null说明是从其它状态跳转过来
                     if(Objects.isNull(message)){
                         sendMessagesToUserFromRobotByContents(userId, scriptNode.getContents());
+                        sendMessageToUserFromRobot(userId, CHOICE_PARSE_EXCEPTION_NOTICE);
                     }
                     else {
                         try {
@@ -151,6 +152,7 @@ public class MessageServiceImpl implements MessageService {
                     if(Objects.isNull(message)){
                         log.info("提供选项:");
                         sendMessagesToUserFromRobotByContents(userId, scriptNode.getContents());
+                        sendMessageToUserFromRobot(userId, CHOICE_PARSE_EXCEPTION_NOTICE);
                     }
                     else {
                         try {
