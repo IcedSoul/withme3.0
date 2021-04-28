@@ -249,6 +249,7 @@ public class MessageServiceImpl implements MessageService {
      */
     private void initUser(Integer userId) {
         onlineUserStatus.put(userId, gameMap.get(GAME_START));
+        log.info("userId, {}, {}", userId, gameMap.get(GAME_START).toString());
         if(Objects.isNull(robotId)) {
             Response response = sendSyncHttpGetRequest(USER_SERVICE_BASE, GET_USER_BY_NAME + ROBOT_NAME);
             if (!Objects.isNull(response) && !Objects.isNull(response.getContent())) {

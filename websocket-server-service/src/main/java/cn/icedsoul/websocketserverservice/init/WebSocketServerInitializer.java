@@ -37,11 +37,11 @@ public class WebSocketServerInitializer extends ChannelInitializer<SocketChannel
      */
     private void initGameMap(){
         try {
-//            gameMap.putAll(ScriptReaderUtil.parseScript(CHOICE_SCRIPT, ROLE_CHOICE));
-//            gameMap.putAll(ScriptReaderUtil.parseScript(CAT_TEST_SCRIPT, ROLE_CAT));
-//            gameMap.putAll(ScriptReaderUtil.parseScript(CEO_TEST_SCRIPT, ROLE_CEO));
-//            gameMap.putAll(ScriptReaderUtil.parseScript(NEW_GRAD_TEST_SCRIPT, ROLE_NEW_GRAD));
-//            gameMap.putAll(ScriptReaderUtil.parseScript(AUNT_TEST_SCRIPT, ROLE_AUNT));
+            gameMap.putAll(ScriptReaderUtil.parseScript(CHOICE_SCRIPT, ROLE_CHOICE));
+            gameMap.putAll(ScriptReaderUtil.parseScript(CAT_TEST_SCRIPT, ROLE_CAT));
+            gameMap.putAll(ScriptReaderUtil.parseScript(CEO_TEST_SCRIPT, ROLE_CEO));
+            gameMap.putAll(ScriptReaderUtil.parseScript(NEW_GRAD_TEST_SCRIPT, ROLE_NEW_GRAD));
+            gameMap.putAll(ScriptReaderUtil.parseScript(AUNT_TEST_SCRIPT, ROLE_AUNT));
         } catch (Exception e){
             log.info("解析文件出现出现异常", e);
         }
