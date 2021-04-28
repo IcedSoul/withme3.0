@@ -19,6 +19,7 @@ import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -96,7 +97,9 @@ public class MessageServiceImpl implements MessageService {
 
         }
         else {
-            robotHandleMessage(message.getFromId(), message);
+            if(!StringUtils.isEmpty(message.getContent())) {
+                robotHandleMessage(message.getFromId(), message);
+            }
         }
 
 
