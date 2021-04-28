@@ -179,8 +179,6 @@ public class MessageServiceImpl implements MessageService {
         } catch (Exception e){
             log.info("机器人处理消息出现异常", e);
         }
-
-
     }
 
 
