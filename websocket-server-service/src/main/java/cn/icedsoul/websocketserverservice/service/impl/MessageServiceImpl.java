@@ -96,10 +96,8 @@ public class MessageServiceImpl implements MessageService {
             }
 
         }
-        else {
-            if(!StringUtils.isEmpty(message.getContent())) {
-                robotHandleMessage(message.getFromId(), message);
-            }
+        else if(message.getType() == 0){
+            robotHandleMessage(message.getFromId(), message);
         }
 
 
