@@ -78,7 +78,7 @@ public class CONSTANT {
     public static final String GAME_START = ROLE_CHOICE + "1";
     public static final String CAT_START = ROLE_CAT + "1";
     public static final String CEO_START = ROLE_CEO + "1";
-    public static final String NEW_GRAD_START = ROLE_NEW_GRAD + "1";
+    public static final String NEW_GRAD_START = ROLE_NEW_GRAD + "#1";
     public static final String AUNT_START = ROLE_AUNT + "1";
 
     public static final String MESSAGE_CONTENT_SPLIT = "\\$";

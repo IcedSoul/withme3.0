@@ -158,10 +158,10 @@ public class MessageServiceImpl implements MessageService {
                     else {
                         try {
                             int choice = Integer.parseInt(message.getContent());
-                            if(choice < 0 || choice >= scriptNode.getContents().size()){
+                            if(choice <= 0 || choice > scriptNode.getContents().size()){
                                 throw new Exception("选项超出正常范围");
                             }
-                            onlineUserStatus.put(userId, gameMap.get(scriptNode.getContents().get(choice).getSecond()));
+                            onlineUserStatus.put(userId, gameMap.get(scriptNode.getContents().get(choice - 1).getSecond()));
                         } catch (Exception e){
                             log.info("选择解析错误");
                             sendMessageToUserFromRobot(userId, CHOICE_PARSE_EXCEPTION_NOTICE);
